@@ -10,3 +10,6 @@ REGISTRY["qtran_learner"] = QTranLearner
 
 from .dcg_learner import DCGLearner
 REGISTRY["dcg_learner"] = DCGLearner
+
+from .cgmix_learner import CgmixLearner
+REGISTRY['cgmix_learner'] = CgmixLearner

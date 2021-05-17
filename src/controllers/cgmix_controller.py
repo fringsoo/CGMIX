@@ -9,7 +9,7 @@ from math import factorial
 from random import randrange
 
 
-class DeepCoordinationGraphMAC(BasicMAC):
+class CgmixMAC(BasicMAC):
     """ Multi-agent controller for a Deep Coordination Graph (DCG, Boehmer et al., 2020)"""
 
     # ================================ Constructors ===================================================================

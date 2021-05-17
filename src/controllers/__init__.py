@@ -15,3 +15,6 @@ REGISTRY["cg_mac"] = SimpleCoordionationGraphMAC
 from .low_rank_controller import LowRankMAC
 REGISTRY["low_rank_q"] = LowRankMAC
 
+from .cgmix_controller import CgmixMAC
+REGISTRY['cgmix_mac'] = CgmixMAC
+

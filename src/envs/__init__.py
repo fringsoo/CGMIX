@@ -1,6 +1,6 @@
 from functools import partial
 from smac.env import MultiAgentEnv
-from .starcraft2.starcraft2 import StarCraft2Env
+#from .starcraft2.starcraft2 import StarCraft2Env
 import sys
 import os
 from .aloha import AlohaEnv
@@ -16,7 +16,7 @@ def env_fn(env, **kwargs) -> MultiAgentEnv:
 
 
 REGISTRY = {}
-REGISTRY["sc2"] = partial(env_fn, env=StarCraft2Env)
+#REGISTRY["sc2"] = partial(env_fn, env=StarCraft2Env)
 REGISTRY["aloha"] = partial(env_fn, env=AlohaEnv)
 REGISTRY["pursuit"] = partial(env_fn, env=PursuitEnv)
 REGISTRY["sensor"] = partial(env_fn, env=SensorEnv)
