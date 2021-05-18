@@ -17,40 +17,43 @@ class CgmixLearner(QLearner):
         mask = batch["filled"][:, :-1].float()
         mask[:, 1:] = mask[:, 1:] * (1 - terminated[:, :-1])
 
-        # Calculate the maximal Q-Values of the target network
-        target_out = []
-        self.target_mac.init_hidden(batch.batch_size)
+        # Calculate estimated Q-Values
+        mac_f_i = []
+        mac_f_ij = []
         self.mac.init_hidden(batch.batch_size)
-        # Run through the episodes in the batch step by step
+        for t in range(batch.max_seq_length - 1):
+            f_i, f_ij = self.mac.forward(batch, t=t, actions=actions[:, t])
+            mac_f_i.append(f_i)
+            mac_f_ij.append(f_ij)
+        mac_f_i = th.stack(mac_f_i, dim=1)
+        mac_f_ij = th.stack(mac_f_ij, dim=1)
+
+        target_f_i = []
+        target_f_ij = []
+        self.target_mac.init_hidden(batch.batch_size)
+        w_1, w_final = self.target_mixer.get_w(batch["state"][:, 1:]) # Should I use target_mixer, state[1:] ??
         for t in range(batch.max_seq_length):
-            # In double Q-learning, the actions are selected greedy w.r.t. mac
-            greedy = self.mac.forward(batch, t=t, policy_mode=False)
-            # Q-value of target_mac with the above greedy actions
-            target_out.append(self.target_mac.forward(batch, t=t, actions=greedy, policy_mode=False))
-        # The TD-targets for time steps 1 to max_seq_length-1 (i.e., one step in the future)
-        target_out = th.stack(target_out[1:], dim=1).unsqueeze(dim=-1)  # Concat across time, starting at index 1
+            greedy = self.mac.forward(batch, t=t, actions=None, w_1=w_1, w_final=w_final)
+            f_i, f_ij = self.target_mac.forward(batch, t=t, actions=greedy)
+            target_f_i.append(f_i)
+            target_f_ij.append(f_ij)
+        target_f_i = th.stack(target_f_i, dim=1)
+        target_f_ij = th.stack(target_f_ij, dim=1)
+        
+        mac_out = th.cat((mac_f_i, mac_f_ij), dim=2)
+        target_out = th.cat((target_f_i, target_f_ij), dim=2)
 
         
 
-        # Calculate estimated Q-Values for the current actions
-        mac_out = []
-        self.mac.init_hidden(batch.batch_size)
-        # Q-values from time step 0 to max_seq_length-2 (i.e., the present)
-        for t in range(batch.max_seq_length - 1):
-            val = self.mac.forward(batch, t=t, actions=actions[:, t], policy_mode=False, compute_grads=True)
-            mac_out.append(val)
-        mac_out = th.stack(mac_out, dim=1).unsqueeze(dim=-1)  # Concat the Q-values over time
-
-
         # Mix
         if self.mixer is not None:
-            mac_out = self.mixer(mac_out, batch["state"][:, :-1])
-            target_out = self.target_mixer(target_out, batch["state"][:, 1:])
+            chosen_action_qval = self.mixer(mac_out, batch["state"][:, :-1])
+            target_max_qvals = self.target_mixer(target_out, batch["state"][:, 1:])
 
-        targets = rewards + self.args.gamma * (1 - terminated) * target_out
+        targets = rewards + self.args.gamma * (1 - terminated) * target_max_qvals
 
         # Calculate TD-error and masked loss for 1-step Q-Learning targets
-        td_error = (mac_out - targets.detach())
+        td_error = (chosen_action_qval - targets.detach())
         mask = mask.expand_as(td_error)
         td_error = td_error * mask
         loss = (td_error ** 2).sum() / mask.sum()

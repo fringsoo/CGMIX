@@ -58,3 +58,15 @@ class QMixer(nn.Module):
         # Reshape and return
         q_tot = y.view(bs, -1, 1)
         return q_tot
+
+    def get_w(self. states):
+        states = states.reshape(-1, self.state_dim)
+        # First layer
+        w1 = th.abs(self.hyper_w_1(states))
+        b1 = self.hyper_b_1(states)
+        w1 = w1.view(-1, self.n_agents, self.embed_dim)
+        b1 = b1.view(-1, 1, self.embed_dim)
+        # Second layer
+        w_final = th.abs(self.hyper_w_final(states))
+        w_final = w_final.view(-1, self.embed_dim, 1)
+        return w1, w_final
