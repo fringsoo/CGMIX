@@ -31,7 +31,7 @@ class CgmixLearner(QLearner):
         target_f_i = []
         target_f_ij = []
         self.target_mac.init_hidden(batch.batch_size)
-        w_1, w_final = self.target_mixer.get_w(batch["state"][:, 1:]) # Should I use target_mixer, state[1:] ??
+        w_1, w_final = self.target_mixer.get_w(batch["state"][:, 1:]) # use target or not? detach or not?
         for t in range(batch.max_seq_length):
             greedy = self.mac.forward(batch, t=t, actions=None, w_1=w_1, w_final=w_final)
             f_i, f_ij = self.target_mac.forward(batch, t=t, actions=greedy)

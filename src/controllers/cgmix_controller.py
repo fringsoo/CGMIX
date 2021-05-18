@@ -17,24 +17,18 @@ class CgmixMAC(BasicMAC):
     def __init__(self, scheme, groups, args):
         super().__init__(scheme, groups, args)
         self.n_actions = args.n_actions
-        self.payoff_rank = args.cg_payoff_rank
-        self.payoff_decomposition = isinstance(self.payoff_rank, int) and self.payoff_rank > 0
         self.iterations = args.msg_iterations
         self.normalized = args.msg_normalized
         self.anytime = args.msg_anytime
         # Create neural networks for utilities and payoff functions
         self.utility_fun = self._mlp(self.args.rnn_hidden_dim, args.cg_utilities_hidden_dim, self.n_actions)
-        payoff_out = 2 * self.payoff_rank * self.n_actions if self.payoff_decomposition else self.n_actions ** 2
+        payoff_out = self.n_actions ** 2
         self.payoff_fun = self._mlp(2 * self.args.rnn_hidden_dim, args.cg_payoffs_hidden_dim, payoff_out)
-        # Create neural network for the duelling option
-        self.duelling = args.duelling
-        if self.duelling:
-            self.state_value = self._mlp(int(np.prod(args.state_shape)), [args.mixing_embed_dim], 1)
         # Create the edge information of the CG
         self.edges_from = None
         self.edges_to = None
         self.edges_n_in = None
-        self._set_edges(self._edge_list(args.cg_edges))
+        self._set_edges(self._edge_list())
 
     # ================== DCG Core Methods =============================================================================
 
@@ -137,29 +131,17 @@ class CgmixMAC(BasicMAC):
 
     # ================== Override methods of BasicMAC to integrate DCG into PyMARL ====================================
 
-    def forward(self, ep_batch, t, actions=None, policy_mode=True, test_mode=False, compute_grads=False):
-        """ This is the main function that is called by learner and runner.
-            If policy_mode=True,    returns the greedy policy (for controller) for the given ep_batch at time t.
-            If policy_mode=False,   returns either the Q-values for given 'actions'
-                                            or the actions of of the greedy policy for 'actions==None'.  """
-        # Get the utilities and payoffs after observing time step t
-        f_i, f_ij = self.annotations(ep_batch, t, compute_grads, actions)
-        # We either return the values for the given batch and actions...
-        if actions is not None and not policy_mode:
+    def forward(self, ep_batch, t, actions=None, w_1=None, w_final=None):
+        if actions is not None:
+            f_i, f_ij = self.annotations(ep_batch, t, compute_grads=True, actions=actions)
             values = self.q_values(f_i, f_ij, actions)
-            if self.duelling:
-                # Compute the state-value function only with gradient if we really need one
-                with th.no_grad() if not compute_grads else contextlib.suppress():
-                    values = values + self.state_value(ep_batch['state'][:, t]).squeeze()
             return values
-        # ... or greedy actions  ... or the computed Q-values (for the learner)
-        actions = self.greedy(f_i, f_ij, available_actions=ep_batch['avail_actions'][:, t])
-        if policy_mode:     # ... either as policy tensor for the runner ...
-            policy = f_i.new_zeros(ep_batch.batch_size, self.n_agents, self.n_actions)
-            policy.scatter_(dim=-1, index=actions, src=policy.new_ones(1, 1, 1).expand_as(actions))
-            return policy
-        else:               # ... or as action tensor for the learner
+        elif w_1 is not None:
+            f_i, f_ij = self.annotations(ep_batch, t)
+            actions = np.zeros(f_i.shape.size(2))
             return actions
+        else:
+            raise NotImplementedError
 
     def cuda(self):
         """ Moves this controller to the GPU, if one exists. """
@@ -220,7 +202,7 @@ class CgmixMAC(BasicMAC):
         layers.append(nn.Linear(dim, output))
         return nn.Sequential(*layers)
 
-    def _edge_list(self, arg):
+    def _edge_list(self):
         """ Specifies edges for various topologies. """
         edges = []
         edges = [[(j, i + j + 1) for i in range(self.n_agents - j - 1)] for j in range(self.n_agents - 1)]
