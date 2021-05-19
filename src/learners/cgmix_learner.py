@@ -54,8 +54,8 @@ class CgmixLearner():
             f_i, f_ij = self.target_mac.forward(batch, t=t, actions=greedy)
             target_f_i.append(f_i)
             target_f_ij.append(f_ij)
-        target_f_i = th.stack(target_f_i, dim=1)
-        target_f_ij = th.stack(target_f_ij, dim=1)
+        target_f_i = th.stack(target_f_i[1:], dim=1)
+        target_f_ij = th.stack(target_f_ij[1:], dim=1)
         
         mac_out = th.cat((mac_f_i, mac_f_ij), dim=2)
         target_out = th.cat((target_f_i, target_f_ij), dim=2)
@@ -63,7 +63,7 @@ class CgmixLearner():
         
 
         # Mix
-        if self.mixer is not None:
+        if self.mac.mixer is not None:
             chosen_action_qval = self.mac.mixer(mac_out, batch["state"][:, :-1])
             target_max_qvals = self.target_mac.mixer(target_out, batch["state"][:, 1:])
 

@@ -21,7 +21,7 @@ class QMixer(nn.Module):
             hypernet_embed = self.args.hypernet_embed
             self.hyper_w_1 = nn.Sequential(nn.Linear(self.state_dim, hypernet_embed),
                                            nn.ReLU(),
-                                           nn.Linear(hypernet_embed, self.embed_dim * (self.n_agents + self.n_agents ** 2)))
+                                           nn.Linear(hypernet_embed, self.embed_dim * (self.n_agents + self.n_agents ** 2) // 2))
             self.hyper_w_final = nn.Sequential(nn.Linear(self.state_dim, hypernet_embed),
                                            nn.ReLU(),
                                            nn.Linear(hypernet_embed, self.embed_dim))
@@ -41,11 +41,11 @@ class QMixer(nn.Module):
     def forward(self, agent_qs, states):
         bs = agent_qs.size(0)
         states = states.reshape(-1, self.state_dim)
-        agent_qs = agent_qs.view(-1, 1, self.n_agents)
+        agent_qs = agent_qs.view(-1, 1, (self.n_agents + self.n_agents ** 2) // 2)
         # First layer
         w1 = th.abs(self.hyper_w_1(states))
         b1 = self.hyper_b_1(states)
-        w1 = w1.view(-1, self.n_agents, self.embed_dim)
+        w1 = w1.view(-1, (self.n_agents + self.n_agents ** 2) // 2, self.embed_dim)
         b1 = b1.view(-1, 1, self.embed_dim)
         hidden = F.elu(th.bmm(agent_qs, w1) + b1)
         # Second layer

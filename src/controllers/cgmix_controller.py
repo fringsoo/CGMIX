@@ -67,18 +67,7 @@ class CgmixMAC(BasicMAC):
                            th.cat([hidden_states[:, self.edges_to], hidden_states[:, self.edges_from]], dim=-1)], dim=0)
         # Compute the payoff matrices for all edges (and flipped counterparts)
         output = self.payoff_fun(inputs)
-        if self.payoff_decomposition:
-            # If the payoff matrix is decomposed, we need to de-decompose it here: ...
-            dim = list(output.shape[:-1])
-            # ... reshape output into left and right bases of the matrix, ...
-            output = output.view(*[np.prod(dim) * self.payoff_rank, 2, n])
-            # ... outer product between left and right bases, ...
-            output = th.bmm(output[:, 0, :].unsqueeze(dim=-1), output[:, 1, :].unsqueeze(dim=-2))
-            # ... and finally sum over the above outer products of payoff_rank base-pairs.
-            output = output.view(*(dim + [self.payoff_rank, n, n])).sum(dim=-3)
-        else:
-            # Without decomposition, the payoff_fun output must only be reshaped
-            output = output.view(*(list(output.shape[:-1]) + [n, n]))
+        output = output.view(*(list(output.shape[:-1]) + [n, n]))
         # The output of the backward messages must be transposed
         output[1] = output[1].transpose(dim0=-2, dim1=-1)
         # Compute the symmetric average of each edge with it's flipped counterpart
@@ -88,15 +77,15 @@ class CgmixMAC(BasicMAC):
         """ Computes the Q-values for given utilities, payoffs and actions (Algorithm 2 in Boehmer et al., 2020). """
         n_batches = actions.shape[0]
         # Use the utilities for the chosen actions
-        values = f_i.gather(dim=-1, index=actions).squeeze(dim=-1).mean(dim=-1)
+        q_i = f_i.gather(dim=-1, index=actions).squeeze(dim=-1)
         # Use the payoffs for the chosen actions (if the CG contains edges)
         if len(self.edges_from) > 0:
             f_ij = f_ij.view(n_batches, len(self.edges_from), self.n_actions * self.n_actions)
             edge_actions = actions.gather(dim=-2, index=self.edges_from.view(1, -1, 1).expand(n_batches, -1, 1)) \
                 * self.n_actions + actions.gather(dim=-2, index=self.edges_to.view(1, -1, 1).expand(n_batches, -1, 1))
-            values = values + f_ij.gather(dim=-1, index=edge_actions).squeeze(dim=-1).mean(dim=-1)
+            q_ij = f_ij.gather(dim=-1, index=edge_actions).squeeze(dim=-1)
         # Return the Q-values for the given actions
-        return values
+        return q_i, q_ij
 
     def greedy(self, f_i, f_ij, available_actions=None):
         """ Finds the maximum Q-values and corresponding greedy actions for given utilities and payoffs.
@@ -147,18 +136,18 @@ class CgmixMAC(BasicMAC):
 
     def select_actions(self, ep_batch, t_ep, t_env, bs=slice(None), test_mode=False):
         avail_actions = ep_batch["avail_actions"][:, t_ep]
-        f_i, f_ij = self.annotations(ep_batch, t)
+        f_i, f_ij = self.annotations(ep_batch, t_ep)
         chosen_actions = self.action_selector.select_action(f_i[bs], avail_actions[bs], t_env, test_mode=test_mode)
         return chosen_actions
 
     def forward(self, ep_batch, t, actions=None, test_mode=False):
         if actions is not None:
             f_i, f_ij = self.annotations(ep_batch, t, compute_grads=True, actions=actions)
-            values = self.q_values(f_i, f_ij, actions)
-            return values
+            q_i, q_ij = self.q_values(f_i, f_ij, actions)
+            return q_i, q_ij
         else:
             f_i, f_ij = self.annotations(ep_batch, t)
-            actions = np.zeros(f_i.shape.size(2))
+            _, actions = (th.zeros((f_i.size(0), f_i.size(1), 1))).max(dim=-1, keepdim=True)
             return actions
 
     def cuda(self):
