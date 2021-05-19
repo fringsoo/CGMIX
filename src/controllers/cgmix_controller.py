@@ -140,9 +140,8 @@ class CgmixMAC(BasicMAC):
 
     def greedy(self, f_i, f_ij, w_1, b_1, w_final, available_actions=None):
         emb_dim = self.mixer.embed_dim
-        w_1_i = w_1[:, :self.n_agents - 1, :]
+        w_1_i = w_1[:, :self.n_agents, :]
         w_1_ij = w_1[:, self.n_agents:, :]
-        w_final = w_final.unsqueeze(dim=-1)
 
         best_value = f_i.new_empty(f_i.shape[0]).fill_(-float('inf'))
         best_actions = f_i.new_empty(f_i.shape[0], self.n_agents, 1, dtype=th.int64, device=f_i.device)
@@ -151,17 +150,17 @@ class CgmixMAC(BasicMAC):
             use_relu = np.zeros(emb_dim)
             for i in range(emb_dim):
                 use_relu[i] = (iteration >> i) % 2
-            print(use_relu)
+            #print(use_relu)
             k_i = th.zeros_like(w_1_i[:, :, 0])
             k_ij = th.zeros_like(w_1_ij[:, :, 0])
-            res = th.zeros_like(f_i[:, :, 0])
+            res = th.zeros_like(best_value)
             for i in range(emb_dim):
                 if use_relu[i] > 0.5:
                     k_i += w_1_i[:, :, i] * w_final[:, i]
                     k_ij += w_1_ij[:, :, i] * w_final[:, i]
-                    res += (b_1[:, i] * w_final[: ,i]).unsqueeze(dim=-1)
+                    res += (b_1[:, 0, i] * w_final[: ,i, 0])
             f_i_emb = f_i * k_i.unsqueeze(dim=-1)
-            f_ij_emb = f_ij * k_ij.unsqueeze(dim=-1)
+            f_ij_emb = f_ij * k_ij.unsqueeze(dim=-1).unsqueeze(dim=-1)
             actions = self.max_sum(f_i_emb, f_ij_emb, available_actions)
             res += self.tot_values(f_i_emb, f_ij_emb, actions)
             change = res > best_value
@@ -177,8 +176,9 @@ class CgmixMAC(BasicMAC):
 
     def select_actions(self, ep_batch, t_ep, t_env, bs=slice(None), test_mode=False):
         avail_actions = ep_batch["avail_actions"][:, t_ep]
+        state = ep_batch["state"][:, t_ep]
         f_i, f_ij = self.annotations(ep_batch, t_ep)
-        w_1, b_1, w_final = self.mixer.get_para()
+        w_1, b_1, w_final = self.mixer.get_para(state)
         actions = self.greedy(f_i, f_ij, w_1, b_1, w_final, avail_actions)
         policy = f_i.new_zeros(ep_batch.batch_size, self.n_agents, self.n_actions)
         policy.scatter_(dim=-1, index=actions, src=policy.new_ones(1, 1, 1).expand_as(actions))
@@ -193,7 +193,8 @@ class CgmixMAC(BasicMAC):
         else:
             f_i, f_ij = self.annotations(ep_batch, t)
             if w_1 is None:
-                w_1, b_1, w_final = self.mixer.get_para()
+                state = ep_batch["state"][:, t]
+                w_1, b_1, w_final = self.mixer.get_para(state)
             actions = self.greedy(f_i, f_ij, w_1, b_1, w_final, available_actions=ep_batch['avail_actions'][:, t])
             return actions
 
