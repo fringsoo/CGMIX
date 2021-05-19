@@ -176,7 +176,7 @@ class CgmixMAC(BasicMAC):
     def parameters(self):
         """ Returns a generator for all parameters of the controller. """
         if self.mixer is not None:
-            param = itertools.chain(BasicMAC.parameters(self), self.utility_fun.parameters(), self.payoff_fun.parameters(), self.mixder.parameters())
+            param = itertools.chain(BasicMAC.parameters(self), self.utility_fun.parameters(), self.payoff_fun.parameters(), self.mixer.parameters())
         else:
             param = itertools.chain(BasicMAC.parameters(self), self.utility_fun.parameters(), self.payoff_fun.parameters())
         return param
