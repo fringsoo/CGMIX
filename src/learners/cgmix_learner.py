@@ -1,11 +1,27 @@
+import copy
 from .q_learner import QLearner
 from components.episode_buffer import EpisodeBatch
-from modules.mixers.qmix import QMixer
 import torch as th
+from torch.optim import RMSprop
 
 
-class CgmixLearner(QLearner):
-    """ QLearner for a Deep Coordination Graph (DCG, Boehmer et al., 2020). """
+class CgmixLearner():
+    def __init__(self, mac, scheme, logger, args):
+        self.args = args
+        self.mac = mac
+        self.logger = logger
+
+        self.params = list(mac.parameters())
+
+        self.last_target_update_episode = 0
+
+
+        self.optimiser = RMSprop(params=self.params, lr=args.lr, alpha=args.optim_alpha, eps=args.optim_eps)
+
+        # a little wasteful to deepcopy (e.g. duplicates action selector), but should work for any MAC
+        self.target_mac = copy.deepcopy(mac)
+
+        self.log_stats_t = -self.args.learner_log_interval - 1
 
     def train(self, batch: EpisodeBatch, t_env: int, episode_num: int):
         """ Overrides the train method from QLearner. """
@@ -31,9 +47,10 @@ class CgmixLearner(QLearner):
         target_f_i = []
         target_f_ij = []
         self.target_mac.init_hidden(batch.batch_size)
-        w_1, w_final = self.target_mixer.get_w(batch["state"][:, 1:]) # use target or not? detach or not?
+        #w_1, w_final = self.target_mixer.get_w(batch["state"][:, 1:]) # use target or not? detach or not?
         for t in range(batch.max_seq_length):
-            greedy = self.mac.forward(batch, t=t, actions=None, w_1=w_1, w_final=w_final)
+            greedy = self.mac.forward(batch, t=t, actions=None)
+            #greedy = self.mac.forward(batch, t=t, actions=None, w_1=w_1, w_final=w_final)
             f_i, f_ij = self.target_mac.forward(batch, t=t, actions=greedy)
             target_f_i.append(f_i)
             target_f_ij.append(f_ij)
@@ -47,8 +64,8 @@ class CgmixLearner(QLearner):
 
         # Mix
         if self.mixer is not None:
-            chosen_action_qval = self.mixer(mac_out, batch["state"][:, :-1])
-            target_max_qvals = self.target_mixer(target_out, batch["state"][:, 1:])
+            chosen_action_qval = self.mac.mixer(mac_out, batch["state"][:, :-1])
+            target_max_qvals = self.target_mac.mixer(target_out, batch["state"][:, 1:])
 
         targets = rewards + self.args.gamma * (1 - terminated) * target_max_qvals
 
@@ -78,3 +95,21 @@ class CgmixLearner(QLearner):
             self.logger.log_stat("q_taken_mean", (mac_out * mask).sum().item()/(mask_elems * self.args.n_agents), t_env)
             self.logger.log_stat("target_mean", (targets * mask).sum().item()/(mask_elems * self.args.n_agents), t_env)
             self.log_stats_t = t_env
+    
+    def _update_targets(self):
+        self.target_mac.load_state(self.mac)
+        self.logger.console_logger.info("Updated target network")
+
+    def cuda(self):
+        self.mac.cuda()
+        self.target_mac.cuda()
+
+    def save_models(self, path):
+        self.mac.save_models(path)
+        th.save(self.optimiser.state_dict(), "{}/opt.th".format(path))
+
+    def load_models(self, path):
+        self.mac.load_models(path)
+        # Not quite right but I don't want to save target networks
+        self.target_mac.load_models(path)
+        self.optimiser.load_state_dict(th.load("{}/opt.th".format(path), map_location=lambda storage, loc: storage))

@@ -1,3 +1,4 @@
+from pathlib import Path
 from .basic_controller import BasicMAC
 import torch as th
 import torch.nn as nn
@@ -5,8 +6,12 @@ import numpy as np
 import contextlib
 import itertools
 import torch_scatter
+import copy
 from math import factorial
 from random import randrange
+from components.episode_buffer import EpisodeBatch
+from modules.mixers.vdn import VDNMixer
+from modules.mixers.qmix import QMixer
 
 
 class CgmixMAC(BasicMAC):
@@ -29,6 +34,15 @@ class CgmixMAC(BasicMAC):
         self.edges_to = None
         self.edges_n_in = None
         self._set_edges(self._edge_list())
+
+        self.mixer = None
+        if args.mixer is not None:
+            if args.mixer == "vdn":
+                self.mixer = VDNMixer()
+            elif args.mixer == "qmix":
+                self.mixer = QMixer(args)
+            else:
+                raise ValueError("Mixer {} not recognised.".format(args.mixer))
 
     # ================== DCG Core Methods =============================================================================
 
@@ -131,17 +145,21 @@ class CgmixMAC(BasicMAC):
 
     # ================== Override methods of BasicMAC to integrate DCG into PyMARL ====================================
 
-    def forward(self, ep_batch, t, actions=None, w_1=None, w_final=None):
+    def select_actions(self, ep_batch, t_ep, t_env, bs=slice(None), test_mode=False):
+        avail_actions = ep_batch["avail_actions"][:, t_ep]
+        f_i, f_ij = self.annotations(ep_batch, t)
+        chosen_actions = self.action_selector.select_action(f_i[bs], avail_actions[bs], t_env, test_mode=test_mode)
+        return chosen_actions
+
+    def forward(self, ep_batch, t, actions=None, test_mode=False):
         if actions is not None:
             f_i, f_ij = self.annotations(ep_batch, t, compute_grads=True, actions=actions)
             values = self.q_values(f_i, f_ij, actions)
             return values
-        elif w_1 is not None:
+        else:
             f_i, f_ij = self.annotations(ep_batch, t)
             actions = np.zeros(f_i.shape.size(2))
             return actions
-        else:
-            raise NotImplementedError
 
     def cuda(self):
         """ Moves this controller to the GPU, if one exists. """
@@ -152,10 +170,15 @@ class CgmixMAC(BasicMAC):
             self.edges_from = self.edges_from.cuda()
             self.edges_to = self.edges_to.cuda()
             self.edges_n_in = self.edges_n_in.cuda()
+        if self.mixer is not None:
+            self.mixer.cuda()
 
     def parameters(self):
         """ Returns a generator for all parameters of the controller. """
-        param = itertools.chain(BasicMAC.parameters(self), self.utility_fun.parameters(), self.payoff_fun.parameters())
+        if self.mixer is not None:
+            param = itertools.chain(BasicMAC.parameters(self), self.utility_fun.parameters(), self.payoff_fun.parameters(), self.mixder.parameters())
+        else:
+            param = itertools.chain(BasicMAC.parameters(self), self.utility_fun.parameters(), self.payoff_fun.parameters())
         return param
 
     def load_state(self, other_mac):
@@ -163,18 +186,24 @@ class CgmixMAC(BasicMAC):
         BasicMAC.load_state(self, other_mac)
         self.utility_fun.load_state_dict(other_mac.utility_fun.state_dict())
         self.payoff_fun.load_state_dict(other_mac.payoff_fun.state_dict())
+        if self.mixer is not None:
+            self.mixer.load_state_dict(other_mac.mixer.state_dict())
 
     def save_models(self, path):
         """ Saves parameters to the disc. """
         BasicMAC.save_models(self, path)
         th.save(self.utility_fun.state_dict(), "{}/utilities.th".format(path))
         th.save(self.payoff_fun.state_dict(), "{}/payoffs.th".format(path))
+        if self.mixer is not None:
+            th.save(self.mixer.state_dict(), "{}/mixer.th".format(path))
 
     def load_models(self, path):
         """ Loads parameters from the disc. """
         BasicMAC.load_models(self, path)
         self.utility_fun.load_state_dict(th.load("{}/utilities.th".format(path), map_location=lambda storage, loc: storage))
         self.payoff_fun.load_state_dict(th.load("{}/payoffs.th".format(path), map_location=lambda storage, loc: storage))
+        if self.mixer is not None:
+            self.mixer.laod_state_dict(th.load("{}/mixer.th".format(path), map_location=lambda storage, loc: storage))
 
     # ================== Private methods to help the constructor ======================================================
 
