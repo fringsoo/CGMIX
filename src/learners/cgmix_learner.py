@@ -47,7 +47,7 @@ class CgmixLearner():
         target_f_i = []
         target_f_ij = []
         self.target_mac.init_hidden(batch.batch_size)
-        #w_1, w_final = self.target_mixer.get_w(batch["state"][:, 1:]) # use target or not? detach or not?
+        #w_1, w_final = self.target_mixer.get_w(batch["state"][:, 1:]) # use target or not?
         for t in range(batch.max_seq_length):
             greedy = self.mac.forward(batch, t=t, actions=None)
             #greedy = self.mac.forward(batch, t=t, actions=None, w_1=w_1, w_final=w_final)

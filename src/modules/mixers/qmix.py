@@ -47,7 +47,7 @@ class QMixer(nn.Module):
         b1 = self.hyper_b_1(states)
         w1 = w1.view(-1, (self.n_agents + self.n_agents ** 2) // 2, self.embed_dim)
         b1 = b1.view(-1, 1, self.embed_dim)
-        hidden = F.elu(th.bmm(agent_qs, w1) + b1)
+        hidden = nn.ReLU(th.bmm(agent_qs, w1) + b1) # ReLU instead of elu
         # Second layer
         w_final = th.abs(self.hyper_w_final(states))
         w_final = w_final.view(-1, self.embed_dim, 1)
@@ -59,7 +59,7 @@ class QMixer(nn.Module):
         q_tot = y.view(bs, -1, 1)
         return q_tot
 
-    def get_w(self, states):
+    def get_para(self, states):
         states = states.reshape(-1, self.state_dim)
         # First layer
         w1 = th.abs(self.hyper_w_1(states))
@@ -69,4 +69,7 @@ class QMixer(nn.Module):
         # Second layer
         w_final = th.abs(self.hyper_w_final(states))
         w_final = w_final.view(-1, self.embed_dim, 1)
-        return w1, w_final
+        w_1_detach = w1.detach()
+        b_1_detach = b1.detach()
+        w_final_detach = w_final.detach()
+        return w_1_detach, b_1_detach, w_final_detach

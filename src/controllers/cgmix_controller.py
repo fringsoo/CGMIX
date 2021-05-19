@@ -78,16 +78,22 @@ class CgmixMAC(BasicMAC):
         n_batches = actions.shape[0]
         # Use the utilities for the chosen actions
         q_i = f_i.gather(dim=-1, index=actions).squeeze(dim=-1)
+        q_i = q_i / self.n_agents
         # Use the payoffs for the chosen actions (if the CG contains edges)
         if len(self.edges_from) > 0:
             f_ij = f_ij.view(n_batches, len(self.edges_from), self.n_actions * self.n_actions)
             edge_actions = actions.gather(dim=-2, index=self.edges_from.view(1, -1, 1).expand(n_batches, -1, 1)) \
                 * self.n_actions + actions.gather(dim=-2, index=self.edges_to.view(1, -1, 1).expand(n_batches, -1, 1))
             q_ij = f_ij.gather(dim=-1, index=edge_actions).squeeze(dim=-1)
+            q_ij = q_ij / len(self.edges_from)
         # Return the Q-values for the given actions
         return q_i, q_ij
 
-    def greedy(self, f_i, f_ij, available_actions=None):
+    def tot_values(self, f_i, f_ij, actions):
+        q_i, q_ij = self.q_values(f_i, f_ij, actions)
+        return q_i.sum(dim=-1) + q_ij.sum(dim=-1)
+
+    def max_sum(self, f_i, f_ij, available_actions=None):
         """ Finds the maximum Q-values and corresponding greedy actions for given utilities and payoffs.
             (Algorithm 3 in Boehmer et al., 2020)"""
         # All relevant tensors should be double to reduce accumulating precision loss
@@ -122,7 +128,7 @@ class CgmixMAC(BasicMAC):
                 if self.anytime:
                     # Find currently best actions and the (true) value of these actions
                     actions = utils.max(dim=-1, keepdim=True)[1]
-                    value = self.q_values(in_f_i, in_f_ij, actions)
+                    value = self.tot_values(in_f_i, in_f_ij, actions)
                     # Update best_actions only for the batches that have a higher value than best_value
                     change = value > best_value
                     best_value[change] = value[change]
@@ -132,22 +138,63 @@ class CgmixMAC(BasicMAC):
             _, best_actions = utils.max(dim=-1, keepdim=True)
         return best_actions
 
+    def greedy(self, f_i, f_ij, w_1, b_1, w_final, available_actions=None):
+        emb_dim = self.mixer.embed_dim
+        w_1_i = w_1[:, :self.n_agents - 1, :]
+        w_1_ij = w_1[:, self.n_agents:, :]
+        w_final = w_final.unsqueeze(dim=-1)
+
+        best_value = f_i.new_empty(f_i.shape[0]).fill_(-float('inf'))
+        best_actions = f_i.new_empty(f_i.shape[0], self.n_agents, 1, dtype=th.int64, device=f_i.device)
+
+        for iteration in range(2 ** emb_dim):
+            use_relu = np.zeros(emb_dim)
+            for i in range(emb_dim):
+                use_relu[i] = (iteration >> i) % 2
+            print(use_relu)
+            k_i = th.zeros_like(w_1_i[:, :, 0])
+            k_ij = th.zeros_like(w_1_ij[:, :, 0])
+            res = th.zeros_like(f_i[:, :, 0])
+            for i in range(emb_dim):
+                if use_relu[i] > 0.5:
+                    k_i += w_1_i[:, :, i] * w_final[:, i]
+                    k_ij += w_1_ij[:, :, i] * w_final[:, i]
+                    res += (b_1[:, i] * w_final[: ,i]).unsqueeze(dim=-1)
+            f_i_emb = f_i * k_i.unsqueeze(dim=-1)
+            f_ij_emb = f_ij * k_ij.unsqueeze(dim=-1)
+            actions = self.max_sum(f_i_emb, f_ij_emb, available_actions)
+            res += self.tot_values(f_i_emb, f_ij_emb, actions)
+            change = res > best_value
+            best_value[change] = res[change]
+            best_actions[change] = actions[change]
+
+        return best_actions
+
+
+
+
     # ================== Override methods of BasicMAC to integrate DCG into PyMARL ====================================
 
     def select_actions(self, ep_batch, t_ep, t_env, bs=slice(None), test_mode=False):
         avail_actions = ep_batch["avail_actions"][:, t_ep]
         f_i, f_ij = self.annotations(ep_batch, t_ep)
-        chosen_actions = self.action_selector.select_action(f_i[bs], avail_actions[bs], t_env, test_mode=test_mode)
+        w_1, b_1, w_final = self.mixer.get_para()
+        actions = self.greedy(f_i, f_ij, w_1, b_1, w_final, avail_actions)
+        policy = f_i.new_zeros(ep_batch.batch_size, self.n_agents, self.n_actions)
+        policy.scatter_(dim=-1, index=actions, src=policy.new_ones(1, 1, 1).expand_as(actions))
+        chosen_actions = self.action_selector.select_action(policy[bs], avail_actions[bs], t_env, test_mode=test_mode)
         return chosen_actions
 
-    def forward(self, ep_batch, t, actions=None, test_mode=False):
+    def forward(self, ep_batch, t, actions=None, w_1 = None, b_1 = None, w_final = None, test_mode=False):
         if actions is not None:
             f_i, f_ij = self.annotations(ep_batch, t, compute_grads=True, actions=actions)
             q_i, q_ij = self.q_values(f_i, f_ij, actions)
             return q_i, q_ij
         else:
             f_i, f_ij = self.annotations(ep_batch, t)
-            _, actions = (th.zeros((f_i.size(0), f_i.size(1), 1))).max(dim=-1, keepdim=True)
+            if w_1 is None:
+                w_1, b_1, w_final = self.mixer.get_para()
+            actions = self.greedy(f_i, f_ij, w_1, b_1, w_final, available_actions=ep_batch['avail_actions'][:, t])
             return actions
 
     def cuda(self):
