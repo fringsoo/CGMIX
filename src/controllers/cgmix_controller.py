@@ -152,14 +152,10 @@ class CgmixMAC(BasicMAC):
             self.edges_from = self.edges_from.cuda()
             self.edges_to = self.edges_to.cuda()
             self.edges_n_in = self.edges_n_in.cuda()
-        if self.duelling:
-            self.state_value.cuda()
 
     def parameters(self):
         """ Returns a generator for all parameters of the controller. """
         param = itertools.chain(BasicMAC.parameters(self), self.utility_fun.parameters(), self.payoff_fun.parameters())
-        if self.duelling:
-            param = itertools.chain(param, self.state_value.parameters())
         return param
 
     def load_state(self, other_mac):
@@ -167,24 +163,18 @@ class CgmixMAC(BasicMAC):
         BasicMAC.load_state(self, other_mac)
         self.utility_fun.load_state_dict(other_mac.utility_fun.state_dict())
         self.payoff_fun.load_state_dict(other_mac.payoff_fun.state_dict())
-        if self.duelling:
-            self.state_value.load_state_dict(other_mac.state_value.state_dict())
 
     def save_models(self, path):
         """ Saves parameters to the disc. """
         BasicMAC.save_models(self, path)
         th.save(self.utility_fun.state_dict(), "{}/utilities.th".format(path))
         th.save(self.payoff_fun.state_dict(), "{}/payoffs.th".format(path))
-        if self.duelling:
-            th.save(self.state_value, "{}/state_value.th".format(path))
 
     def load_models(self, path):
         """ Loads parameters from the disc. """
         BasicMAC.load_models(self, path)
         self.utility_fun.load_state_dict(th.load("{}/utilities.th".format(path), map_location=lambda storage, loc: storage))
         self.payoff_fun.load_state_dict(th.load("{}/payoffs.th".format(path), map_location=lambda storage, loc: storage))
-        if self.duelling:
-            self.payoff_fun.load_state_dict(th.load("{}/state_value.th".format(path), map_location=lambda storage, loc: storage))
 
     # ================== Private methods to help the constructor ======================================================
 
