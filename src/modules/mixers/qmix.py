@@ -37,6 +37,8 @@ class QMixer(nn.Module):
         self.V = nn.Sequential(nn.Linear(self.state_dim, self.embed_dim),
                                nn.ReLU(),
                                nn.Linear(self.embed_dim, 1))
+        
+        self.leakyrelu = nn.LeakyReLU(args.leaky_alpha)
 
     def forward(self, agent_qs, states):
         bs = agent_qs.size(0)
@@ -47,7 +49,8 @@ class QMixer(nn.Module):
         b1 = self.hyper_b_1(states)
         w1 = w1.view(-1, (self.n_agents + self.n_agents ** 2) // 2, self.embed_dim)
         b1 = b1.view(-1, 1, self.embed_dim)
-        hidden = F.relu(th.bmm(agent_qs, w1) + b1) # ReLU instead of elu
+        hidden = self.leakyrelu(th.bmm(agent_qs, w1) + b1) # ReLU instead of elu
+        #hidden = F.relu(th.bmm(agent_qs, w1) + b1) # ReLU instead of elu
         # Second layer
         w_final = th.abs(self.hyper_w_final(states))
         w_final = w_final.view(-1, self.embed_dim, 1)

@@ -43,6 +43,7 @@ class CgmixMAC(BasicMAC):
                 self.mixer = QMixer(args)
             else:
                 raise ValueError("Mixer {} not recognised.".format(args.mixer))
+        self.leaky_alpha = args.leaky_alpha
 
     # ================== DCG Core Methods =============================================================================
 
@@ -146,7 +147,7 @@ class CgmixMAC(BasicMAC):
         best_value = f_i.new_empty(f_i.shape[0]).fill_(-float('inf'))
         best_actions = f_i.new_empty(f_i.shape[0], self.n_agents, 1, dtype=th.int64, device=f_i.device)
 
-        for iteration in range(2 ** emb_dim):
+        for iteration in range(0, 2 ** emb_dim):
             use_relu = np.zeros(emb_dim)
             for i in range(emb_dim):
                 use_relu[i] = (iteration >> i) % 2
@@ -159,6 +160,10 @@ class CgmixMAC(BasicMAC):
                     k_i += w_1_i[:, :, i] * w_final[:, i]
                     k_ij += w_1_ij[:, :, i] * w_final[:, i]
                     res += (b_1[:, 0, i] * w_final[: ,i, 0])
+                else:
+                    k_i += self.leaky_alpha * w_1_i[:, :, i] * w_final[:, i]
+                    k_ij += self.leaky_alpha * w_1_ij[:, :, i] * w_final[:, i]
+                    res += self.leaky_alpha * (b_1[:, 0, i] * w_final[: ,i, 0])
             f_i_emb = f_i * k_i.unsqueeze(dim=-1)
             f_ij_emb = f_ij * k_ij.unsqueeze(dim=-1).unsqueeze(dim=-1)
             actions = self.max_sum(f_i_emb, f_ij_emb, available_actions)
@@ -240,7 +245,7 @@ class CgmixMAC(BasicMAC):
         self.utility_fun.load_state_dict(th.load("{}/utilities.th".format(path), map_location=lambda storage, loc: storage))
         self.payoff_fun.load_state_dict(th.load("{}/payoffs.th".format(path), map_location=lambda storage, loc: storage))
         if self.mixer is not None:
-            self.mixer.laod_state_dict(th.load("{}/mixer.th".format(path), map_location=lambda storage, loc: storage))
+            self.mixer.load_state_dict(th.load("{}/mixer.th".format(path), map_location=lambda storage, loc: storage))
 
     # ================== Private methods to help the constructor ======================================================
 
