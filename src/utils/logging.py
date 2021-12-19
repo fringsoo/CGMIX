@@ -41,7 +41,7 @@ class Logger:
         log_str = "Recent Stats | t_env: {:>10} | Episode: {:>8}\n".format(*self.stats["episode"][-1])
         i = 0
         for (k, v) in sorted(self.stats.items()):
-            if k == "episode":
+            if k == "episode" or k=="grad_norm":
                 continue
             i += 1
             window = 5 if k != "epsilon" else 1

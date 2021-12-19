@@ -22,24 +22,12 @@ class CgmixMAC(BasicMAC):
     def __init__(self, scheme, groups, args):
         super().__init__(scheme, groups, args)
         self.n_actions = args.n_actions
-
-        #'''
-        self.payoff_rank = args.cg_payoff_rank
-        self.payoff_decomposition = isinstance(self.payoff_rank, int) and self.payoff_rank > 0
-        #'''
-
         self.iterations = args.msg_iterations
         self.normalized = args.msg_normalized
         self.anytime = args.msg_anytime
         # Create neural networks for utilities and payoff functions
         self.utility_fun = self._mlp(self.args.rnn_hidden_dim, args.cg_utilities_hidden_dim, self.n_actions)
         payoff_out = self.n_actions ** 2
-        
-        #'''
-        payoff_out = 2 * self.payoff_rank * self.n_actions if self.payoff_decomposition else self.n_actions ** 2
-        self.payoff_out = payoff_out
-        #'''
-    
         self.payoff_fun = self._mlp(2 * self.args.rnn_hidden_dim, args.cg_payoffs_hidden_dim, payoff_out)
         # Create the edge information of the CG
         self.edges_from = None
@@ -80,29 +68,7 @@ class CgmixMAC(BasicMAC):
                            th.cat([hidden_states[:, self.edges_to], hidden_states[:, self.edges_from]], dim=-1)], dim=0)
         # Compute the payoff matrices for all edges (and flipped counterparts)
         output = self.payoff_fun(inputs)
-        
-        #output = th.zeros_like(output)
-        
-
-
-        
-        if self.payoff_decomposition:
-            # If the payoff matrix is decomposed, we need to de-decompose it here: ...
-            dim = list(output.shape[:-1])
-            # ... reshape output into left and right bases of the matrix, ...
-            output = output.view(*[np.prod(dim) * self.payoff_rank, 2, n])
-            # ... outer product between left and right bases, ...
-            output = th.bmm(output[:, 0, :].unsqueeze(dim=-1), output[:, 1, :].unsqueeze(dim=-2))
-            # ... and finally sum over the above outer products of payoff_rank base-pairs.
-            output = output.view(*(dim + [self.payoff_rank, n, n])).sum(dim=-3)
-        else:
-            # Without decomposition, the payoff_fun output must only be reshaped
-
-            output = output.view(*(list(output.shape[:-1]) + [n, n]))
-        
-
-        #output = output.view(*(list(output.shape[:-1]) + [n, n]))
-        
+        output = output.view(*(list(output.shape[:-1]) + [n, n]))
         # The output of the backward messages must be transposed
         output[1] = output[1].transpose(dim0=-2, dim1=-1)
         # Compute the symmetric average of each edge with it's flipped counterpart
@@ -142,7 +108,6 @@ class CgmixMAC(BasicMAC):
         best_actions = f_i.new_empty(best_value.shape[0], self.n_agents, 1, dtype=th.int64, device=f_i.device)
         # Without edges (or iterations), CG would be the same as VDN: mean(f_i)
         utils = f_i
-        ###
         # Perform message passing for self.iterations: [0] are messages to *edges_to*, [1] are messages to *edges_from*
         if len(self.edges_from) > 0 and self.iterations > 0:
             messages = f_i.new_zeros(2, f_i.shape[0], len(self.edges_from), self.n_actions)
@@ -164,18 +129,27 @@ class CgmixMAC(BasicMAC):
                 if self.anytime:
                     # Find currently best actions and the (true) value of these actions
                     actions = utils.max(dim=-1, keepdim=True)[1]
+                    #h, actions = utils.max(dim=-1, keepdim=True)
+                    #import pdb; pdb.set_trace()
                     value = self.tot_values(in_f_i, in_f_ij, actions)
                     # Update best_actions only for the batches that have a higher value than best_value
                     change = value > best_value
                     best_value[change] = value[change]
                     best_actions[change] = actions[change]
+                    #best_h[change] = h[change]
+
+        best_h = f_i.new_empty(best_value.shape[0], self.n_agents, self.n_actions)
+        for na1 in range(self.n_agents):
+            for na2 in range(self.n_actions):
+                actions[0][na1][0] = na2
+                best_h[0][na1][na2] = self.tot_values(in_f_i, in_f_ij, actions)
         # Return the greedy actions and the corresponding message output averaged across agents
         if not self.anytime or len(self.edges_from) == 0 or self.iterations <= 0:
             _, best_actions = utils.max(dim=-1, keepdim=True)
-        ###
-        return best_actions
+        return best_actions, best_h
 
     def greedy(self, f_i, f_ij, w_1, b_1, w_final, available_actions=None):
+        import pdb; pdb.set_trace()
         emb_dim = self.mixer.embed_dim
         w_1_i = w_1[:, :self.n_agents, :]
         w_1_ij = w_1[:, self.n_agents:, :]
@@ -202,7 +176,7 @@ class CgmixMAC(BasicMAC):
                     res += self.leaky_alpha * (b_1[:, 0, i] * w_final[: ,i, 0])
             f_i_emb = f_i * k_i.unsqueeze(dim=-1)
             f_ij_emb = f_ij * k_ij.unsqueeze(dim=-1).unsqueeze(dim=-1)
-            actions = self.max_sum(f_i_emb, f_ij_emb, available_actions)
+            actions, _ = self.max_sum(f_i_emb, f_ij_emb, available_actions)
             res += self.tot_values(f_i_emb, f_ij_emb, actions)
             change = res > best_value
             best_value[change] = res[change]
@@ -211,7 +185,43 @@ class CgmixMAC(BasicMAC):
         return best_actions
 
 
+    def greedy_hier(self, f_i, f_ij, w_1, b_1, w_final, available_actions=None):
+        emb_dim = self.mixer.embed_dim
+        w_1_i = w_1[:, :self.n_agents, :]
+        w_1_ij = w_1[:, self.n_agents:, :]
 
+        best_value = f_i.new_empty(f_i.shape[0]).fill_(-float('inf')) #q_max
+        best_actions = f_i.new_empty(f_i.shape[0], self.n_agents, 1, dtype=th.int64, device=f_i.device) #a_max
+
+        h_nodes = f_i.new_zeros(f_i.shape[0], emb_dim, f_i.shape[1], self.n_actions) #?
+        
+        mu = f_i #q_0 #1*8*6
+        
+        
+        for iteration in range(self.iterations):
+            for l in range(emb_dim):
+            
+                best_actions, hnode = self.max_sum(mu * w_1[:,:self.n_agents,l].unsqueeze(dim=-1), f_ij * w_1[:, self.n_agents:, l].unsqueeze(dim=-1).unsqueeze(dim=-1), available_actions=None) #???
+                h_nodes[0][l] = hnode
+
+            #import pdb; pdb.set_trace()
+
+            for i in range(f_i.shape[1]):
+                mu = h_nodes.sum(dim=1) + f_i
+
+        
+            if self.anytime:
+                # Find currently best actions and the (true) value of these actions
+                actions = mu.max(dim=-1, keepdim=True)[1]
+                #h, actions = utils.max(dim=-1, keepdim=True)
+                #import pdb; pdb.set_trace()
+                value = self.tot_values(f_i, f_ij, actions)
+                # Update best_actions only for the batches that have a higher value than best_value
+                change = value > best_value
+                best_value[change] = value[change]
+                best_actions[change] = actions[change]
+
+        return best_actions
 
     # ================== Override methods of BasicMAC to integrate DCG into PyMARL ====================================
 
@@ -220,7 +230,7 @@ class CgmixMAC(BasicMAC):
         state = ep_batch["state"][:, t_ep]
         f_i, f_ij = self.annotations(ep_batch, t_ep)
         w_1, b_1, w_final = self.mixer.get_para(state)
-        actions = self.greedy(f_i, f_ij, w_1, b_1, w_final, avail_actions)
+        actions = self.greedy_hier(f_i, f_ij, w_1, b_1, w_final, avail_actions)
         policy = f_i.new_zeros(ep_batch.batch_size, self.n_agents, self.n_actions)
         policy.scatter_(dim=-1, index=actions, src=policy.new_ones(1, 1, 1).expand_as(actions))
         chosen_actions = self.action_selector.select_action(policy[bs], avail_actions[bs], t_env, test_mode=test_mode)
@@ -236,7 +246,7 @@ class CgmixMAC(BasicMAC):
             if w_1 is None:
                 state = ep_batch["state"][:, t]
                 w_1, b_1, w_final = self.mixer.get_para(state)
-            actions = self.greedy(f_i, f_ij, w_1, b_1, w_final, available_actions=ep_batch['avail_actions'][:, t])
+            actions = self.greedy_hier(f_i, f_ij, w_1, b_1, w_final, available_actions=ep_batch['avail_actions'][:, t])
             return actions
 
     def cuda(self):

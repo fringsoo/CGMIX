@@ -8,13 +8,13 @@ epsilon_finish: 0.05          # Final epsilon for exploration
 epsilon_anneal_time: 50000    # Number of time steps until exploration has finished
 
 # specify runner
-buffer_size: 500              # Number of episodes in the experience replay buffer
+buffer_size: 5000              # Number of episodes in the experience replay buffer
 
 # Specify the CG
 cg_utilities_hidden_dim:      # Hidden layers of utility functions, by default None
 cg_payoffs_hidden_dim:        # Hidden layers of payoff functions, by default None
 msg_anytime: True             # Anytime extension of greedy action selection (Kok and Vlassis, 2006)
-msg_iterations: 4             # Number of message passes in greedy action selection
+msg_iterations: 4 #???             # Number of message passes in greedy action selection
 msg_normalized: True          # Message normalization during greedy action selection (Kok and Vlassis, 2006)
 
 # specify learner, controller and agent
@@ -26,7 +26,9 @@ target_update_interval: 200   # Update the target network every {} episodes
 
 
 mixer: "qmix"                 # QMIX
-mixing_embed_dim: 2           # Hidden dimensions of the state dependent bias function of CGMIX
+mixing_embed_dim: 1           #original qmix: 32 # Hidden dimensions of the state dependent bias function of CGMIX
 hypernet_layers: 2
 hypernet_embed: 64
-leaky_alpha: 0.1
+leaky_alpha: 1
+
+cg_payoff_rank:
