@@ -9,7 +9,7 @@ import math
 
 class QMixer_wos(nn.Module):
     def __init__(self, args):
-        super(QMixer, self).__init__()
+        super(QMixer_wos, self).__init__()
 
         self.args = args
         self.n_agents = args.n_agents
