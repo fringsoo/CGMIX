@@ -13,6 +13,7 @@ class QMixer_wos(nn.Module):
 
         self.args = args
         self.n_agents = args.n_agents
+        self.state_dim = int(np.prod(args.state_shape))
         self.in_dim = int((self.n_agents + self.n_agents ** 2) // 2)
 
         self.embed_dim = args.mixing_embed_dim
