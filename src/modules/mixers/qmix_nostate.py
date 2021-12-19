@@ -38,15 +38,16 @@ class QMixer_wos(nn.Module):
     def forward(self, agent_qs, states):
         bs = agent_qs.size(0)
         agent_qs = agent_qs.view(-1, 1, self.in_dim)
+        bs2 = agent_qs.size(0)
         # First layer
-        w1 = th.abs(self.w1.unsqueeze(0).repeat(bs, 1, 1))
-        b1 = self.b1.unsqueeze(0).repeat(bs, 1, 1)
+        w1 = th.abs(self.w1.unsqueeze(0).repeat(bs2, 1, 1))
+        b1 = self.b1.unsqueeze(0).repeat(bs2, 1, 1)
         print(w1.shape, agent_qs.shape)
         hidden = self.leakyrelu(th.bmm(agent_qs, w1) + b1)# leakyReLU instead of ReLU
         # Second layer
-        w_final = th.abs(self.wfinal.unsqueeze(0).repeat(bs, 1, 1))
+        w_final = th.abs(self.wfinal.unsqueeze(0).repeat(bs2, 1, 1))
         # State-dependent bias
-        v = self.bfinal.unsqueeze(0).repeat(bs, 1, 1)
+        v = self.bfinal.unsqueeze(0).repeat(bs2, 1, 1)
         # Compute final output
         y = th.bmm(hidden, w_final) + v
         # Reshape and return
@@ -54,8 +55,8 @@ class QMixer_wos(nn.Module):
         return q_tot
 
     def get_para(self, states):
+        states = states.reshape(-1, self.state_dim)
         bs = states.size(0)
-        # states = states.reshape(-1, self.state_dim)
         # First layer
         w1 = th.abs(self.w1.unsqueeze(0).repeat(bs, 1, 1))
         b1 = self.b1.unsqueeze(0).repeat(bs, 1, 1)
