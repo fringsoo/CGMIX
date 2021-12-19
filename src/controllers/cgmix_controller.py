@@ -12,6 +12,7 @@ from random import randrange
 from components.episode_buffer import EpisodeBatch
 from modules.mixers.vdn import VDNMixer
 from modules.mixers.qmix import QMixer
+from modules.mixers.qmix_nostate import QMixer_wos
 
 
 class CgmixMAC(BasicMAC):
@@ -40,7 +41,7 @@ class CgmixMAC(BasicMAC):
             if args.mixer == "vdn":
                 self.mixer = VDNMixer()
             elif args.mixer == "qmix":
-                self.mixer = QMixer(args)
+                self.mixer = QMixer_wos(args)
             else:
                 raise ValueError("Mixer {} not recognised.".format(args.mixer))
         self.leaky_alpha = args.leaky_alpha
