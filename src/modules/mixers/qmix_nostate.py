@@ -43,7 +43,7 @@ class QMixer_wos(nn.Module):
         # First layer
         w1 = th.abs(self.w1.unsqueeze(0).repeat(bs2, 1, 1))
         b1 = self.b1.unsqueeze(0).repeat(bs2, 1, 1)
-        print(w1.shape, agent_qs.shape)
+        # print(w1.shape, agent_qs.shape)
         hidden = self.leakyrelu(th.bmm(agent_qs, w1) + b1)# leakyReLU instead of ReLU
         # Second layer
         w_final = th.abs(self.wfinal.unsqueeze(0).repeat(bs2, 1, 1))
