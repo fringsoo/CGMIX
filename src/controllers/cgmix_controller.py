@@ -41,6 +41,8 @@ class CgmixMAC(BasicMAC):
             if args.mixer == "vdn":
                 self.mixer = VDNMixer()
             elif args.mixer == "qmix":
+                self.mixer = QMixer(args)
+            elif args.mixer == "qmix_wos":
                 self.mixer = QMixer_wos(args)
             else:
                 raise ValueError("Mixer {} not recognised.".format(args.mixer))
