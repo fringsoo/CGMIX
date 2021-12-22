@@ -54,9 +54,9 @@ class ToyGameEnv(MultiAgentEnv):
 
         if self.state == 0:
             if actions[0] == 0:
-                self.state = 1
-            else:
                 self.state = 2
+            else:
+                self.state = 1
         elif self.state == 1:
             reward = self.mat1[actions[0], actions[1]]
             
