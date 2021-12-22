@@ -59,7 +59,6 @@ class ToyGameEnv(MultiAgentEnv):
                 self.state = 1
         elif self.state == 1:
             reward = self.mat1[actions[0], actions[1]]
-            
         else:
             reward = self.mat2[actions[0], actions[1]]
             
@@ -83,19 +82,23 @@ class ToyGameEnv(MultiAgentEnv):
 
     def get_obs_agent(self, agent_id):
         """Returns observation for agent_id."""
-        return [0]
+        state = np.zeros(3)
+        state[self.state] = 1
+        return state
 
     def get_obs_size(self):
         """Returns the size of the observation."""
-        return 1
+        return 3
 
     def get_state(self):
         """Returns the global state."""
-        return [self.state]
+        state = np.zeros(3)
+        state[self.state] = 1
+        return state
 
     def get_state_size(self):
         """Returns the size of the global state."""
-        return 1
+        return 3
 
     def get_avail_actions(self):
         """Returns the available actions of all agents in a list."""
