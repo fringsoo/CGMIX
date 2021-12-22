@@ -87,7 +87,7 @@ class ToyGameEnv(MultiAgentEnv):
 
     def get_obs_size(self):
         """Returns the size of the observation."""
-        return self.n_agents
+        return 1
 
     def get_state(self):
         """Returns the global state."""
