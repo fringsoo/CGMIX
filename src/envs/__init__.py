@@ -9,7 +9,8 @@ from .sensors import SensorEnv
 from .hallway import HallwayEnv
 from .disperse import DisperseEnv
 from .gather import GatherEnv
-from .stag_hunt import StagHunt  
+from .stag_hunt import StagHunt
+from .toygame import ToyGameEnv
 
 
 def env_fn(env, **kwargs) -> MultiAgentEnv:
@@ -26,6 +27,8 @@ REGISTRY["disperse"] = partial(env_fn, env=DisperseEnv)
 REGISTRY["gather"] = partial(env_fn, env=GatherEnv)
 REGISTRY["stag_hunt"] = partial(env_fn, env=StagHunt)
 REGISTRY["sc2"] = partial(env_fn, env=StarCraft2Env)
+REGISTRY["toygame"] = partial(env_fn, env=ToyGameEnv)
+
 
 if sys.platform == "linux":
     os.environ.setdefault("SC2PATH",
