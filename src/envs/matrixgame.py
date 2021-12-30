@@ -40,7 +40,7 @@ class MatrixGameEnv(MultiAgentEnv):
 
         self.state = 0
         self.reward1 = 7
-        self.reward2 = [0, -.1, .3, .1, 8]
+        self.reward2 = [0, -.1, .1, .3, 8]
 
     # def step(self, actions, g, graph, test_mode):
     def step(self, actions):
