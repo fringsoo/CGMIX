@@ -65,7 +65,6 @@ class MatrixGameEnv(MultiAgentEnv):
                 if action == 1:
                     cnt += 1
             reward = self.reward2[cnt]
-            reward = self.mat2[actions[0], actions[1]]
             
 
 
