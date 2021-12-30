@@ -49,7 +49,7 @@ class QMixer(nn.Module):
         b1 = self.hyper_b_1(states)
         w1 = w1.view(-1, (self.n_agents + self.n_agents ** 2) // 2, self.embed_dim)
         b1 = b1.view(-1, 1, self.embed_dim)
-        hidden = self.leakyrelu(th.bmm(agent_qs, w1) + b1) # ReLU instead of elu
+        hidden = self.leakyrelu(th.bmm(agent_qs, w1)) # ReLU instead of elu
         #hidden = F.relu(th.bmm(agent_qs, w1) + b1) # ReLU instead of elu
         # Second layer
         w_final = th.abs(self.hyper_w_final(states))
@@ -75,4 +75,4 @@ class QMixer(nn.Module):
         w_1_detach = w1.detach()
         b_1_detach = b1.detach()
         w_final_detach = w_final.detach()
-        return w_1_detach, b_1_detach, w_final_detach
+        return w_1_detach, w_final_detach
