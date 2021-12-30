@@ -10,6 +10,7 @@ from .hallway import HallwayEnv
 from .disperse import DisperseEnv
 from .gather import GatherEnv
 from .toygame import ToyGameEnv
+from .matrixgame import MatrixGameEnv
 
 
 def env_fn(env, **kwargs) -> MultiAgentEnv:
@@ -25,6 +26,7 @@ REGISTRY["hallway"] = partial(env_fn, env=HallwayEnv)
 REGISTRY["disperse"] = partial(env_fn, env=DisperseEnv)
 REGISTRY["gather"] = partial(env_fn, env=GatherEnv)
 REGISTRY["toygame"] = partial(env_fn, env=ToyGameEnv)
+REGISTRY["matrixgame"] = partial(env_fn, env=MatrixGameEnv)
 
 
 if sys.platform == "linux":
