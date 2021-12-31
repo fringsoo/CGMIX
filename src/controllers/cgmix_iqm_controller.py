@@ -206,7 +206,7 @@ class CgmixIqmMAC(BasicMAC):
             #     state = ep_batch["state"][:, t]
             #     w_1, b_1, w_final = self.mixer.get_para(state)
             # actions = self.greedy(f_i, f_ij, w_1, b_1, w_final, available_actions=ep_batch['avail_actions'][:, t])
-            actions = self.max_smu(f_i, f_ij, available_actions=ep_batch['avail_actions'][:, t])
+            actions = self.max_sum(f_i, f_ij, available_actions=ep_batch['avail_actions'][:, t])
             return actions
 
     def cuda(self):
