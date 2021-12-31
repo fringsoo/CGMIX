@@ -13,7 +13,7 @@ from components.episode_buffer import EpisodeBatch
 from modules.mixers.vdn import VDNMixer
 from modules.mixers.qmix import QMixer
 from modules.mixers.qmix_nostate import QMixer_wos
-from modules.mixers.qmix_wb import Qmixer_wb
+from modules.mixers.qmix_wb import QMixer_wb
 
 
 class CgmixIqmMAC(BasicMAC):
