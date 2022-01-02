@@ -32,18 +32,18 @@ class GreedyActionSelector
 
     double is_on[maxL], new_on[maxL];
     double new_value_f[maxN][maxM];
-    double new_value[maxN * 2][maxM];
+    double new_value[maxN * 2][maxM][maxM];
 
-    double dp[maxN][maxM];
+    double dpv[maxN][maxM];
 
     void dfs_dp(int u)
     {
         vi[u] = 1;
         for (int j = 1; j <= m; j++)
-            dp[u][j] = new_value_f[u][j];
+            dpv[u][j] = new_value_f[u][j];
         for (int i = 0; i < Tree_G[u].size(); i++)
         {
-            int v = Tree_G[u][i].first, e = _id[u][v];
+            int v = Tree_G[u][i], e = _id[u][v];
             if (!vi[v])
             {
                 dfs_dp(v);
@@ -51,8 +51,8 @@ class GreedyActionSelector
                 {
                     double max_value = -1e30;
                     for (int k = 1; k <= m; k++)
-                        max_value = max(max_value, dp[v][k] + new_value[e][j][k]);
-                    dp[u][j] += max_value;
+                        max_value = max(max_value, dpv[v][k] + new_value[e][j][k]);
+                    dpv[u][j] += max_value;
                 }
             }
         }
@@ -63,15 +63,15 @@ class GreedyActionSelector
         vi[u] = 1;
         for (int i = 0; i < Tree_G[u].size(); i++)
         {
-            int v = Tree_G[u][i].first, e = _id[u][v];
+            int v = Tree_G[u][i], e = _id[u][v];
             if (!vi[v])
             {
                 double max_value = -1e30;
                 int action_v = 0;
                 for (int j = 1; j <= m; j++)
-                    if (dp[v][j] + new_value[e][action][j] > max_value)
+                    if (dpv[v][j] + new_value[e][action][j] > max_value)
                     {
-                        max_value = dp[v][j] + new_value[e][action][j];
+                        max_value = dpv[v][j] + new_value[e][action][j];
                         action_v = j;
                     }
                 dfs_construct(v, action_v, best_actions);
@@ -192,7 +192,7 @@ class GreedyActionSelector
                         stale[i][j] = true;
         }
 
-        for (int i = 1; i <= l; i++)
+        for (int i = 0; i < len; i++)
             is_on[i] = 1;
         double w_tot = 0;
         for (int i = 0; i < len; i++)
@@ -212,9 +212,9 @@ class GreedyActionSelector
             int action = 0;
             double max_value = -1e30;
             for (int j = 1; j <= m; j++)
-                if (dp[1][j] > max_value)
+                if (dpv[1][j] > max_value)
                 {
-                    max_value = dp[1][j];
+                    max_value = dpv[1][j];
                     action = j;
                 }
             dfs_construct(1, action, best_actions);
@@ -251,5 +251,5 @@ greedy(double *py_f, double *py_g, double *best_actions, double *w_1, double *w_
     int t = (n + n * n) / 2;
 #pragma omp parallel for schedule(dynamic, 1) num_threads(MAX_BATCH_SIZE)
     for (int i = 0; i < bs; i++)
-        solver[i].solve(py_f + i * n * m, py_g + i * n * n * m * m, best_actions + i * n, w_1 + i * t * l, w_final + i * l, n, m, l, alpha)
+        solver[i].solve(py_f + i * n * m, py_g + i * n * n * m * m, best_actions + i * n, w_1 + i * t * l, w_final + i * l, n, m, l, alpha);
 }
