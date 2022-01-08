@@ -203,12 +203,13 @@ class GreedyActionSelector
         for (int l = 0; l < len; l++){
             cnt = 0;
             for (int i = 0; i < n; i++)
-                        for (int j = i + 1; j < n; j++){ if (_id[i][j] > 0)
-                            for (int k = 0; k < m; k++)
-                                for(int ll = 0; ll < m; ll++){
-                                    new_value_f[i + 1][k + 1] += value_f(i + 1, k + 1) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + i];
-                                    new_value[_id[i][j]][k + 1][ll + 1] = value(i + 1, j + 1, k + 1, ll + 1) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt];
-                                }
+                        for (int j = i + 1; j < n; j++){
+                            if (_id[i][j] > 0)
+                                for (int k = 0; k < m; k++)
+                                    for(int ll = 0; ll < m; ll++){
+                                        new_value_f[i + 1][k + 1] += value_f(i + 1, k + 1) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + i] / n;
+                                        new_value[_id[i][j]][k + 1][ll + 1] = value(i + 1, j + 1, k + 1, ll + 1) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt] / ((n * n - n) / 2);
+                                    }
                             cnt ++;
                         }
             is_on[l] = new_on[l];
@@ -252,8 +253,8 @@ class GreedyActionSelector
                                 for (int j = i + 1; j < n; j++){ if (_id[i][j] > 0)
                                     for (int k = 0; k < m; k++)
                                         for(int ll = 0; ll < m; ll++){
-                                            new_value_f[i + 1][k + 1] += value_f(i + 1, k + 1) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + i];
-                                            new_value[_id[i][j]][k + 1][ll + 1] = value(i + 1, j + 1, k + 1, ll + 1) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt];
+                                            new_value_f[i + 1][k + 1] += value_f(i + 1, k + 1) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + i] / n;
+                                            new_value[_id[i][j]][k + 1][ll + 1] = value(i + 1, j + 1, k + 1, ll + 1) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt] / ((n * n - n) / 2);
                                         }
                                     cnt ++;
                                 }
