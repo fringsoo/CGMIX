@@ -237,6 +237,7 @@ class GreedyActionSelector
                                     new_value_f[i][k] += value_f(i + 1, k + 1) * (new_on[l] - is_on[l]) * (w_final[l] / w_tot);
                                     new_value[_id[i][j]][k][l] = value(i + 1, j + 1, k + 1, l + 1) * (new_on[l] - is_on[l]) * (w_final[l] / w_tot);
                                 }
+                    is_on[l] = new_on[l];
                 }
             }
         }
