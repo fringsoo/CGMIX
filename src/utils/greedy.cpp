@@ -223,6 +223,8 @@ class GreedyActionSelector
                 }
             memset(vi, 0, sizeof(vi));
             dfs_construct(1, action, best_actions);
+            for (int i = 1; i <= n; i++)
+                printf("action[%d] = %d", i, best_actions[i - 1]);
             for (int l = 0; l < len; l++){
                 double v = bias[l];
                 for(int i = 1; i <= n; i++)
