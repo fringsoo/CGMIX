@@ -45,7 +45,7 @@ class GreedyActionSelector:
         best_actions = th.tensor(copy.deepcopy(_best_actions), dtype=th.int64, device=device)
 
         # best_actions =
-        print(best_actions)
+        print('actions = ', best_actions)
 
         return best_actions
 
