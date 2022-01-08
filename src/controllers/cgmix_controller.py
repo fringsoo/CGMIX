@@ -144,8 +144,8 @@ class CgmixMAC(BasicMAC):
             _, best_actions = utils.max(dim=-1, keepdim=True)
         return best_actions
 
-    def greedy(self, f_i, f_ij, w_1, w_final, available_actions=None):
-        return self.greedy_action_selector.solve(f_i, f_ij, w_1, w_final, avail_actions=available_actions, device=f_i.device)
+    def greedy(self, f_i, f_ij, w_1, w_final, bias available_actions=None):
+        return self.greedy_action_selector.solve(f_i, f_ij, w_1, w_final, bias, avail_actions=available_actions, device=f_i.device)
         emb_dim = self.mixer.embed_dim
         w_1_i = w_1[:, :self.n_agents, :]
         w_1_ij = w_1[:, self.n_agents:, :]
@@ -189,8 +189,8 @@ class CgmixMAC(BasicMAC):
         avail_actions = ep_batch["avail_actions"][:, t_ep]
         state = ep_batch["state"][:, t_ep]
         f_i, f_ij = self.annotations(ep_batch, t_ep)
-        w_1, w_final = self.mixer.get_para(state)
-        actions = self.greedy(f_i, f_ij, w_1, w_final, avail_actions)
+        w_1, w_final, bias = self.mixer.get_para(state)
+        actions = self.greedy(f_i, f_ij, w_1, w_final, bias, avail_actions)
         policy = f_i.new_zeros(ep_batch.batch_size, self.n_agents, self.n_actions)
         policy.scatter_(dim=-1, index=actions, src=policy.new_ones(1, 1, 1).expand_as(actions))
         chosen_actions = self.action_selector.select_action(policy[bs], avail_actions[bs], t_env, test_mode=test_mode)
@@ -205,8 +205,8 @@ class CgmixMAC(BasicMAC):
             f_i, f_ij = self.annotations(ep_batch, t)
             if w_1 is None:
                 state = ep_batch["state"][:, t]
-                w_1, w_final = self.mixer.get_para(state)
-            actions = self.greedy(f_i, f_ij, w_1, w_final, available_actions=ep_batch['avail_actions'][:, t])
+                w_1, w_final, bias = self.mixer.get_para(state)
+            actions = self.greedy(f_i, f_ij, w_1, w_final, bias, available_actions=ep_batch['avail_actions'][:, t])
             return actions
 
     def cuda(self):
