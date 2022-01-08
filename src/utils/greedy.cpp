@@ -130,6 +130,10 @@ class GreedyActionSelector
         int tmp = 0;
         memset(pool, 0, sizeof(pool)), tp = pool;
         memset(fst, 0, sizeof(fst));
+        
+        memset(_id, 0, sizeof(_id));
+        for(int i = 0; i <= n; i++) Tree_G[i].clear();
+        memset(vi, 0, sizeof(vi));
         for (int i = 1; i <= n; ++i)
             e[i] = tp, add_edge(0, i), dp(e[i], i);
         for (int i = 1; i <= n; ++i)
@@ -206,8 +210,7 @@ class GreedyActionSelector
                     }
         for (int iter = 0; iter < 50; iter++){ //// 50 times
 
-            for(int i = 0; i < n; i++)
-                vi[i] = 0;
+            memset(vi, 0, sizeof(vi));
             dfs_dp(1);
             int action = 0;
             double max_value = -1e30;
@@ -217,6 +220,7 @@ class GreedyActionSelector
                     max_value = dpv[1][j];
                     action = j;
                 }
+            memset(vi, 0, sizeof(vi));
             dfs_construct(1, action, best_actions);
             for (int l = 0; l < len; l++){
                 double v = 0;
