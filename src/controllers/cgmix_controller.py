@@ -13,6 +13,7 @@ from components.episode_buffer import EpisodeBatch
 from modules.mixers.vdn import VDNMixer
 from modules.mixers.qmix import QMixer
 from modules.mixers.qmix_nostate import QMixer_wos
+from utils.Heuristic import GreedyActionSelector
 
 
 class CgmixMAC(BasicMAC):
@@ -143,6 +144,7 @@ class CgmixMAC(BasicMAC):
         return best_actions
 
     def greedy(self, f_i, f_ij, w_1, w_final, available_actions=None):
+        return GreedyActionSelector.solve(f_i, f_ij, w_1, w_final, self.leaky_alpha, available_actions, device=f_i.device)
         emb_dim = self.mixer.embed_dim
         w_1_i = w_1[:, :self.n_agents, :]
         w_1_ij = w_1[:, self.n_agents:, :]
