@@ -22,7 +22,7 @@ class GreedyActionSelector
         edge *nxt;
     } pool[maxN * 3], *tp, *fst[maxN], *e[maxN];
     int n, m, len, seq[maxN][maxN][maxM];
-    double *f, *g, *w_1, *w_final, delta[maxN][maxN], maxg2[maxN][maxN], maxg3[maxN][maxN][maxM];
+    double *f, *g, *w_1, *w_final, *bias, delta[maxN][maxN], maxg2[maxN][maxN], maxg3[maxN][maxN][maxM];
     bool stale[maxN][maxN];
 
 
@@ -125,8 +125,8 @@ class GreedyActionSelector
     }
 
     public:
-    void solve(double *py_f, double *py_g, double *best_actions, double *py_w_1, double *py_w_final, int py_n, int py_m, int py_l, double alpha){
-        n = py_n, m = py_m, len = py_l, f = py_f, g = py_g, w_1 = py_w_1, w_final = py_w_final;
+    void solve(double *py_f, double *py_g, double *best_actions, double *py_w_1, double *py_w_final, double *py_bias int py_n, int py_m, int py_l, double alpha){
+        n = py_n, m = py_m, len = py_l, f = py_f, g = py_g, w_1 = py_w_1, w_final = py_w_final, bias = py_bias;
         int tmp = 0;
         memset(pool, 0, sizeof(pool)), tp = pool;
         memset(fst, 0, sizeof(fst));
@@ -223,7 +223,7 @@ class GreedyActionSelector
             memset(vi, 0, sizeof(vi));
             dfs_construct(1, action, best_actions);
             for (int l = 0; l < len; l++){
-                double v = 0;
+                double v = bias[l];
                 for(int i = 1; i <= n; i++)
                     v += value_f(i, int(best_actions[i - 1]) + 1) / n;
                 for(int i = 1; i <= n; i++)
@@ -251,10 +251,10 @@ class GreedyActionSelector
 GreedyActionSelector solver[MAX_BATCH_SIZE];
 
 extern "C" void
-greedy(double *py_f, double *py_g, double *best_actions, double *w_1, double *w_final, int bs, int n, int m, int l, double alpha)
+greedy(double *py_f, double *py_g, double *best_actions, double *w_1, double *w_final, double *bias, int bs, int n, int m, int l, double alpha)
 {
     int t = (n + n * n) / 2;
 #pragma omp parallel for schedule(dynamic, 1) num_threads(MAX_BATCH_SIZE)
     for (int i = 0; i < bs; i++)
-        solver[i].solve(py_f + i * n * m, py_g + i * n * n * m * m, best_actions + i * n, w_1 + i * t * l, w_final + i * l, n, m, l, alpha);
+        solver[i].solve(py_f + i * n * m, py_g + i * n * n * m * m, best_actions + i * n, w_1 + i * t * l, w_final + i * l, bias + i * l, n, m, l, alpha);
 }
