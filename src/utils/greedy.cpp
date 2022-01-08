@@ -36,6 +36,8 @@ class GreedyActionSelector
 
     double dpv[maxN][maxM];
 
+    int cnt;
+
     void dfs_dp(int u)
     {
         vi[u] = 1;
@@ -199,13 +201,16 @@ class GreedyActionSelector
         for (int i = 0; i < len; i++)
             is_on[i] = 0, new_on[i] = 1.;
         for (int l = 0; l < len; l++){
+            cnt = 0;
             for (int i = 0; i < n; i++)
-                        for (int j = i + 1; j < n; j++) if (_id[i][j] > 0)
+                        for (int j = i + 1; j < n; j++){ if (_id[i][j] > 0)
                             for (int k = 0; k < m; k++)
                                 for(int ll = 0; ll < m; ll++){
-                                    new_value_f[i + 1][k + 1] += value_f(i + 1, k + 1) * (new_on[l] - is_on[l]) * w_final[l];
-                                    new_value[_id[i][j]][k + 1][ll + 1] = value(i + 1, j + 1, k + 1, ll + 1) * (new_on[l] - is_on[l]) * w_final[l];
+                                    new_value_f[i + 1][k + 1] += value_f(i + 1, k + 1) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + i];
+                                    new_value[_id[i][j]][k + 1][ll + 1] = value(i + 1, j + 1, k + 1, ll + 1) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt];
                                 }
+                            cnt ++;
+                        }
             is_on[l] = new_on[l];
         }
 
@@ -228,21 +233,27 @@ class GreedyActionSelector
             for (int l = 0; l < len; l++){
                 double v = bias[l];
                 for(int i = 1; i <= n; i++)
-                    v += value_f(i, int(best_actions[i - 1]) + 1) / n;
+                    v += value_f(i, int(best_actions[i - 1]) + 1) / n * w_1[(n * n + n) / 2 * l + i - 1];
+                cnt = 0;
                 for(int i = 1; i <= n; i++)
-                    for(int j = i + 1; j <= n; j++)
-                        v += value(i, j, int(best_actions[i - 1]) + 1, int(best_actions[j - 1]) + 1) / ((n * n - n) / 2);
+                    for(int j = i + 1; j <= n; j++){
+                        v += value(i, j, int(best_actions[i - 1]) + 1, int(best_actions[j - 1]) + 1) / ((n * n - n) / 2) * w_1[(n * n + n) / 2 * l + n + cnt];
+                        cnt ++;
+                    }
                 if (v < 0)
                     new_on[l] = alpha;
                 else
                     new_on[l] = 1.0;
                 if (fabs(is_on[l] - new_on[l]) > 1e-6){
+                    cnt = 0;
                     for (int i = 0; i < n; i++)
-                        for (int j = i + 1; j < n; j++) if (_id[i][j] > 0)
-                            for (int k = 0; k < m; k++)
-                                for(int ll = 0; ll < m; ll++){
-                                    new_value_f[i + 1][k + 1] += value_f(i + 1, k + 1) * (new_on[l] - is_on[l]) * w_final[l];
-                                    new_value[_id[i][j]][k + 1][ll + 1] = value(i + 1, j + 1, k + 1, ll + 1) * (new_on[l] - is_on[l]) * w_final[l];
+                                for (int j = i + 1; j < n; j++){ if (_id[i][j] > 0)
+                                    for (int k = 0; k < m; k++)
+                                        for(int ll = 0; ll < m; ll++){
+                                            new_value_f[i + 1][k + 1] += value_f(i + 1, k + 1) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + i];
+                                            new_value[_id[i][j]][k + 1][ll + 1] = value(i + 1, j + 1, k + 1, ll + 1) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt];
+                                        }
+                                    cnt ++;
                                 }
                     is_on[l] = new_on[l];
                 }
