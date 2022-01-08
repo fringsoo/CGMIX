@@ -202,17 +202,20 @@ class GreedyActionSelector
             is_on[i] = 0, new_on[i] = 1.;
         for (int l = 0; l < len; l++){
             cnt = 0;
-            for (int i = 1; i <= n; i++)
-                                for (int j = i + 1; j <= n; j++){ if (_id[i][j] > 0)
-                                    for (int k = 1; k <= m; k++)
-                                        for(int ll = 1; ll <= m; ll++){
-                                            new_value_f[i][k] += value_f(i, k);
-                                            new_value[_id[i][j]][k][ll] = value(i, j, k, ll);
-                                            // new_value_f[i][k] += value_f(i, k) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + i - 1];
-                                            // new_value[_id[i][j]][k][ll] = value(i, j, k, ll) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt];
-                                        }
-                                    cnt ++;
-                                }
+            for (int i = 1; i <= n; i++){
+                for (int k = 1; k <= m; k++){
+                    // new_value_f[i][k] += value_f(i, k);
+                    new_value_f[i][k] += value_f(i, k) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + i - 1];
+                }
+                for (int j = i + 1; j <= n; j++){ if (_id[i][j] > 0)
+                    for (int k = 1; k <= m; k++)
+                        for(int ll = 1; ll <= m; ll++){
+                            // new_value[_id[i][j]][k][ll] = value(i, j, k, ll);
+                            new_value[_id[i][j]][k][ll] = value(i, j, k, ll) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt];
+                        }
+                    cnt ++;
+                }
+            }
             is_on[l] = new_on[l];
         }
 
@@ -250,15 +253,18 @@ class GreedyActionSelector
                     new_on[l] = 1.0;
                 if (fabs(is_on[l] - new_on[l]) > 1e-6){
                     cnt = 0;
-                    for (int i = 1; i <= n; i++)
-                                for (int j = i + 1; j <= n; j++){ if (_id[i][j] > 0)
-                                    for (int k = 1; k <= m; k++)
-                                        for(int ll = 1; ll <= m; ll++){
-                                            // new_value_f[i][k] += value_f(i, k) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + i - 1];
-                                            // new_value[_id[i][j]][k][ll] = value(i, j, k, ll) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt];
-                                        }
-                                    cnt ++;
+                    for (int i = 1; i <= n; i++){
+                        for (int k = 1; k <= m; k++){
+                            new_value_f[i][k] += value_f(i, k) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + i - 1];
+                        }
+                        for (int j = i + 1; j <= n; j++){ if (_id[i][j] > 0)
+                            for (int k = 1; k <= m; k++)
+                                for(int ll = 1; ll <= m; ll++){
+                                    new_value[_id[i][j]][k][ll] = value(i, j, k, ll) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt];
                                 }
+                            cnt ++;
+                        }
+                    }
                     is_on[l] = new_on[l];
                     has_different = true;
                 }
