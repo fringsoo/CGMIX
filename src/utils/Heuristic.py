@@ -29,11 +29,14 @@ class GreedyActionSelector:
         _w_final = np.array(copy.deepcopy(w_final).cpu()).astype(ctypes.c_double)
         _best_actions = np.zeros((bs, n, 1)).astype(ctypes.c_double)
 
+        print(_f, _g, _w_1, w_final)
+
         self.greedy_lib.greedy(c_ptr(_f), c_ptr(_g), c_ptr(_best_actions), c_ptr(_w_1), c_ptr(_w_final), bs, n, m, l, c_double(leaky_alpha))
 
         best_actions = th.tensor(copy.deepcopy(_best_actions), dtype=th.int64, device=device)
 
         # best_actions =
+        print(best_actions)
 
         return best_actions
 
