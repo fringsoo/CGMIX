@@ -125,7 +125,7 @@ class GreedyActionSelector
     }
 
     public:
-    void solve(double *py_f, double *py_g, double *best_actions, double *py_w_1, double *py_w_final, double *py_bias int py_n, int py_m, int py_l, double alpha){
+    void solve(double *py_f, double *py_g, double *best_actions, double *py_w_1, double *py_w_final, double *py_bias, int py_n, int py_m, int py_l, double alpha){
         n = py_n, m = py_m, len = py_l, f = py_f, g = py_g, w_1 = py_w_1, w_final = py_w_final, bias = py_bias;
         int tmp = 0;
         memset(pool, 0, sizeof(pool)), tp = pool;
