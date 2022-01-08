@@ -145,7 +145,7 @@ class CgmixMAC(BasicMAC):
         return best_actions
 
     def greedy(self, f_i, f_ij, w_1, w_final, available_actions=None):
-        return self.greedy_action_selector.solve(f_i, f_ij, w_1, w_final, self.leaky_alpha, avail_actions=available_actions, device=f_i.device)
+        return self.greedy_action_selector.solve(f_i, f_ij, w_1, w_final, avail_actions=available_actions, device=f_i.device)
         emb_dim = self.mixer.embed_dim
         w_1_i = w_1[:, :self.n_agents, :]
         w_1_ij = w_1[:, self.n_agents:, :]
