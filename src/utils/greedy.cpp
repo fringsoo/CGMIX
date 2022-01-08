@@ -207,12 +207,13 @@ class GreedyActionSelector
                     // new_value_f[i][k] += value_f(i, k);
                     new_value_f[i][k] += value_f(i, k) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + i - 1];
                 }
-                for (int j = i + 1; j <= n; j++){ if (_id[i][j] > 0)
-                    for (int k = 1; k <= m; k++)
-                        for(int ll = 1; ll <= m; ll++){
-                            // new_value[_id[i][j]][k][ll] = value(i, j, k, ll);
-                            new_value[_id[i][j]][k][ll] = value(i, j, k, ll) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt];
-                        }
+                for (int j = i + 1; j <= n; j++){
+                    if (_id[i][j] > 0)
+                        for (int k = 1; k <= m; k++)
+                            for(int ll = 1; ll <= m; ll++){
+                                // new_value[_id[i][j]][k][ll] = value(i, j, k, ll);
+                                new_value[_id[i][j]][k][ll] = value(i, j, k, ll) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt];
+                            }
                     cnt ++;
                 }
             }
@@ -257,11 +258,12 @@ class GreedyActionSelector
                         for (int k = 1; k <= m; k++){
                             new_value_f[i][k] += value_f(i, k) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + i - 1];
                         }
-                        for (int j = i + 1; j <= n; j++){ if (_id[i][j] > 0)
-                            for (int k = 1; k <= m; k++)
-                                for(int ll = 1; ll <= m; ll++){
-                                    new_value[_id[i][j]][k][ll] = value(i, j, k, ll) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt];
-                                }
+                        for (int j = i + 1; j <= n; j++){
+                            if (_id[i][j] > 0)
+                                for (int k = 1; k <= m; k++)
+                                    for(int ll = 1; ll <= m; ll++){
+                                        new_value[_id[i][j]][k][ll] = value(i, j, k, ll) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt];
+                                    }
                             cnt ++;
                         }
                     }
