@@ -197,14 +197,14 @@ class GreedyActionSelector
         }
 
         for (int i = 0; i < len; i++)
-            is_on[i] = alpha, new_on[i] = 1.;
+            is_on[i] = 0, new_on[i] = 1.;
         for (int l = 0; l < len; l++){
             for (int i = 0; i < n; i++)
                         for (int j = i + 1; j < n; j++) if (_id[i][j] > 0)
                             for (int k = 0; k < m; k++)
                                 for(int ll = 0; ll < m; ll++){
-                                    new_value_f[i][k] += value_f(i + 1, k + 1) * (new_on[l] - is_on[l]) * w_final[l];
-                                    new_value[_id[i][j]][k][ll] = value(i + 1, j + 1, k + 1, ll + 1) * (new_on[l] - is_on[l]) * w_final[l];
+                                    new_value_f[i + 1][k + 1] += value_f(i + 1, k + 1) * (new_on[l] - is_on[l]) * w_final[l];
+                                    new_value[_id[i][j]][k + 1][ll + 1] = value(i + 1, j + 1, k + 1, ll + 1) * (new_on[l] - is_on[l]) * w_final[l];
                                 }
             is_on[l] = new_on[l];
         }
@@ -241,8 +241,8 @@ class GreedyActionSelector
                         for (int j = i + 1; j < n; j++) if (_id[i][j] > 0)
                             for (int k = 0; k < m; k++)
                                 for(int ll = 0; ll < m; ll++){
-                                    new_value_f[i][k] += value_f(i + 1, k + 1) * (new_on[l] - is_on[l]) * w_final[l];
-                                    new_value[_id[i][j]][k][ll] = value(i + 1, j + 1, k + 1, ll + 1) * (new_on[l] - is_on[l]) * w_final[l];
+                                    new_value_f[i + 1][k + 1] += value_f(i + 1, k + 1) * (new_on[l] - is_on[l]) * w_final[l];
+                                    new_value[_id[i][j]][k + 1][ll + 1] = value(i + 1, j + 1, k + 1, ll + 1) * (new_on[l] - is_on[l]) * w_final[l];
                                 }
                     is_on[l] = new_on[l];
                 }
