@@ -41,7 +41,7 @@ class CgmixIqmMAC(BasicMAC):
         if args.mixer is not None:
             if args.mixer == "vdn":
                 self.mixer = VDNMixer()
-            elif args.mixer == "qmix_wb":
+            elif args.mixer == "qmix":
                 self.mixer = QMixer(args)
             elif args.mixer == "qmix_wos":
                 self.mixer = QMixer_wos(args)
