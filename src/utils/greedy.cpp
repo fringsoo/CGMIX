@@ -228,8 +228,8 @@ class GreedyActionSelector
                 }
             memset(vi, 0, sizeof(vi));
             dfs_construct(1, action, best_actions);
-            for (int i = 1; i <= n; i++)
-                printf("action[%d] = %.1lf\n", i, best_actions[i - 1]);
+            // for (int i = 1; i <= n; i++)
+            //     printf("action[%d] = %.1lf\n", i, best_actions[i - 1]);
             
             bool has_different = false;
             for (int l = 0; l < len; l++){
