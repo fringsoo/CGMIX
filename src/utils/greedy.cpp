@@ -235,11 +235,11 @@ class GreedyActionSelector
             for (int l = 0; l < len; l++){
                 double v = bias[l];
                 for(int i = 1; i <= n; i++)
-                    v += value_f(i, int(best_actions[i - 1]) + 1) / n * w_1[(n * n + n) / 2 * l + i - 1];
+                    v += value_f(i, int(best_actions[i - 1]) + 1) * w_1[(n * n + n) / 2 * l + i - 1];
                 cnt = 0;
                 for(int i = 1; i <= n; i++)
                     for(int j = i + 1; j <= n; j++){
-                        v += value(i, j, int(best_actions[i - 1]) + 1, int(best_actions[j - 1]) + 1) / ((n * n - n) / 2) * w_1[(n * n + n) / 2 * l + n + cnt];
+                        v += value(i, j, int(best_actions[i - 1]) + 1, int(best_actions[j - 1]) + 1) * w_1[(n * n + n) / 2 * l + n + cnt];
                         cnt ++;
                     }
                 if (v < 0)
@@ -252,8 +252,8 @@ class GreedyActionSelector
                                 for (int j = i + 1; j <= n; j++){ if (_id[i][j] > 0)
                                     for (int k = 1; k <= m; k++)
                                         for(int ll = 1; ll <= m; ll++){
-                                            new_value_f[i][k] += value_f(i, k) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + i - 1] / n;
-                                            new_value[_id[i][j]][k][ll] = value(i, j, k, ll) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt] / ((n * n - n) / 2);
+                                            new_value_f[i][k] += value_f(i, k) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + i - 1];
+                                            new_value[_id[i][j]][k][ll] = value(i, j, k, ll) * (new_on[l] - is_on[l]) * w_final[l] * w_1[(n * n + n) / 2 * l + n + cnt];
                                         }
                                     cnt ++;
                                 }

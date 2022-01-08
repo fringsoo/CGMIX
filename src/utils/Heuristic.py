@@ -17,7 +17,7 @@ def preprocess_values(f, _g, avail_actions):
     f[avail_actions == 0] = -9999999
     g[avail_actions.unsqueeze(1).unsqueeze(-2).repeat(1, n_agents, 1, n_actions, 1) == 0] = -9999999
     g[avail_actions.unsqueeze(2).unsqueeze(-1).repeat(1, 1, n_agents, 1, n_actions) == 0] = -9999999
-    return f, g
+    return f / n_agents, g / _g.shape[1]
 
 class GreedyActionSelector:
     def __init__(self, args):
