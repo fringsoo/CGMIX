@@ -38,7 +38,8 @@ def run(_run, _config, _log):
     #unique_token = _config['checkpoint_path'].split('/')[-2]
     args.unique_token = unique_token
     if args.use_tensorboard:
-        tb_logs_direc = os.path.join(dirname(dirname(abspath(__file__))), "results.toy", "tb_logs")
+        #tb_logs_direc = os.path.join(dirname(dirname(abspath(__file__))), "results.toy", "tb_logs")
+        tb_logs_direc = os.path.join(dirname(dirname(abspath(__file__))), args.local_results_path, "tb_logs")
         tb_exp_direc = os.path.join(tb_logs_direc, "{}").format(unique_token)
         logger.setup_tb(tb_exp_direc)
 

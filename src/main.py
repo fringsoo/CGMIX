@@ -20,7 +20,7 @@ ex = Experiment("pymarl")
 ex.logger = logger
 ex.captured_out_filter = apply_backspaces_and_linefeeds
 
-results_path = os.path.join(dirname(dirname(abspath(__file__))), "results.toy")
+#results_path = os.path.join(dirname(dirname(abspath(__file__))), "results")
 
 
 @ex.main
@@ -92,8 +92,13 @@ if __name__ == '__main__':
     ex.add_config(config_dict)
 
     # Save to disk by default for sacred
-    logger.info("Saving to FileStorageObserver in results.toy/sacred.")
-    file_obs_path = os.path.join(results_path, "sacred")
+    #logger.info("Saving to FileStorageObserver in results.toy/sacred.")
+    #file_obs_path = os.path.join(results_path, "sacred")
+    if not os.path.exists(config_dict['local_results_path']):
+        os.mkdir(config_dict['local_results_path'])
+    logger.info("Saving to FileStorageObserver in " + config_dict['local_results_path'] + "/sacred.")
+    file_obs_path = os.path.join(config_dict['local_results_path'], "sacred")
+    
     ex.observers.append(FileStorageObserver.create(file_obs_path)) #remove this line for an existing model
 
     ex.run_commandline(params)
