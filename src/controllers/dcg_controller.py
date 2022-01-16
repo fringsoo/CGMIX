@@ -15,6 +15,7 @@ class DeepCoordinationGraphMAC(BasicMAC):
     # ================================ Constructors ===================================================================
 
     def __init__(self, scheme, groups, args):
+        
         super().__init__(scheme, groups, args)
         self.n_actions = args.n_actions
         self.payoff_rank = args.cg_payoff_rank

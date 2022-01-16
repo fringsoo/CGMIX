@@ -11,6 +11,7 @@ from .disperse import DisperseEnv
 from .gather import GatherEnv
 from .stag_hunt import StagHunt
 from .toygame import ToyGameEnv
+from .matrixgame import MatrixGameEnv
 
 
 def env_fn(env, **kwargs) -> MultiAgentEnv:
@@ -28,6 +29,7 @@ REGISTRY["gather"] = partial(env_fn, env=GatherEnv)
 REGISTRY["stag_hunt"] = partial(env_fn, env=StagHunt)
 REGISTRY["sc2"] = partial(env_fn, env=StarCraft2Env)
 REGISTRY["toygame"] = partial(env_fn, env=ToyGameEnv)
+REGISTRY["matrixgame"] = partial(env_fn, env=MatrixGameEnv)
 
 
 if sys.platform == "linux":

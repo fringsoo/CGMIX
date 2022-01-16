@@ -18,3 +18,5 @@ REGISTRY["low_rank_q"] = LowRankMAC
 from .cgmix_controller import CgmixMAC
 REGISTRY['cgmix_mac'] = CgmixMAC
 
+from .cgmix_iqm_controller import CgmixIqmMAC
+REGISTRY['cgmix_iqm_mac'] = CgmixIqmMAC

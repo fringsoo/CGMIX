@@ -13,10 +13,10 @@ from components.episode_buffer import EpisodeBatch
 from modules.mixers.vdn import VDNMixer
 from modules.mixers.qmix import QMixer
 from modules.mixers.qmix_nostate import QMixer_wos
-from utils.Heuristic import GreedyActionSelector
+from modules.mixers.qmix_wb import QMixer_wb
 
 
-class CgmixMAC(BasicMAC):
+class CgmixIqmMAC(BasicMAC):
     """ Multi-agent controller for a Deep Coordination Graph (DCG, Boehmer et al., 2020)"""
 
     # ================================ Constructors ===================================================================
@@ -24,24 +24,12 @@ class CgmixMAC(BasicMAC):
     def __init__(self, scheme, groups, args):
         super().__init__(scheme, groups, args)
         self.n_actions = args.n_actions
-
-        #'''
-        self.payoff_rank = args.cg_payoff_rank
-        self.payoff_decomposition = isinstance(self.payoff_rank, int) and self.payoff_rank > 0
-        #'''
-
         self.iterations = args.msg_iterations
         self.normalized = args.msg_normalized
         self.anytime = args.msg_anytime
         # Create neural networks for utilities and payoff functions
         self.utility_fun = self._mlp(self.args.rnn_hidden_dim, args.cg_utilities_hidden_dim, self.n_actions)
         payoff_out = self.n_actions ** 2
-        
-        #'''
-        payoff_out = 2 * self.payoff_rank * self.n_actions if self.payoff_decomposition else self.n_actions ** 2
-        self.payoff_out = payoff_out
-        #'''
-    
         self.payoff_fun = self._mlp(2 * self.args.rnn_hidden_dim, args.cg_payoffs_hidden_dim, payoff_out)
         # Create the edge information of the CG
         self.edges_from = None
@@ -60,7 +48,6 @@ class CgmixMAC(BasicMAC):
             else:
                 raise ValueError("Mixer {} not recognised.".format(args.mixer))
         self.leaky_alpha = args.leaky_alpha
-        self.greedy_action_selector = GreedyActionSelector(args)
 
     # ================== DCG Core Methods =============================================================================
 
@@ -85,29 +72,7 @@ class CgmixMAC(BasicMAC):
                            th.cat([hidden_states[:, self.edges_to], hidden_states[:, self.edges_from]], dim=-1)], dim=0)
         # Compute the payoff matrices for all edges (and flipped counterparts)
         output = self.payoff_fun(inputs)
-        
-        #output = th.zeros_like(output)
-        
-
-
-        
-        if self.payoff_decomposition:
-            # If the payoff matrix is decomposed, we need to de-decompose it here: ...
-            dim = list(output.shape[:-1])
-            # ... reshape output into left and right bases of the matrix, ...
-            output = output.view(*[np.prod(dim) * self.payoff_rank, 2, n])
-            # ... outer product between left and right bases, ...
-            output = th.bmm(output[:, 0, :].unsqueeze(dim=-1), output[:, 1, :].unsqueeze(dim=-2))
-            # ... and finally sum over the above outer products of payoff_rank base-pairs.
-            output = output.view(*(dim + [self.payoff_rank, n, n])).sum(dim=-3)
-        else:
-            # Without decomposition, the payoff_fun output must only be reshaped
-
-            output = output.view(*(list(output.shape[:-1]) + [n, n]))
-        
-
-        #output = output.view(*(list(output.shape[:-1]) + [n, n]))
-        
+        output = output.view(*(list(output.shape[:-1]) + [n, n]))
         # The output of the backward messages must be transposed
         output[1] = output[1].transpose(dim0=-2, dim1=-1)
         # Compute the symmetric average of each edge with it's flipped counterpart
@@ -147,7 +112,6 @@ class CgmixMAC(BasicMAC):
         best_actions = f_i.new_empty(best_value.shape[0], self.n_agents, 1, dtype=th.int64, device=f_i.device)
         # Without edges (or iterations), CG would be the same as VDN: mean(f_i)
         utils = f_i
-        ###
         # Perform message passing for self.iterations: [0] are messages to *edges_to*, [1] are messages to *edges_from*
         if len(self.edges_from) > 0 and self.iterations > 0:
             messages = f_i.new_zeros(2, f_i.shape[0], len(self.edges_from), self.n_actions)
@@ -177,11 +141,9 @@ class CgmixMAC(BasicMAC):
         # Return the greedy actions and the corresponding message output averaged across agents
         if not self.anytime or len(self.edges_from) == 0 or self.iterations <= 0:
             _, best_actions = utils.max(dim=-1, keepdim=True)
-        ###
         return best_actions
 
-    def greedy(self, f_i, f_ij, w_1, w_final, bias, available_actions=None):
-        return self.greedy_action_selector.solve(f_i, f_ij, w_1, w_final, bias, avail_actions=available_actions, device=f_i.device)
+    def greedy(self, f_i, f_ij, w_1, b_1, w_final, available_actions=None):
         emb_dim = self.mixer.embed_dim
         w_1_i = w_1[:, :self.n_agents, :]
         w_1_ij = w_1[:, self.n_agents:, :]
@@ -201,11 +163,11 @@ class CgmixMAC(BasicMAC):
                 if use_relu[i] > 0.5:
                     k_i += w_1_i[:, :, i] * w_final[:, i]
                     k_ij += w_1_ij[:, :, i] * w_final[:, i]
-                    # res += (b_1[:, 0, i] * w_final[: ,i, 0])
+                    res += (b_1[:, 0, i] * w_final[: ,i, 0])
                 else:
                     k_i += self.leaky_alpha * w_1_i[:, :, i] * w_final[:, i]
                     k_ij += self.leaky_alpha * w_1_ij[:, :, i] * w_final[:, i]
-                    # res += self.leaky_alpha * (b_1[:, 0, i] * w_final[: ,i, 0])
+                    res += self.leaky_alpha * (b_1[:, 0, i] * w_final[: ,i, 0])
             f_i_emb = f_i * k_i.unsqueeze(dim=-1)
             f_ij_emb = f_ij * k_ij.unsqueeze(dim=-1).unsqueeze(dim=-1)
             actions = self.max_sum(f_i_emb, f_ij_emb, available_actions)
@@ -225,24 +187,26 @@ class CgmixMAC(BasicMAC):
         avail_actions = ep_batch["avail_actions"][:, t_ep]
         state = ep_batch["state"][:, t_ep]
         f_i, f_ij = self.annotations(ep_batch, t_ep)
-        w_1, w_final, bias = self.mixer.get_para(state)
-        actions = self.greedy(f_i, f_ij, w_1, w_final, bias, avail_actions)
+        # w_1, b_1, w_final = self.mixer.get_para(state)
+        # actions = self.greedy(f_i, f_ij, w_1, b_1, w_final, avail_actions)
+        actions = self.max_sum(f_i, f_ij, avail_actions)
         policy = f_i.new_zeros(ep_batch.batch_size, self.n_agents, self.n_actions)
         policy.scatter_(dim=-1, index=actions, src=policy.new_ones(1, 1, 1).expand_as(actions))
         chosen_actions = self.action_selector.select_action(policy[bs], avail_actions[bs], t_env, test_mode=test_mode)
         return chosen_actions
 
-    def forward(self, ep_batch, t, actions=None, w_1 = None, w_final = None, test_mode=False):
+    def forward(self, ep_batch, t, actions=None, w_1 = None, b_1 = None, w_final = None, test_mode=False):
         if actions is not None:
             f_i, f_ij = self.annotations(ep_batch, t, compute_grads=True, actions=actions)
             q_i, q_ij = self.q_values(f_i, f_ij, actions)
             return q_i, q_ij
         else:
             f_i, f_ij = self.annotations(ep_batch, t)
-            if w_1 is None:
-                state = ep_batch["state"][:, t]
-                w_1, w_final, bias = self.mixer.get_para(state)
-            actions = self.greedy(f_i, f_ij, w_1, w_final, bias, available_actions=ep_batch['avail_actions'][:, t])
+            # if w_1 is None:
+            #     state = ep_batch["state"][:, t]
+            #     w_1, b_1, w_final = self.mixer.get_para(state)
+            # actions = self.greedy(f_i, f_ij, w_1, b_1, w_final, available_actions=ep_batch['avail_actions'][:, t])
+            actions = self.max_sum(f_i, f_ij, available_actions=ep_batch['avail_actions'][:, t])
             return actions
 
     def cuda(self):
