@@ -51,3 +51,47 @@ class GreedyActionSelector:
 
 
         
+    def maxsum_graph(self, f, g, avail_actions, device):
+        f, g = f.detach(), g.detach()
+        f, g = preprocess_values(f, g, avail_actions)
+        bs, n, m = f.shape[0], f.shape[1], f.shape[2]
+
+        _f = np.array(copy.deepcopy(f).cpu()).astype(ctypes.c_double)
+        _g = np.array(copy.deepcopy(g).cpu()).astype(ctypes.c_double)
+        _best_actions = np.zeros((bs, n, 1)).astype(ctypes.c_double)
+
+        # print('new batch')
+        # print(_f, _g, _w_1, w_final, _bias)
+
+        self.greedy_lib.maxsum_graph(c_ptr(_f), c_ptr(_g), c_ptr(_best_actions), bs, n, m)
+
+        best_actions = th.tensor(copy.deepcopy(_best_actions), dtype=th.int64, device=device)
+
+        # best_actions =
+        # print('actions = ', best_actions)
+
+        return best_actions
+    def solve_graph(self, f, g, w_1, w_final, bias, avail_actions, device):
+        f, g = f.detach(), g.detach()
+        w_1, w_final, bias = w_1.detach(), w_final.detach(), bias.detach()
+        f, g = preprocess_values(f, g, avail_actions)
+        bs, n, m, l = f.shape[0], f.shape[1], f.shape[2], w_1.shape[2]
+
+        _f = np.array(copy.deepcopy(f).cpu()).astype(ctypes.c_double)
+        _g = np.array(copy.deepcopy(g).cpu()).astype(ctypes.c_double)
+        _w_1 = np.array(copy.deepcopy(w_1).cpu()).astype(ctypes.c_double)
+        _w_final = np.array(copy.deepcopy(w_final).cpu()).astype(ctypes.c_double)
+        _bias = np.array(copy.deepcopy(bias).cpu()).astype(ctypes.c_double)
+        _best_actions = np.zeros((bs, n, 1)).astype(ctypes.c_double)
+
+        # print('new batch')
+        # print(_f, _g, _w_1, w_final, _bias)
+
+        self.greedy_lib.greedy_graph(c_ptr(_f), c_ptr(_g), c_ptr(_best_actions), c_ptr(_w_1), c_ptr(_w_final), c_ptr(_bias), bs, n, m, l, c_double(self.alpha))
+
+        best_actions = th.tensor(copy.deepcopy(_best_actions), dtype=th.int64, device=device)
+
+        # best_actions =
+        # print('actions = ', best_actions)
+
+        return best_actions

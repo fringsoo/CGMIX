@@ -30,6 +30,7 @@ def cpp_complie(cpp_path, so_path=None):
     else:
         assert so_path[-3:]=='.so'
     os.system('gcc -o '+so_path+' -shared -fPIC '+cpp_path+' -O2 -lstdc++')
+    #os.system('gcc -o '+so_path+' -shared -fPIC '+cpp_path+' -O0 -g -lstdc++')
     return so_path
 
 def load_c_lib(lib_path):

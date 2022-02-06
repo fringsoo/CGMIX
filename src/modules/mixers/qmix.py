@@ -58,7 +58,7 @@ class QMixer(nn.Module):
         return w_1
 
     def forward(self, agent_qs, states):
-        states = th.zeros_like(states)
+        #states = th.zeros_like(states) ###???
         
         bs = agent_qs.size(0)
         states = states.reshape(-1, self.state_dim)
@@ -70,11 +70,18 @@ class QMixer(nn.Module):
         b1 = self.hyper_b_1(states)
         w1 = w1.view(-1, (self.n_agents + self.n_agents ** 2) // 2, self.embed_dim)
         b1 = b1.view(-1, 1, self.embed_dim)
+
+        #w1 = th.ones(bs, (self.n_agents + self.n_agents ** 2) // 2, self.embed_dim)
+        #b1 = th.zeros(bs, 1, self.embed_dim)
+
         hidden = self.leakyrelu(th.bmm(agent_qs, w1) + b1) # ReLU instead of elu
         #hidden = F.relu(th.bmm(agent_qs, w1) + b1) # ReLU instead of elu
         # Second layer
         w_final = th.abs(self.hyper_w_final(states))
         w_final = w_final.view(-1, self.embed_dim, 1)
+
+        #w_final = th.ones_like(bs, self.embed_dim, 1)
+
         # State-dependent bias
         v = self.V(states).view(-1, 1, 1)
         # Compute final output
@@ -90,7 +97,7 @@ class QMixer(nn.Module):
         '''
 
     def get_para(self, states):
-        states = th.zeros_like(states)
+        #states = th.zeros_like(states) ###???
         
         states = states.reshape(-1, self.state_dim)
         # First layer
@@ -103,6 +110,12 @@ class QMixer(nn.Module):
         # Second layer
         w_final = th.abs(self.hyper_w_final(states))
         w_final = w_final.view(-1, self.embed_dim, 1)
+
+        #w1 = th.ones(bs, (self.n_agents + self.n_agents ** 2) // 2, self.embed_dim)
+        #b1 = th.zeros(bs, 1, self.embed_dim)
+        #w_final = th.ones_like(bs, self.embed_dim, 1)
+
+
         w_1_detach = w1.detach()
         b_1_detach = b1.detach()
         w_final_detach = w_final.detach()

@@ -9,7 +9,8 @@ epsilon_anneal_time: 50000    # Number of time steps until exploration has finis
 
 # specify runner
 buffer_size: 5000              # Number of episodes in the experience replay buffer ###???
-local_results_path: "results.5mv6m/cgmix_buffer5k_eps50k_mixemb1_alpha0.5_rnnfeat" # Path for local results ###
+#local_results_path: "results.matrixgame/cgmix_buffer5k_eps50k_heuristicC_mixemb3_alpha0.5_rnnfeat" # Path for local results ###
+local_results_path: "results.5mv6m/cgmix_buffer5k_eps50k_heuristic_mixemb3_alpha0.5_hasstate_rnnfeat" # Path for local results ###
 
 # Specify the CG
 cg_utilities_hidden_dim:      # Hidden layers of utility functions, by default None
@@ -27,8 +28,8 @@ target_update_interval: 200   # Update the target network every {} episodes
 
 
 mixer: "qmix"                 # QMIX
-mixing_embed_dim: 1           #original qmix: 32 # Hidden dimensions of the state dependent bias function of CGMIX
+mixing_embed_dim: 3   #?        #original qmix: 32 # Hidden dimensions of the state dependent bias function of CGMIX
 hypernet_layers: 2
 hypernet_embed: 64
-leaky_alpha: 0.5
+leaky_alpha: 0.5 #?
 cg_payoff_rank:

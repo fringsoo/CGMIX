@@ -133,6 +133,9 @@ class CgmixMAC(BasicMAC):
         q_i, q_ij = self.q_values(f_i, f_ij, actions)
         return q_i.sum(dim=-1) + q_ij.sum(dim=-1)
 
+    def max_sum_C_graph(self, f_i, f_ij, available_actions=None):
+        return self.greedy_action_selector.maxsum_graph(f_i, f_ij, avail_actions=available_actions, device=f_i.device)
+
     def max_sum(self, f_i, f_ij, available_actions=None):
         """ Finds the maximum Q-values and corresponding greedy actions for given utilities and payoffs.
             (Algorithm 3 in Boehmer et al., 2020)"""
@@ -181,7 +184,7 @@ class CgmixMAC(BasicMAC):
         return best_actions
 
     def greedy(self, f_i, f_ij, w_1, w_final, bias, available_actions=None):
-        return self.greedy_action_selector.solve(f_i, f_ij, w_1, w_final, bias, avail_actions=available_actions, device=f_i.device)
+        #return self.greedy_action_selector.solve(f_i, f_ij, w_1, w_final, bias, avail_actions=available_actions, device=f_i.device)
         emb_dim = self.mixer.embed_dim
         w_1_i = w_1[:, :self.n_agents, :]
         w_1_ij = w_1[:, self.n_agents:, :]
@@ -201,11 +204,11 @@ class CgmixMAC(BasicMAC):
                 if use_relu[i] > 0.5:
                     k_i += w_1_i[:, :, i] * w_final[:, i]
                     k_ij += w_1_ij[:, :, i] * w_final[:, i]
-                    # res += (b_1[:, 0, i] * w_final[: ,i, 0])
+                    res += (bias[:, 0, i] * w_final[: ,i, 0]) #b_1 or bias?
                 else:
                     k_i += self.leaky_alpha * w_1_i[:, :, i] * w_final[:, i]
                     k_ij += self.leaky_alpha * w_1_ij[:, :, i] * w_final[:, i]
-                    # res += self.leaky_alpha * (b_1[:, 0, i] * w_final[: ,i, 0])
+                    res += self.leaky_alpha * (bias[:, 0, i] * w_final[: ,i, 0])  #b_1 or bias?
             f_i_emb = f_i * k_i.unsqueeze(dim=-1)
             f_ij_emb = f_ij * k_ij.unsqueeze(dim=-1).unsqueeze(dim=-1)
             actions = self.max_sum(f_i_emb, f_ij_emb, available_actions)
@@ -219,14 +222,135 @@ class CgmixMAC(BasicMAC):
 
 
 
+
+
+
+
+
+
+    def greedy_heuristic(self, f_i, f_ij, w_1, w_final, bias, available_actions=None):
+        emb_dim = self.mixer.embed_dim
+        w_1_i = w_1[:, :self.n_agents, :]
+        w_1_ij = w_1[:, self.n_agents:, :]
+
+        best_value = f_i.new_empty(f_i.shape[0]).fill_(-float('inf'))
+        best_actions = f_i.new_empty(f_i.shape[0], self.n_agents, 1, dtype=th.int64, device=f_i.device)
+
+        bs = f_i.shape[0]
+        explored = np.zeros([bs, 2 ** emb_dim], dtype=np.int)
+        #explored = [0 for i in range(2 ** emb_dim)]
+        use_relu = np.ones([bs, emb_dim], dtype=np.int)
+        #use_relu = np.ones(emb_dim, dtype=np.int)
+        moving_tag = self.on_off_tag(use_relu)
+        
+        for iteration in range(10):
+            tags = self.on_off_tag(use_relu)
+            explored[range(bs), tags] = 1
+                        
+            k_i = th.zeros_like(w_1_i[:, :, 0])
+            k_ij = th.zeros_like(w_1_ij[:, :, 0])
+            res = th.zeros_like(best_value)
+            
+            for i in range(emb_dim):
+                slope = th.from_numpy((use_relu[:, i] - 1) * (1 - self.leaky_alpha) + 1).to(f_i.device)#???
+                
+                k_i += slope.unsqueeze(dim=-1)*(w_1_i[:, :, i] * w_final[:, i])
+                k_ij += slope.unsqueeze(dim=-1)*(w_1_ij[:, :, i] * w_final[:, i])
+                res += slope*(bias[:, 0, i] * w_final[: ,i, 0])
+            
+            f_i_emb = f_i * k_i.unsqueeze(dim=-1)
+            f_ij_emb = f_ij * k_ij.unsqueeze(dim=-1).unsqueeze(dim=-1)
+            actions = self.max_sum(f_i_emb, f_ij_emb, available_actions)
+            res += self.tot_values(f_i_emb, f_ij_emb, actions)
+            change = res > best_value
+            best_value[change] = res[change]
+            best_actions[change] = actions[change]
+
+            # print(w_1_i[0][1][1], w_1_ij[0][2][2], w_final[0][0])
+            # print(k_i, k_ij, res)
+            # print(use_relu, int(actions[0][0]), int(actions[0][1]), int(actions[0][2]), int(actions[0][3]), res)
+            
+            node = th.zeros([bs, emb_dim])
+            node_i = f_i.unsqueeze(dim=-1) * w_1_i.unsqueeze(dim=-2)
+            node_ij = f_ij.unsqueeze(dim=-1) * w_1_ij.unsqueeze(dim=-2).unsqueeze(dim=-2)
+            
+            for i in range(emb_dim):
+                node[:, i] = self.tot_values(node_i[:,:,:,i], node_ij[:,:,:,:,i], actions) + bias[:, 0, i]
+        
+            real_use_relu = np.array(node > 0).astype(int)
+            
+            different_real = self.on_off_tag(use_relu) != self.on_off_tag(real_use_relu)
+            real_explored = explored[range(bs), self.on_off_tag(real_use_relu)]
+            
+            for b in range(bs):
+                if different_real[b] and (not real_explored[b]):
+                    use_relu[b] = real_use_relu[b]
+                else:
+                    while explored[b][moving_tag[b]] and moving_tag[b] > 0:
+                        moving_tag[b] -= 1
+                    use_relu[b] = self.tag_on_off(moving_tag[b])
+
+        return best_actions
+
+    def greedy_heuristic_C(self, f_i, f_ij, w_1, w_final, bias, available_actions=None):
+        return self.greedy_action_selector.solve_graph(f_i, f_ij, w_1, w_final, bias, avail_actions=available_actions, device=f_i.device)
+
+
+    def on_off_tag(self, use_relu):
+        base = np.array([2**i for i in range(self.mixer.embed_dim)])
+        tags = use_relu.dot(base.transpose())
+        return tags
+
+    def tag_on_off(self, tag):
+        use_relu = np.zeros(self.mixer.embed_dim, dtype=np.int)
+        for i in range(self.mixer.embed_dim):
+            use_relu[i] = (tag >> i) % 2
+        return use_relu
+
+
+
     # ================== Override methods of BasicMAC to integrate DCG into PyMARL ====================================
 
     def select_actions(self, ep_batch, t_ep, t_env, bs=slice(None), test_mode=False):
         avail_actions = ep_batch["avail_actions"][:, t_ep]
         state = ep_batch["state"][:, t_ep]
         f_i, f_ij = self.annotations(ep_batch, t_ep)
+        
+        assert f_i.shape[0] == 1
+        
         w_1, w_final, bias = self.mixer.get_para(state)
-        actions = self.greedy(f_i, f_ij, w_1, w_final, bias, avail_actions)
+        
+        #import time
+        #t0 = time.time()
+        #actions1 = self.max_sum(f_i, f_ij, avail_actions)
+        #t1 = time.time()
+        #actions2 = self.max_sum_C_graph(f_i, f_ij, avail_actions)
+        #t2 = time.time()
+        #assert th.all(actions1==actions2)
+        #actions = actions2
+
+        #actions_traverse = self.greedy(f_i, f_ij, w_1, w_final, bias, avail_actions)
+        #t3 = time.time()
+        #actions_heuristic = self.greedy_heuristic(f_i, f_ij, w_1, w_final, bias, avail_actions)
+        #t4 = time.time()
+        actions_heuristic_C = self.greedy_heuristic_C(f_i, f_ij, w_1, w_final, bias, avail_actions)
+        #t5 = time.time()
+        
+        actions = actions_heuristic_C
+        #actions = actions_traverse
+
+        # if not th.all(actions_traverse == actions_heuristic_C):
+        #     print(actions_traverse.squeeze().transpose(-1,0), actions_heuristic_C.squeeze().transpose(-1,0))
+        #     print((actions_traverse == actions_heuristic_C).squeeze().transpose(-1,0))
+        # if not th.all(actions_heuristic == actions_heuristic_C):
+        #     print(actions_heuristic.squeeze().transpose(-1,0), actions_heuristic_C.squeeze().transpose(-1,0))
+        #     print((actions_heuristic == actions_heuristic_C).squeeze().transpose(-1,0))
+        # if not th.all(actions_traverse == actions_heuristic):
+        #     print(actions_traverse.squeeze().transpose(-1,0), actions_heuristic.squeeze().transpose(-1,0))
+        #     print((actions_traverse == actions_heuristic).squeeze().transpose(-1,0))
+        
+        #print(t1-t0, t2-t1, t3-t2, t4-t3, t5-t4)
+        
         policy = f_i.new_zeros(ep_batch.batch_size, self.n_agents, self.n_actions)
         policy.scatter_(dim=-1, index=actions, src=policy.new_ones(1, 1, 1).expand_as(actions))
         chosen_actions = self.action_selector.select_action(policy[bs], avail_actions[bs], t_env, test_mode=test_mode)
@@ -235,14 +359,52 @@ class CgmixMAC(BasicMAC):
     def forward(self, ep_batch, t, actions=None, w_1 = None, w_final = None, test_mode=False):
         if actions is not None:
             f_i, f_ij = self.annotations(ep_batch, t, compute_grads=True, actions=actions)
+            
+            #print('foward with action', f_i.shape[0])
+
             q_i, q_ij = self.q_values(f_i, f_ij, actions)
             return q_i, q_ij
         else:
             f_i, f_ij = self.annotations(ep_batch, t)
+
+            #print('foward with no action', f_i.shape[0])
+
             if w_1 is None:
                 state = ep_batch["state"][:, t]
                 w_1, w_final, bias = self.mixer.get_para(state)
-            actions = self.greedy(f_i, f_ij, w_1, w_final, bias, available_actions=ep_batch['avail_actions'][:, t])
+            #actions = self.greedy(f_i, f_ij, w_1, w_final, bias, available_actions=ep_batch['avail_actions'][:, t])
+            
+            avail_actions = ep_batch['avail_actions'][:, t]
+            #import time
+            #t0 = time.time()
+            #actions1 = self.max_sum(f_i, f_ij, avail_actions)
+            #t1 = time.time()
+            #actions2 = self.max_sum_C_graph(f_i, f_ij, avail_actions)
+            #t2 = time.time()
+            #assert th.all(actions1==actions2)
+            # action = actions2
+        
+            #actions_traverse = self.greedy(f_i, f_ij, w_1, w_final, bias, available_actions=avail_actions)
+            #t3 = time.time()
+            #actions_heuristic = self.greedy_heuristic(f_i, f_ij, w_1, w_final, bias, available_actions=avail_actions)
+            #t4 = time.time()
+            actions_heuristic_C = self.greedy_heuristic_C(f_i, f_ij, w_1, w_final, bias, available_actions=avail_actions)
+            #t5 = time.time()
+
+            actions = actions_heuristic_C
+            #actions = actions_traverse
+
+            # if not th.all(actions_traverse == actions_heuristic_C):
+            #     print(actions_traverse.squeeze().transpose(-1,0), actions_heuristic_C.squeeze().transpose(-1,0))
+            #     print((actions_traverse == actions_heuristic_C).squeeze().transpose(-1,0))
+            # if not th.all(actions_heuristic == actions_heuristic_C):
+            #     print(actions_heuristic.squeeze().transpose(-1,0), actions_heuristic_C.squeeze().transpose(-1,0))
+            #     print((actions_heuristic == actions_heuristic_C).squeeze().transpose(-1,0))
+            # if not th.all(actions_traverse == actions_heuristic):
+            #     print(actions_traverse.squeeze().transpose(-1,0), actions_heuristic.squeeze().transpose(-1,0))
+            #     print((actions_traverse == actions_heuristic).squeeze().transpose(-1,0))
+            
+            #print(t1-t0, t2-t1, t3-t2, t4-t3, t5-t4)
             return actions
 
     def cuda(self):

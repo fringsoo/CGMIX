@@ -15,6 +15,22 @@ const int maxL = 305;
 
 class GreedyActionSelector
 {
+    struct new_edge
+    {
+        int u, v;
+        double f[maxM], maxf;
+    } edges[maxN*maxN];
+
+    double utils[maxN][maxM];        
+    double messages[2][maxN*maxN][maxM];
+    double msg[maxN][maxM];
+    double joint0[maxM][maxM];
+    double joint1[maxM][maxM];
+
+    double maxsum_best_action[maxN];
+    double maxsum_best_value;
+            
+
     struct edge
     {
         int u, v, tag;
@@ -125,6 +141,305 @@ class GreedyActionSelector
             if (e->f[i] > e->maxf)
                 e->maxf = e->f[i];
     }
+    
+    void dfs_dp_graph(double *w_i, double *w_ij)
+    {        
+        maxsum_best_value = -1e10;
+        memset(maxsum_best_action, 0, sizeof(maxsum_best_action));
+        memset(edges, 0, sizeof(edges));
+        memset(utils, 0, sizeof(utils));
+        memset(messages, 0, sizeof(messages));
+        memset(joint0, 0, sizeof(joint0));
+        memset(joint1, 0, sizeof(joint1));
+
+        int edge_count = 0;
+        for (int u = 1; u < n; u++)
+        {
+            for (int v = u + 1; v <= n; v++)
+            {
+                edge_count += 1;
+                edges[edge_count].u = u;
+                edges[edge_count].v = v;
+            }
+        }
+        
+        for (int u = 1; u <= n; u++)
+        {
+            for (int i = 1; i <= m; i++)
+            {
+                //utils[u][i] = value_f(u,i); 
+                utils[u][i] = value_f(u,i) * w_i[u-1];
+            }
+        }
+
+        int ec;
+        int iter;
+        double joint0ei;
+        double joint1ei;
+        double message0_jsum;
+        double message1_jsum;
+
+        
+        for (iter = 1; iter <= 4; iter++)
+        {
+            memset(msg, 0, sizeof(msg));
+            for (ec=1; ec <= edge_count; ec++)
+            {
+                int u = edges[ec].u;
+                int v = edges[ec].v;
+
+                
+                for (int i = 1; i <= m; i++)
+                {
+                    joint0ei = utils[u][i] - messages[1][ec][i];
+                    joint1ei = utils[v][i] - messages[0][ec][i];
+                    for (int j = 1; j <= m; j++)
+                    {
+                        //joint0[i][j] = joint0ei + value(u, v, i, j);
+                        joint0[i][j] = joint0ei + value(u, v, i, j) * w_ij[(2*n-u)*(u-1)/2+v-u-1];
+                        //joint1[i][j] = joint1ei + value(u, v, j, i);
+                        joint1[i][j] = joint1ei + value(u, v, j, i) * w_ij[(2*n-u)*(u-1)/2+v-u-1];
+                    }
+                }
+
+                message0_jsum = 0;
+                message1_jsum = 0;
+                for (int j = 1; j <= m; j++)
+                {
+                    messages[0][ec][j] = -1e10;
+                    messages[1][ec][j] = -1e10;
+                    
+                    for (int i = 1; i<=m; i++)
+                    {   
+                        if (joint0[i][j] > messages[0][ec][j])
+                            {
+                                messages[0][ec][j] = joint0[i][j];
+                            }
+                        
+                        if (joint1[i][j] > messages[1][ec][j])
+                            {
+                                messages[1][ec][j] = joint1[i][j];
+                            }
+                    }
+                    message0_jsum += messages[0][ec][j];
+                    message1_jsum += messages[1][ec][j];
+                }
+
+                for (int j = 1; j<=m; j++)
+                {
+                    messages[0][ec][j] -= message0_jsum / m;
+                    messages[1][ec][j] -= message1_jsum / m;
+                    msg[v][j] += messages[0][ec][j];
+                    msg[u][j] += messages[1][ec][j];
+                }
+            }     
+            
+            double actions[n + 1];
+            double tot_value = 0;
+            
+            for (int u = 1; u <= n; u++)
+            {
+                int action = -1;
+                double util_u_max = -1e10;
+                for (int i = 1; i <= m; i++)
+                {
+                    //utils[u][i] = value_f(u,i) + msg[u][i];
+                    utils[u][i] = value_f(u,i) * w_i[u-1] + msg[u][i];
+                    if (utils[u][i] > util_u_max)
+                    {
+                        util_u_max = utils[u][i];
+                        action = i;
+                    }
+                }
+                actions[u] = action;
+                //tot_value += value_f(u, action);
+                tot_value += value_f(u, action) * w_i[u-1];
+            }
+
+            for (ec=1; ec <= edge_count; ec++)
+            {
+                int u = edges[ec].u;
+                int v = edges[ec].v;
+                //tot_value += value(u, v, actions[u], actions[v]);
+                tot_value += value(u, v, actions[u], actions[v]) * w_ij[(2*n-u)*(u-1)/2+v-u-1];
+            }
+
+            if (tot_value > maxsum_best_value)
+            {
+                maxsum_best_value = tot_value;
+                //best_actions = actions;
+                for (int u=1; u<=n;u++)
+                {
+                    maxsum_best_action[u - 1] = actions[u] - 1;
+                    //best_actions[u - 1] = actions[u] - 1;
+                }
+
+            }
+        
+        }        
+    }
+
+
+    public:
+    void solve_maxsum_graph(double *py_f, double *py_g, double *best_actions, int py_n, int py_m){
+        n = py_n, m = py_m, f = py_f, g = py_g;
+        
+        double w_i[maxN], w_ij[maxN*maxN];
+        memset(w_i, 0, sizeof(w_i));
+        memset(w_ij, 0, sizeof(w_ij));
+        for (int i=0; i<n; i++)
+        {
+            w_i[i] = 1;
+        }
+        for (int i=0; i < n * (n+1); i++)
+        {
+            w_ij[i] = 1;
+        }
+
+        //dfs_dp_graph(best_actions);
+        dfs_dp_graph(w_i, w_ij);
+        //dfs_dp_graph();
+        for (int u=0; u<n;u++)
+        {
+            best_actions[u] = maxsum_best_action[u];
+        }
+        //best_actions = maxsum_best_action;
+    }
+
+    
+    
+    int on_off_tag(int *use_relu)
+    {
+        int tag = 0;
+        for (int l=0; l<len; l++)
+        {
+            tag += (1<<l) * use_relu[l];
+        }
+        return tag;
+    }
+
+    int *tag_on_off(int tag, int *relu)
+    {
+        for (int l=0; l<len; l++)
+        {
+            relu[l] = (tag >> l) % 2;
+        }
+    }
+
+    public:
+    void solve_graph(double *py_f, double *py_g, double *best_actions, double *py_w_1, double *py_w_final, double *py_bias, int py_n, int py_m, int py_l, double alpha){
+        n = py_n, m = py_m, len = py_l, f = py_f, g = py_g, w_1 = py_w_1, w_final = py_w_final, bias = py_bias;
+        
+        double best_value = -1e10;
+
+
+        int explored[1 << len];
+        memset(explored, 0, sizeof(explored));
+        
+        int use_relu[len];
+        int real_use_relu[len];
+
+        for (int l=0; l<len; l++)
+        {
+            use_relu[l] = 1;
+        }
+
+        int moving_tag = on_off_tag(use_relu);
+    
+        for (int iter = 0; iter < 10; iter++)
+        {
+            int tag = on_off_tag(use_relu);
+            explored[tag] = 1;
+            
+            double w_i[maxN];
+            double w_ij[maxN*maxN];
+            memset(w_i, 0, sizeof(w_i));
+            memset(w_ij, 0, sizeof(w_ij));
+            double wfinal_onoff;
+
+            double res;
+            res = 0;
+
+            for (int l = 0; l < len; l++)
+            {
+                if (use_relu[l] > 0.5)
+                    wfinal_onoff = w_final[l];
+                else
+                    wfinal_onoff = w_final[l] * alpha;
+                res += bias[l] * wfinal_onoff;
+                int cnt = 0;
+                for (int i = 0; i < n; i++)
+                {
+                    w_i[i] += w_1[i * len + l] * wfinal_onoff;
+                    for (int j = i + 1; j < n; j++)
+                    {
+                        w_ij[cnt] += w_1[(n + cnt) * len + l] * wfinal_onoff;
+                        cnt += 1;
+                    }
+                }
+            }
+            
+            dfs_dp_graph(w_i, w_ij);
+            maxsum_best_value += res;
+            if (maxsum_best_value > best_value)
+            {
+                for (int u=0; u<n;u++)
+                {
+                    best_actions[u] = maxsum_best_action[u];
+                }
+                best_value = maxsum_best_value;
+            }
+
+            // printf("%.4f,%.4f,%.4f\n",w_1[4],w_1[20],w_final[0]);
+            // printf("%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,\n",w_i[0],w_i[1],w_i[2],w_i[3],w_ij[0],w_ij[1],w_ij[2],w_ij[3],w_ij[4],w_ij[5],w_ij[6],res);
+            // //printf("%d ",use_relu[0]);
+            // printf("%d%d%d ",use_relu[0],use_relu[1],use_relu[2]);
+            // printf("%.1f,%.1f,%.1f,%.1f,", maxsum_best_action[0],maxsum_best_action[1],maxsum_best_action[2],maxsum_best_action[3]);
+            // printf("%f\n", maxsum_best_value);
+
+
+            for (int l = 0; l < len; l++){
+                double node_value = 0;
+
+                int cnt = 0;
+                for (int u = 0; u < n; u++){
+                    //node_value += value_f(u+1, maxsum_best_action[u+1]) * w_1[(n * n + n) / 2 * l + u];
+                    node_value += value_f(u+1, maxsum_best_action[u+1]) * w_1[u * len + l];
+                    for (int v = u + 1; v < n; v++){
+                        //node_value += value(u+1, v+1, maxsum_best_action[u+1], maxsum_best_action[v+1]) * w_1[(n * n + n) / 2 * l + n + cnt];
+                        node_value += value(u+1, v+1, maxsum_best_action[u+1], maxsum_best_action[v+1]) * w_1[(n + cnt) * len + l];
+                        cnt += 1;
+                    }
+                
+                if (node_value > 0)   
+                    real_use_relu[l] = 1;
+                else
+                    real_use_relu[l] = 0;
+                }            
+            }
+
+
+            if ((on_off_tag(use_relu)!=on_off_tag(real_use_relu)) and (not explored[on_off_tag(real_use_relu)]))
+            {
+                for (int l=0; l < len; l++)
+                {
+                    use_relu[l] = real_use_relu[l];
+                }
+            }
+            else
+            {
+                while (explored[moving_tag] and moving_tag > 0)
+                {
+                    moving_tag -= 1;
+                }
+                tag_on_off(moving_tag, use_relu);
+
+            }
+                
+        }
+
+    }
+    
 
     public:
     void solve(double *py_f, double *py_g, double *best_actions, double *py_w_1, double *py_w_final, double *py_bias, int py_n, int py_m, int py_l, double alpha){
@@ -160,7 +475,7 @@ class GreedyActionSelector
                 delta[i][j] = maxg2[i][j];
             }
         memset(stale, 0, sizeof(stale));
-        for (int k = 1; k < n; ++k)
+        for (int k = 1; k < n; ++k) //k loop???
         {
             double max_delta = -1e30;
             int u, v;
@@ -285,4 +600,21 @@ greedy(double *py_f, double *py_g, double *best_actions, double *w_1, double *w_
 #pragma omp parallel for schedule(dynamic, 1) num_threads(MAX_BATCH_SIZE)
     for (int i = 0; i < bs; i++)
         solver[i].solve(py_f + i * n * m, py_g + i * n * n * m * m, best_actions + i * n, w_1 + i * t * l, w_final + i * l, bias + i * l, n, m, l, alpha);
+}
+
+extern "C" void
+maxsum_graph(double *py_f, double *py_g, double *best_actions, int bs, int n, int m)
+{
+    int t = (n + n * n) / 2;
+#pragma omp parallel for schedule(dynamic, 1) num_threads(MAX_BATCH_SIZE)
+    for (int i = 0; i < bs; i++)
+        solver[i].solve_maxsum_graph(py_f + i * n * m, py_g + i * n * n * m * m, best_actions + i * n, n, m);
+}
+extern "C" void
+greedy_graph(double *py_f, double *py_g, double *best_actions, double *w_1, double *w_final, double *bias, int bs, int n, int m, int l, double alpha)
+{
+    int t = (n + n * n) / 2;
+#pragma omp parallel for schedule(dynamic, 1) num_threads(MAX_BATCH_SIZE)
+    for (int i = 0; i < bs; i++)
+        solver[i].solve_graph(py_f + i * n * m, py_g + i * n * n * m * m, best_actions + i * n, w_1 + i * t * l, w_final + i * l, bias + i * l, n, m, l, alpha);
 }

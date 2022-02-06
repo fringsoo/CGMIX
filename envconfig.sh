@@ -29,5 +29,10 @@ nohup python3 src/main.py --config=cgmix --env-config=toygame >/dev/null 2>&1 &
 nohup python3 src/main.py --config=cgmix --env-config=toygame >/dev/null 2>log &
 python3 src/main.py --config=dcg --env-config=toygame
 
+CUDA_VISIBLE_DEVICES=5 gdb --tui --args python3 src/main.py --config=cgmix --env-config=matrixgame
+winheight src -10
+
+CUDA_VISIBLE_DEVICES=6 nohup python3 src/main.py --config=cgmix --env-config=matrixgame >/dev/null 2>log &
+
 tensorboard --logdir=results/tb_logs --port=16006 --bind_all &
 pip3 install seaborn==0.9.0
