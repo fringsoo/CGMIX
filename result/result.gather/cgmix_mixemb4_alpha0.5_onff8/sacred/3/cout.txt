@@ -1,0 +1,1967 @@
+[INFO 16:53:26] pymarl Running command 'my_main'
+[INFO 16:53:26] pymarl Started run with ID "3"
+[DEBUG 16:53:26] my_main Started
+[INFO 16:53:26] my_main Experiment Parameters:
+[INFO 16:53:26] my_main 
+
+{   'action_selector': 'epsilon_greedy',
+    'agent': 'rnn_feat',
+    'agent_output_type': 'q',
+    'batch_size': 32,
+    'batch_size_run': 1,
+    'best_action_version': 1,
+    'buffer_cpu_only': True,
+    'buffer_size': 5000,
+    'cg_payoff_rank': None,
+    'cg_payoffs_hidden_dim': None,
+    'cg_utilities_hidden_dim': None,
+    'checkpoint_path': '',
+    'critic_lr': 0.0005,
+    'doublesqueezeq': None,
+    'env': 'gather',
+    'env_args': {   'catch_fail_reward': -5,
+                    'catch_reward': 10,
+                    'episode_limit': 10,
+                    'map_height': 3,
+                    'map_width': 5,
+                    'n_agents': 5,
+                    'obs_last_action': False,
+                    'other_reward': 5,
+                    'seed': 345825082,
+                    'state_last_action': True,
+                    'target_reward': 0.0},
+    'epsilon_anneal_time': 50000,
+    'epsilon_decay': 0,
+    'epsilon_finish': 0.05,
+    'epsilon_init': 0,
+    'epsilon_start': 1.0,
+    'evaluate': False,
+    'gamma': 0.99,
+    'grad_norm_clip': 10,
+    'greedy_version': 'c++_greedy_heuristic',
+    'hypernet_embed': 64,
+    'hypernet_layers': 2,
+    'label': 'default_label',
+    'leaky_alpha': 0.5,
+    'learner': 'cgmix_learner',
+    'learner_log_interval': 10000,
+    'load_step': 0,
+    'local_results_dir': 'result/result.gather/',
+    'local_results_path': 'cgmix_mixemb4_alpha0.5_onff8',
+    'log_interval': 10000,
+    'lr': 0.0005,
+    'mac': 'cgmix_mac',
+    'mixer': 'qmix',
+    'mixing_embed_dim': 4,
+    'mixingnetwork_bias': 2,
+    'mixingnetwork_weights': 'all1init_',
+    'msg_anytime': True,
+    'msg_iterations': 4,
+    'msg_normalized': True,
+    'name': 'cgmix',
+    'obs_agent_id': True,
+    'obs_last_action': True,
+    'onoff_configamount': 8,
+    'optim_alpha': 0.99,
+    'optim_eps': 1e-05,
+    'repeat_id': 1,
+    'rnn_hidden_dim': 64,
+    'runner': 'episode',
+    'runner_log_interval': 10000,
+    'save_model': True,
+    'save_model_interval': 500000,
+    'save_replay': False,
+    'seed': 345825082,
+    't_max': 1505000,
+    'target_update_interval': 200,
+    'test_greedy': True,
+    'test_interval': 10000,
+    'test_nepisode': 300,
+    'use_cuda': True,
+    'use_sacred': True,
+    'use_tensorboard': True}
+
+[DEBUG 16:53:27] tensorflow Falling back to TensorFlow client; we recommended you install the Cloud TPU client directly with pip install cloud-tpu-client.
+[DEBUG 16:53:27] h5py._conv Creating converter from 7 to 5
+[DEBUG 16:53:27] h5py._conv Creating converter from 5 to 7
+[DEBUG 16:53:27] h5py._conv Creating converter from 7 to 5
+[DEBUG 16:53:27] h5py._conv Creating converter from 5 to 7
+[INFO 16:53:32] my_main Beginning training for 1505000 timesteps
+/home/seeta/fringsoo/CGMIX/src/components/episode_buffer.py:103: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  v = th.tensor(v, dtype=dtype, device=self.device)
+[INFO 16:53:32] my_main t_env: 10 / 1505000
+[INFO 16:53:32] my_main Estimated time left: 20 seconds. Time passed: 0 seconds
+[INFO 16:54:13] my_main Saving models to result/result.gather/cgmix_mixemb4_alpha0.5_onff8/models/cgmix__2022-11-11_16-53-26/10
+[INFO 16:55:05] my_main Updated target network
+[INFO 16:56:01] my_main Updated target network
+[INFO 16:56:56] my_main Updated target network
+[INFO 16:57:53] my_main Updated target network
+[INFO 16:58:49] my_main Recent Stats | t_env:      10000 | Episode:     1000
+battle_won_mean:           0.0000	ep_length_mean:           10.0000	epsilon:                   1.0000	loss:                      0.8562
+q_taken_mean:             -0.0145	return_mean:               0.0000	return_std:                0.0000	target_mean:               0.3132
+td_error_abs:              0.8364	test_battle_won_mean:      0.0033	test_ep_length_mean:       9.9833	test_return_mean:          0.0667
+test_return_std:           0.7040	
+[INFO 16:58:49] my_main Updated target network
+[INFO 16:58:49] my_main t_env: 10010 / 1505000
+[INFO 16:58:49] my_main Estimated time left: 13 hours, 8 minutes, 50 seconds. Time passed: 5 minutes, 16 seconds
+[INFO 17:00:23] my_main Updated target network
+[INFO 17:01:21] my_main Updated target network
+[INFO 17:02:17] my_main Updated target network
+[INFO 17:03:14] my_main Updated target network
+[INFO 17:04:10] my_main Recent Stats | t_env:      20000 | Episode:     2000
+battle_won_mean:           0.0000	ep_length_mean:           10.0000	epsilon:                   0.8100	loss:                      0.4484
+q_taken_mean:             -0.0329	return_mean:              -0.0025	return_std:                0.0790	target_mean:               0.2982
+td_error_abs:              0.4949	test_battle_won_mean:      0.0017	test_ep_length_mean:       9.9917	test_return_mean:          0.0333
+test_return_std:           0.3520	
+[INFO 17:04:10] my_main Updated target network
+[INFO 17:04:10] my_main t_env: 20010 / 1505000
+[INFO 17:04:10] my_main Estimated time left: 13 hours, 15 minutes, 11 seconds. Time passed: 10 minutes, 38 seconds
+[INFO 17:05:42] my_main Updated target network
+[INFO 17:06:37] my_main Updated target network
+[INFO 17:07:32] my_main Updated target network
+[INFO 17:08:30] my_main Updated target network
+[INFO 17:09:30] my_main Recent Stats | t_env:      30000 | Episode:     3000
+battle_won_mean:           0.0000	ep_length_mean:           10.0000	epsilon:                   0.6200	loss:                      0.3043
+q_taken_mean:             -0.0723	return_mean:              -0.0033	return_std:                0.1054	target_mean:               0.2341
+td_error_abs:              0.3634	test_battle_won_mean:      0.0011	test_ep_length_mean:       9.9944	test_return_mean:          0.0222
+test_return_std:           0.2347	
+[INFO 17:09:30] my_main Updated target network
+[INFO 17:09:30] my_main t_env: 30010 / 1505000
+[INFO 17:09:30] my_main Estimated time left: 13 hours, 6 minutes, 27 seconds. Time passed: 15 minutes, 57 seconds
+[INFO 17:11:11] my_main Updated target network
+[INFO 17:12:12] my_main Updated target network
+[INFO 17:13:11] my_main Updated target network
+[INFO 17:14:10] my_main Updated target network
+[INFO 17:15:05] my_main Recent Stats | t_env:      40000 | Episode:     4000
+battle_won_mean:           0.0000	ep_length_mean:           10.0000	epsilon:                   0.4300	loss:                      0.2296
+q_taken_mean:             -0.0949	return_mean:              -0.0025	return_std:                0.0790	target_mean:               0.1848
+td_error_abs:              0.2877	test_battle_won_mean:      0.0008	test_ep_length_mean:       9.9958	test_return_mean:          0.0167
+test_return_std:           0.1760	
+[INFO 17:15:06] my_main Updated target network
+[INFO 17:15:06] my_main t_env: 40010 / 1505000
+[INFO 17:15:06] my_main Estimated time left: 13 hours, 39 minutes, 5 seconds. Time passed: 21 minutes, 33 seconds
+[INFO 17:16:39] my_main Updated target network
+[INFO 17:17:36] my_main Updated target network
+[INFO 17:18:31] my_main Updated target network
+[INFO 17:19:28] my_main Updated target network
+[INFO 17:20:25] my_main Recent Stats | t_env:      50000 | Episode:     5000
+battle_won_mean:           0.0000	ep_length_mean:           10.0000	epsilon:                   0.2400	loss:                      0.1855
+q_taken_mean:             -0.0979	return_mean:              -0.0020	return_std:                0.0632	target_mean:               0.1541
+td_error_abs:              0.2462	test_battle_won_mean:      0.0007	test_ep_length_mean:       9.9967	test_return_mean:          0.0133
+test_return_std:           0.1408	
+[INFO 17:20:25] my_main Updated target network
+[INFO 17:20:25] my_main t_env: 50010 / 1505000
+[INFO 17:20:25] my_main Estimated time left: 12 hours, 54 minutes, 4 seconds. Time passed: 26 minutes, 52 seconds
+[INFO 17:21:56] my_main Updated target network
+[INFO 17:22:53] my_main Updated target network
+[INFO 17:23:50] my_main Updated target network
+[INFO 17:24:46] my_main Updated target network
+[INFO 17:25:42] my_main Recent Stats | t_env:      60000 | Episode:     6000
+battle_won_mean:           0.0000	ep_length_mean:           10.0000	epsilon:                   0.0500	loss:                      0.0144
+q_taken_mean:             -0.1165	return_mean:              -0.0020	return_std:                0.0632	target_mean:               0.0962
+td_error_abs:              0.0831	test_battle_won_mean:      0.0000	test_ep_length_mean:      10.0000	test_return_mean:          0.0000
+test_return_std:           0.0000	
+[INFO 17:25:42] my_main Updated target network
+[INFO 17:25:42] my_main t_env: 60010 / 1505000
+[INFO 17:25:42] my_main Estimated time left: 12 hours, 44 minutes, 46 seconds. Time passed: 32 minutes, 10 seconds
+[INFO 17:27:14] my_main Updated target network
+[INFO 17:28:10] my_main Updated target network
+[INFO 17:29:05] my_main Updated target network
+[INFO 17:30:00] my_main Updated target network
+[INFO 17:30:55] my_main Recent Stats | t_env:      70000 | Episode:     7000
+battle_won_mean:           0.0000	ep_length_mean:           10.0000	epsilon:                   0.0500	loss:                      0.0064
+q_taken_mean:             -0.1264	return_mean:              -0.0010	return_std:                0.0316	target_mean:               0.0416
+td_error_abs:              0.0561	test_battle_won_mean:      0.0000	test_ep_length_mean:      10.0000	test_return_mean:          0.0000
+test_return_std:           0.0000	
+[INFO 17:30:55] my_main Updated target network
+[INFO 17:30:55] my_main t_env: 70010 / 1505000
+[INFO 17:30:55] my_main Estimated time left: 12 hours, 28 minutes, 43 seconds. Time passed: 37 minutes, 23 seconds
+[INFO 17:32:28] my_main Updated target network
+[INFO 17:33:24] my_main Updated target network
+[INFO 17:34:20] my_main Updated target network
+[INFO 17:35:17] my_main Updated target network
+[INFO 17:36:14] my_main Recent Stats | t_env:      80000 | Episode:     8000
+battle_won_mean:           0.0000	ep_length_mean:           10.0000	epsilon:                   0.0500	loss:                      0.0033
+q_taken_mean:             -0.1135	return_mean:               0.0000	return_std:                0.0000	target_mean:               0.0216
+td_error_abs:              0.0387	test_battle_won_mean:      0.0000	test_ep_length_mean:      10.0000	test_return_mean:          0.0000
+test_return_std:           0.0000	
+[INFO 17:36:14] my_main Updated target network
+[INFO 17:36:14] my_main t_env: 80010 / 1505000
+[INFO 17:36:14] my_main Estimated time left: 12 hours, 37 minutes, 1 seconds. Time passed: 42 minutes, 41 seconds
+[INFO 17:37:46] my_main Updated target network
+[INFO 17:38:46] my_main Updated target network
+[INFO 17:39:48] my_main Updated target network
+[INFO 17:40:49] my_main Updated target network
+[INFO 17:41:49] my_main Recent Stats | t_env:      90000 | Episode:     9000
+battle_won_mean:           0.0000	ep_length_mean:           10.0000	epsilon:                   0.0500	loss:                      0.0023
+q_taken_mean:             -0.0955	return_mean:               0.0000	return_std:                0.0000	target_mean:               0.0153
+td_error_abs:              0.0289	test_battle_won_mean:      0.0000	test_ep_length_mean:      10.0000	test_return_mean:          0.0033
+test_return_std:           0.0576	
+[INFO 17:41:50] my_main Updated target network
+[INFO 17:41:50] my_main t_env: 90010 / 1505000
+[INFO 17:41:50] my_main Estimated time left: 13 hours, 10 minutes, 50 seconds. Time passed: 48 minutes, 17 seconds
+[INFO 17:43:29] my_main Updated target network
+[INFO 17:44:24] my_main Updated target network
+[INFO 17:45:20] my_main Updated target network
+[INFO 17:46:15] my_main Updated target network
+[INFO 17:47:11] my_main Updated target network
+[INFO 17:47:11] my_main Recent Stats | t_env:     100008 | Episode:    10001
+battle_won_mean:           0.0000	ep_length_mean:           10.0000	epsilon:                   0.0500	loss:                      0.0005
+q_taken_mean:             -0.0858	return_mean:               0.0000	return_std:                0.0000	target_mean:               0.0107
+td_error_abs:              0.0153	test_battle_won_mean:      0.0000	test_ep_length_mean:      10.0000	test_return_mean:          0.0033
+test_return_std:           0.0576	
+[INFO 17:47:11] my_main t_env: 100018 / 1505000
+[INFO 17:47:11] my_main Estimated time left: 12 hours, 32 minutes, 46 seconds. Time passed: 53 minutes, 39 seconds
+[INFO 17:48:40] my_main Updated target network
+[INFO 17:49:37] my_main Updated target network
+[INFO 17:50:34] my_main Updated target network
+[INFO 17:51:30] my_main Updated target network
+[INFO 17:52:25] my_main Updated target network
+[INFO 17:52:26] my_main Recent Stats | t_env:     110015 | Episode:    11002
+battle_won_mean:           0.0002	ep_length_mean:            9.9996	epsilon:                   0.0500	loss:                      0.0003
+q_taken_mean:             -0.0748	return_mean:               0.0020	return_std:                0.0632	target_mean:               0.0067
+td_error_abs:              0.0126	test_battle_won_mean:      0.0000	test_ep_length_mean:      10.0000	test_return_mean:          0.0033
+test_return_std:           0.0576	
+[INFO 17:52:26] my_main t_env: 110025 / 1505000
+[INFO 17:52:26] my_main Estimated time left: 12 hours, 11 minutes, 4 seconds. Time passed: 58 minutes, 53 seconds
+[INFO 17:53:55] my_main Updated target network
+[INFO 17:54:52] my_main Updated target network
+[INFO 17:55:48] my_main Updated target network
+[INFO 17:56:42] my_main Updated target network
+[INFO 17:57:39] my_main Updated target network
+[INFO 17:57:40] my_main Recent Stats | t_env:     120018 | Episode:    12003
+battle_won_mean:           0.0004	ep_length_mean:            9.9990	epsilon:                   0.0500	loss:                      0.0002
+q_taken_mean:             -0.0628	return_mean:               0.0030	return_std:                0.1339	target_mean:               0.0052
+td_error_abs:              0.0106	test_battle_won_mean:      0.0007	test_ep_length_mean:       9.9980	test_return_mean:          0.0100
+test_return_std:           0.1729	
+[INFO 17:57:40] my_main t_env: 120028 / 1505000
+[INFO 17:57:40] my_main Estimated time left: 12 hours, 4 minutes, 54 seconds. Time passed: 1 hours, 4 minutes, 7 seconds
+[INFO 17:59:10] my_main Updated target network
+[INFO 18:00:06] my_main Updated target network
+[INFO 18:01:03] my_main Updated target network
+[INFO 18:02:00] my_main Updated target network
+[INFO 18:02:57] my_main Updated target network
+[INFO 18:02:58] my_main Recent Stats | t_env:     130022 | Episode:    13005
+battle_won_mean:           0.0010	ep_length_mean:            9.9976	epsilon:                   0.0500	loss:                      0.0002
+q_taken_mean:             -0.0516	return_mean:               0.0080	return_std:                0.2641	target_mean:               0.0062
+td_error_abs:              0.0108	test_battle_won_mean:      0.0007	test_ep_length_mean:       9.9980	test_return_mean:          0.0133
+test_return_std:           0.2306	
+[INFO 18:02:58] my_main t_env: 130032 / 1505000
+[INFO 18:02:58] my_main Estimated time left: 12 hours, 9 minutes, 11 seconds. Time passed: 1 hours, 9 minutes, 26 seconds
+[INFO 18:04:28] my_main Updated target network
+[INFO 18:05:24] my_main Updated target network
+[INFO 18:06:24] my_main Updated target network
+[INFO 18:07:25] my_main Updated target network
+[INFO 18:08:25] my_main Updated target network
+[INFO 18:08:28] my_main Recent Stats | t_env:     140026 | Episode:    14013
+battle_won_mean:           0.0026	ep_length_mean:            9.9944	epsilon:                   0.0500	loss:                      0.0004
+q_taken_mean:             -0.0424	return_mean:               0.0280	return_std:                0.4629	target_mean:               0.0082
+td_error_abs:              0.0123	test_battle_won_mean:      0.0040	test_ep_length_mean:       9.9960	test_return_mean:          0.0800
+test_return_std:           0.4971	
+[INFO 18:08:29] my_main t_env: 140036 / 1505000
+[INFO 18:08:29] my_main Estimated time left: 12 hours, 31 minutes, 7 seconds. Time passed: 1 hours, 14 minutes, 56 seconds
+[INFO 18:10:01] my_main Updated target network
+[INFO 18:11:01] my_main Updated target network
+[INFO 18:11:58] my_main Updated target network
+[INFO 18:12:54] my_main Updated target network
+[INFO 18:13:49] my_main Updated target network
+[INFO 18:14:23] my_main Recent Stats | t_env:     150031 | Episode:    15129
+battle_won_mean:           0.0078	ep_length_mean:            9.9793	epsilon:                   0.0500	loss:                      0.0031
+q_taken_mean:             -0.0364	return_mean:               0.0905	return_std:                0.7948	target_mean:               0.0133
+td_error_abs:              0.0232	test_battle_won_mean:      0.0307	test_ep_length_mean:       9.9173	test_return_mean:          0.4033
+test_return_std:           1.1939	
+[INFO 18:14:23] my_main t_env: 150041 / 1505000
+[INFO 18:14:23] my_main Estimated time left: 13 hours, 19 minutes, 6 seconds. Time passed: 1 hours, 20 minutes, 50 seconds
+[INFO 18:15:09] my_main Updated target network
+[INFO 18:16:03] my_main Updated target network
+[INFO 18:16:59] my_main Updated target network
+[INFO 18:17:56] my_main Updated target network
+[INFO 18:18:54] my_main Updated target network
+[INFO 18:19:50] my_main Updated target network
+[INFO 18:20:30] my_main Recent Stats | t_env:     160031 | Episode:    16340
+battle_won_mean:           0.0554	ep_length_mean:            9.7727	epsilon:                   0.0500	loss:                      0.0546
+q_taken_mean:             -0.0216	return_mean:               0.6843	return_std:                1.5892	target_mean:               0.0696
+td_error_abs:              0.0698	test_battle_won_mean:      0.0940	test_ep_length_mean:       9.5427	test_return_mean:          1.5900
+test_return_std:           1.8356	
+[INFO 18:20:30] my_main t_env: 160041 / 1505000
+[INFO 18:20:30] my_main Estimated time left: 13 hours, 42 minutes, 47 seconds. Time passed: 1 hours, 26 minutes, 57 seconds
+[INFO 18:21:14] my_main Updated target network
+[INFO 18:22:12] my_main Updated target network
+[INFO 18:23:09] my_main Updated target network
+[INFO 18:24:06] my_main Updated target network
+[INFO 18:25:03] my_main Updated target network
+[INFO 18:25:58] my_main Updated target network
+[INFO 18:26:38] my_main Recent Stats | t_env:     170036 | Episode:    17551
+battle_won_mean:           0.1218	ep_length_mean:            9.4249	epsilon:                   0.0500	loss:                      0.1329
+q_taken_mean:             -0.0011	return_mean:               1.7155	return_std:                2.3148	target_mean:               0.1862
+td_error_abs:              0.1393	test_battle_won_mean:      0.1567	test_ep_length_mean:       9.2127	test_return_mean:          2.7533
+test_return_std:           2.3845	
+[INFO 18:26:39] my_main t_env: 170046 / 1505000
+[INFO 18:26:39] my_main Estimated time left: 13 hours, 40 minutes, 36 seconds. Time passed: 1 hours, 33 minutes, 6 seconds
+[INFO 18:27:19] my_main Updated target network
+[INFO 18:28:15] my_main Updated target network
+[INFO 18:29:11] my_main Updated target network
+[INFO 18:30:07] my_main Updated target network
+[INFO 18:31:04] my_main Updated target network
+[INFO 18:32:03] my_main Updated target network
+[INFO 18:32:37] my_main Recent Stats | t_env:     180039 | Episode:    18720
+battle_won_mean:           0.1874	ep_length_mean:            9.0786	epsilon:                   0.0500	loss:                      0.2022
+q_taken_mean:              0.0190	return_mean:               2.6949	return_std:                3.0118	target_mean:               0.3324
+td_error_abs:              0.2020	test_battle_won_mean:      0.2273	test_ep_length_mean:       8.8213	test_return_mean:          4.0533
+test_return_std:           2.8848	
+[INFO 18:32:38] my_main t_env: 180055 / 1505000
+[INFO 18:32:38] my_main Estimated time left: 13 hours, 12 minutes, 27 seconds. Time passed: 1 hours, 39 minutes, 5 seconds
+[INFO 18:33:31] my_main Updated target network
+[INFO 18:34:34] my_main Updated target network
+[INFO 18:35:37] my_main Updated target network
+[INFO 18:36:39] my_main Updated target network
+[INFO 18:37:41] my_main Updated target network
+[INFO 18:38:44] my_main Updated target network
+[INFO 18:38:52] my_main Recent Stats | t_env:     190039 | Episode:    19826
+battle_won_mean:           0.2496	ep_length_mean:            8.7928	epsilon:                   0.0500	loss:                      0.2553
+q_taken_mean:              0.0396	return_mean:               3.7108	return_std:                3.5911	target_mean:               0.4839
+td_error_abs:              0.2668	test_battle_won_mean:      0.2860	test_ep_length_mean:       8.5673	test_return_mean:          5.1167
+test_return_std:           3.2502	
+[INFO 18:38:53] my_main t_env: 190056 / 1505000
+[INFO 18:38:53] my_main Estimated time left: 13 hours, 40 minutes, 44 seconds. Time passed: 1 hours, 45 minutes, 20 seconds
+[INFO 18:40:14] my_main Updated target network
+[INFO 18:41:14] my_main Updated target network
+[INFO 18:42:11] my_main Updated target network
+[INFO 18:43:09] my_main Updated target network
+[INFO 18:44:06] my_main Updated target network
+[INFO 18:44:39] my_main Recent Stats | t_env:     200042 | Episode:    20914
+battle_won_mean:           0.3077	ep_length_mean:            8.6163	epsilon:                   0.0500	loss:                      0.3154
+q_taken_mean:              0.0640	return_mean:               4.7622	return_std:                3.9819	target_mean:               0.6736
+td_error_abs:              0.3099	test_battle_won_mean:      0.3273	test_ep_length_mean:       8.4360	test_return_mean:          6.1100
+test_return_std:           3.0728	
+[INFO 18:44:39] my_main t_env: 200059 / 1505000
+[INFO 18:44:39] my_main Estimated time left: 12 hours, 33 minutes, 35 seconds. Time passed: 1 hours, 51 minutes, 6 seconds
+[INFO 18:45:35] my_main Updated target network
+[INFO 18:46:33] my_main Updated target network
+[INFO 18:47:29] my_main Updated target network
+[INFO 18:48:26] my_main Updated target network
+[INFO 18:49:24] my_main Updated target network
+[INFO 18:50:22] my_main Updated target network
+[INFO 18:50:23] my_main Recent Stats | t_env:     210047 | Episode:    22007
+battle_won_mean:           0.3233	ep_length_mean:            8.6621	epsilon:                   0.0500	loss:                      0.2984
+q_taken_mean:              0.0830	return_mean:               5.3502	return_std:                3.7768	target_mean:               0.8450
+td_error_abs:              0.3214	test_battle_won_mean:      0.3220	test_ep_length_mean:       8.6227	test_return_mean:          6.2067
+test_return_std:           2.8962	
+[INFO 18:50:24] my_main t_env: 210067 / 1505000
+[INFO 18:50:24] my_main Estimated time left: 12 hours, 23 minutes, 52 seconds. Time passed: 1 hours, 56 minutes, 51 seconds
+[INFO 18:51:50] my_main Updated target network
+[INFO 18:52:48] my_main Updated target network
+[INFO 18:53:47] my_main Updated target network
+[INFO 18:54:44] my_main Updated target network
+[INFO 18:55:41] my_main Updated target network
+[INFO 18:56:00] my_main Recent Stats | t_env:     220047 | Episode:    23063
+battle_won_mean:           0.3218	ep_length_mean:            8.8419	epsilon:                   0.0500	loss:                      0.2415
+q_taken_mean:              0.0925	return_mean:               5.5275	return_std:                3.6158	target_mean:               0.9656
+td_error_abs:              0.2922	test_battle_won_mean:      0.3147	test_ep_length_mean:       8.8380	test_return_mean:          6.3167
+test_return_std:           2.6811	
+[INFO 18:56:01] my_main t_env: 220075 / 1505000
+[INFO 18:56:01] my_main Estimated time left: 12 hours, 2 seconds. Time passed: 2 hours, 2 minutes, 28 seconds
+[INFO 18:57:10] my_main Updated target network
+[INFO 18:58:07] my_main Updated target network
+[INFO 18:59:05] my_main Updated target network
+[INFO 19:00:01] my_main Updated target network
+[INFO 19:00:58] my_main Updated target network
+[INFO 19:01:37] my_main Recent Stats | t_env:     230055 | Episode:    24137
+battle_won_mean:           0.3135	ep_length_mean:            9.0832	epsilon:                   0.0500	loss:                      0.2006
+q_taken_mean:              0.0993	return_mean:               5.7002	return_std:                3.4234	target_mean:               1.0374
+td_error_abs:              0.2811	test_battle_won_mean:      0.3000	test_ep_length_mean:       9.1280	test_return_mean:          6.2833
+test_return_std:           2.5891	
+[INFO 19:01:37] my_main t_env: 230075 / 1505000
+[INFO 19:01:37] my_main Estimated time left: 11 hours, 55 minutes, 45 seconds. Time passed: 2 hours, 8 minutes, 5 seconds
+[INFO 19:02:30] my_main Updated target network
+[INFO 19:03:31] my_main Updated target network
+[INFO 19:04:32] my_main Updated target network
+[INFO 19:05:32] my_main Updated target network
+[INFO 19:06:34] my_main Updated target network
+[INFO 19:07:32] my_main Recent Stats | t_env:     240061 | Episode:    25198
+battle_won_mean:           0.3103	ep_length_mean:            9.2362	epsilon:                   0.0500	loss:                      0.1928
+q_taken_mean:              0.1072	return_mean:               5.8442	return_std:                3.2725	target_mean:               1.1462
+td_error_abs:              0.2764	test_battle_won_mean:      0.3040	test_ep_length_mean:       9.2047	test_return_mean:          6.4800
+test_return_std:           2.3697	
+[INFO 19:07:33] my_main t_env: 240081 / 1505000
+[INFO 19:07:33] my_main Estimated time left: 12 hours, 28 minutes, 24 seconds. Time passed: 2 hours, 14 minutes, 0 seconds
+[INFO 19:08:04] my_main Updated target network
+[INFO 19:09:00] my_main Updated target network
+[INFO 19:09:58] my_main Updated target network
+[INFO 19:10:54] my_main Updated target network
+[INFO 19:11:52] my_main Updated target network
+[INFO 19:12:51] my_main Updated target network
+[INFO 19:12:58] my_main Recent Stats | t_env:     250068 | Episode:    26228
+battle_won_mean:           0.3060	ep_length_mean:            9.3138	epsilon:                   0.0500	loss:                      0.1797
+q_taken_mean:              0.1135	return_mean:               5.8895	return_std:                3.1880	target_mean:               1.2132
+td_error_abs:              0.2949	test_battle_won_mean:      0.2907	test_ep_length_mean:       9.3553	test_return_mean:          6.3933
+test_return_std:           2.3704	
+[INFO 19:12:59] my_main t_env: 250088 / 1505000
+[INFO 19:12:59] my_main Estimated time left: 11 hours, 21 minutes, 52 seconds. Time passed: 2 hours, 19 minutes, 26 seconds
+[INFO 19:14:20] my_main Updated target network
+[INFO 19:15:18] my_main Updated target network
+[INFO 19:16:16] my_main Updated target network
+[INFO 19:17:13] my_main Updated target network
+[INFO 19:18:12] my_main Updated target network
+[INFO 19:18:30] my_main Recent Stats | t_env:     260070 | Episode:    27267
+battle_won_mean:           0.2985	ep_length_mean:            9.4181	epsilon:                   0.0500	loss:                      0.1740
+q_taken_mean:              0.1153	return_mean:               5.8348	return_std:                3.1785	target_mean:               1.2728
+td_error_abs:              0.2863	test_battle_won_mean:      0.3013	test_ep_length_mean:       9.4627	test_return_mean:          6.4500
+test_return_std:           2.3859	
+[INFO 19:18:31] my_main t_env: 260090 / 1505000
+[INFO 19:18:31] my_main Estimated time left: 11 hours, 28 minutes, 21 seconds. Time passed: 2 hours, 24 minutes, 58 seconds
+[INFO 19:19:40] my_main Updated target network
+[INFO 19:20:38] my_main Updated target network
+[INFO 19:21:35] my_main Updated target network
+[INFO 19:22:32] my_main Updated target network
+[INFO 19:23:29] my_main Updated target network
+[INFO 19:23:56] my_main Recent Stats | t_env:     270073 | Episode:    28298
+battle_won_mean:           0.2942	ep_length_mean:            9.5122	epsilon:                   0.0500	loss:                      0.1828
+q_taken_mean:              0.1178	return_mean:               5.7832	return_std:                3.1956	target_mean:               1.2897
+td_error_abs:              0.2964	test_battle_won_mean:      0.3167	test_ep_length_mean:       9.5060	test_return_mean:          6.5267
+test_return_std:           2.4159	
+[INFO 19:23:57] my_main t_env: 270092 / 1505000
+[INFO 19:23:57] my_main Estimated time left: 11 hours, 10 minutes, 48 seconds. Time passed: 2 hours, 30 minutes, 24 seconds
+[INFO 19:24:57] my_main Updated target network
+[INFO 19:25:53] my_main Updated target network
+[INFO 19:26:50] my_main Updated target network
+[INFO 19:27:46] my_main Updated target network
+[INFO 19:28:43] my_main Updated target network
+[INFO 19:29:19] my_main Recent Stats | t_env:     280080 | Episode:    29330
+battle_won_mean:           0.2974	ep_length_mean:            9.5587	epsilon:                   0.0500	loss:                      0.1953
+q_taken_mean:              0.1218	return_mean:               5.7784	return_std:                3.2223	target_mean:               1.2962
+td_error_abs:              0.3054	test_battle_won_mean:      0.3240	test_ep_length_mean:       9.5400	test_return_mean:          6.5733
+test_return_std:           2.4151	
+[INFO 19:29:19] my_main t_env: 280100 / 1505000
+[INFO 19:29:19] my_main Estimated time left: 10 hours, 58 minutes, 3 seconds. Time passed: 2 hours, 35 minutes, 47 seconds
+[INFO 19:30:12] my_main Updated target network
+[INFO 19:31:13] my_main Updated target network
+[INFO 19:32:15] my_main Updated target network
+[INFO 19:33:16] my_main Updated target network
+[INFO 19:34:15] my_main Updated target network
+[INFO 19:35:01] my_main Recent Stats | t_env:     290087 | Episode:    30354
+battle_won_mean:           0.2907	ep_length_mean:            9.6344	epsilon:                   0.0500	loss:                      0.1826
+q_taken_mean:              0.1230	return_mean:               5.7293	return_std:                3.2216	target_mean:               1.2961
+td_error_abs:              0.2900	test_battle_won_mean:      0.3267	test_ep_length_mean:       9.6307	test_return_mean:          6.5867
+test_return_std:           2.4197	
+[INFO 19:35:02] my_main t_env: 290107 / 1505000
+[INFO 19:35:02] my_main Estimated time left: 11 hours, 32 minutes, 39 seconds. Time passed: 2 hours, 41 minutes, 29 seconds
+[INFO 19:35:51] my_main Updated target network
+[INFO 19:36:50] my_main Updated target network
+[INFO 19:37:46] my_main Updated target network
+[INFO 19:38:44] my_main Updated target network
+[INFO 19:39:41] my_main Updated target network
+[INFO 19:40:32] my_main Recent Stats | t_env:     300093 | Episode:    31373
+battle_won_mean:           0.2890	ep_length_mean:            9.7027	epsilon:                   0.0500	loss:                      0.1483
+q_taken_mean:              0.1233	return_mean:               5.6863	return_std:                3.2502	target_mean:               1.2963
+td_error_abs:              0.2510	test_battle_won_mean:      0.3373	test_ep_length_mean:       9.6267	test_return_mean:          6.6767
+test_return_std:           2.3803	
+[INFO 19:40:32] my_main t_env: 300112 / 1505000
+[INFO 19:40:32] my_main Estimated time left: 11 hours, 4 minutes, 0 seconds. Time passed: 2 hours, 47 minutes, 0 seconds
+[INFO 19:41:13] my_main Updated target network
+[INFO 19:42:11] my_main Updated target network
+[INFO 19:43:07] my_main Updated target network
+[INFO 19:44:03] my_main Updated target network
+[INFO 19:44:59] my_main Updated target network
+[INFO 19:45:52] my_main Recent Stats | t_env:     310094 | Episode:    32386
+battle_won_mean:           0.2917	ep_length_mean:            9.7233	epsilon:                   0.0500	loss:                      0.1402
+q_taken_mean:              0.1232	return_mean:               5.6582	return_std:                3.3053	target_mean:               1.2498
+td_error_abs:              0.2410	test_battle_won_mean:      0.3327	test_ep_length_mean:       9.6527	test_return_mean:          6.6567
+test_return_std:           2.3660	
+[INFO 19:45:52] my_main t_env: 310113 / 1505000
+[INFO 19:45:52] my_main Estimated time left: 10 hours, 36 minutes, 55 seconds. Time passed: 2 hours, 52 minutes, 20 seconds
+[INFO 19:46:29] my_main Updated target network
+[INFO 19:47:26] my_main Updated target network
+[INFO 19:48:23] my_main Updated target network
+[INFO 19:49:20] my_main Updated target network
+[INFO 19:50:19] my_main Updated target network
+[INFO 19:51:16] my_main Recent Stats | t_env:     320097 | Episode:    33399
+battle_won_mean:           0.2830	ep_length_mean:            9.7725	epsilon:                   0.0500	loss:                      0.1359
+q_taken_mean:              0.1235	return_mean:               5.5655	return_std:                3.3252	target_mean:               1.2552
+td_error_abs:              0.2272	test_battle_won_mean:      0.3313	test_ep_length_mean:       9.6940	test_return_mean:          6.6500
+test_return_std:           2.3640	
+[INFO 19:51:17] my_main Updated target network
+[INFO 19:51:17] my_main t_env: 320117 / 1505000
+[INFO 19:51:17] my_main Estimated time left: 10 hours, 40 minutes, 29 seconds. Time passed: 2 hours, 57 minutes, 44 seconds
+[INFO 19:52:47] my_main Updated target network
+[INFO 19:53:43] my_main Updated target network
+[INFO 19:54:40] my_main Updated target network
+[INFO 19:55:37] my_main Updated target network
+[INFO 19:56:32] my_main Updated target network
+[INFO 19:56:35] my_main Recent Stats | t_env:     330105 | Episode:    34411
+battle_won_mean:           0.2734	ep_length_mean:            9.8074	epsilon:                   0.0500	loss:                      0.1151
+q_taken_mean:              0.1260	return_mean:               5.4567	return_std:                3.3536	target_mean:               1.2748
+td_error_abs:              0.2067	test_battle_won_mean:      0.3347	test_ep_length_mean:       9.7473	test_return_mean:          6.6667
+test_return_std:           2.3702	
+[INFO 19:56:35] my_main t_env: 330124 / 1505000
+[INFO 19:56:35] my_main Estimated time left: 10 hours, 23 minutes, 10 seconds. Time passed: 3 hours, 3 minutes, 2 seconds
+[INFO 19:58:01] my_main Updated target network
+[INFO 19:59:01] my_main Updated target network
+[INFO 20:00:02] my_main Updated target network
+[INFO 20:01:02] my_main Updated target network
+[INFO 20:02:03] my_main Updated target network
+[INFO 20:02:10] my_main Recent Stats | t_env:     340111 | Episode:    35423
+battle_won_mean:           0.2696	ep_length_mean:            9.8455	epsilon:                   0.0500	loss:                      0.0972
+q_taken_mean:              0.1274	return_mean:               5.3733	return_std:                3.4067	target_mean:               1.2935
+td_error_abs:              0.1949	test_battle_won_mean:      0.3260	test_ep_length_mean:       9.7920	test_return_mean:          6.6233
+test_return_std:           2.3537	
+[INFO 20:02:10] my_main t_env: 340131 / 1505000
+[INFO 20:02:10] my_main Estimated time left: 10 hours, 50 minutes, 6 seconds. Time passed: 3 hours, 8 minutes, 38 seconds
+[INFO 20:03:41] my_main Updated target network
+[INFO 20:04:39] my_main Updated target network
+[INFO 20:05:36] my_main Updated target network
+[INFO 20:06:32] my_main Updated target network
+[INFO 20:07:30] my_main Updated target network
+[INFO 20:07:40] my_main Recent Stats | t_env:     350115 | Episode:    36436
+battle_won_mean:           0.2617	ep_length_mean:            9.8687	epsilon:                   0.0500	loss:                      0.1022
+q_taken_mean:              0.1283	return_mean:               5.2828	return_std:                3.4296	target_mean:               1.2533
+td_error_abs:              0.1989	test_battle_won_mean:      0.3273	test_ep_length_mean:       9.8060	test_return_mean:          6.6367
+test_return_std:           2.3445	
+[INFO 20:07:40] my_main t_env: 350135 / 1505000
+[INFO 20:07:40] my_main Estimated time left: 10 hours, 35 minutes, 7 seconds. Time passed: 3 hours, 14 minutes, 8 seconds
+[INFO 20:08:59] my_main Updated target network
+[INFO 20:09:56] my_main Updated target network
+[INFO 20:10:52] my_main Updated target network
+[INFO 20:11:49] my_main Updated target network
+[INFO 20:12:46] my_main Updated target network
+[INFO 20:12:58] my_main Recent Stats | t_env:     360119 | Episode:    37443
+battle_won_mean:           0.2558	ep_length_mean:            9.8801	epsilon:                   0.0500	loss:                      0.1009
+q_taken_mean:              0.1287	return_mean:               5.2479	return_std:                3.4131	target_mean:               1.2368
+td_error_abs:              0.1990	test_battle_won_mean:      0.3287	test_ep_length_mean:       9.8180	test_return_mean:          6.6433
+test_return_std:           2.3470	
+[INFO 20:12:58] my_main t_env: 360139 / 1505000
+[INFO 20:12:58] my_main Estimated time left: 10 hours, 6 minutes, 31 seconds. Time passed: 3 hours, 19 minutes, 26 seconds
+[INFO 20:14:16] my_main Updated target network
+[INFO 20:15:14] my_main Updated target network
+[INFO 20:16:12] my_main Updated target network
+[INFO 20:17:08] my_main Updated target network
+[INFO 20:18:06] my_main Updated target network
+[INFO 20:18:21] my_main Recent Stats | t_env:     370124 | Episode:    38454
+battle_won_mean:           0.2537	ep_length_mean:            9.8925	epsilon:                   0.0500	loss:                      0.0939
+q_taken_mean:              0.1298	return_mean:               5.2175	return_std:                3.4326	target_mean:               1.2273
+td_error_abs:              0.2011	test_battle_won_mean:      0.3233	test_ep_length_mean:       9.8213	test_return_mean:          6.6167
+test_return_std:           2.3378	
+[INFO 20:18:22] my_main t_env: 370143 / 1505000
+[INFO 20:18:22] my_main Estimated time left: 10 hours, 11 minutes, 22 seconds. Time passed: 3 hours, 24 minutes, 49 seconds
+[INFO 20:19:36] my_main Updated target network
+[INFO 20:20:34] my_main Updated target network
+[INFO 20:21:30] my_main Updated target network
+[INFO 20:22:29] my_main Updated target network
+[INFO 20:23:25] my_main Updated target network
+[INFO 20:23:41] my_main Recent Stats | t_env:     380131 | Episode:    39459
+battle_won_mean:           0.2520	ep_length_mean:            9.8964	epsilon:                   0.0500	loss:                      0.1058
+q_taken_mean:              0.1300	return_mean:               5.2284	return_std:                3.4099	target_mean:               1.2480
+td_error_abs:              0.2237	test_battle_won_mean:      0.3167	test_ep_length_mean:       9.7980	test_return_mean:          6.5833
+test_return_std:           2.3247	
+[INFO 20:23:42] my_main t_env: 380151 / 1505000
+[INFO 20:23:42] my_main Estimated time left: 9 hours, 59 minutes, 20 seconds. Time passed: 3 hours, 30 minutes, 9 seconds
+[INFO 20:24:54] my_main Updated target network
+[INFO 20:25:52] my_main Updated target network
+[INFO 20:26:52] my_main Updated target network
+[INFO 20:27:53] my_main Updated target network
+[INFO 20:28:54] my_main Updated target network
+[INFO 20:29:13] my_main Recent Stats | t_env:     390138 | Episode:    40463
+battle_won_mean:           0.2520	ep_length_mean:            9.9104	epsilon:                   0.0500	loss:                      0.1058
+q_taken_mean:              0.1306	return_mean:               5.1601	return_std:                3.4539	target_mean:               1.2062
+td_error_abs:              0.2271	test_battle_won_mean:      0.3167	test_ep_length_mean:       9.8293	test_return_mean:          6.5833
+test_return_std:           2.3247	
+[INFO 20:29:13] my_main t_env: 390158 / 1505000
+[INFO 20:29:13] my_main Estimated time left: 10 hours, 15 minutes, 45 seconds. Time passed: 3 hours, 35 minutes, 41 seconds
+[INFO 20:30:34] my_main Updated target network
+[INFO 20:31:33] my_main Updated target network
+[INFO 20:32:31] my_main Updated target network
+[INFO 20:33:27] my_main Updated target network
+[INFO 20:34:23] my_main Updated target network
+[INFO 20:34:42] my_main Recent Stats | t_env:     400141 | Episode:    41468
+battle_won_mean:           0.2502	ep_length_mean:            9.9261	epsilon:                   0.0500	loss:                      0.0976
+q_taken_mean:              0.1318	return_mean:               5.1254	return_std:                3.4664	target_mean:               1.2338
+td_error_abs:              0.2202	test_battle_won_mean:      0.3107	test_ep_length_mean:       9.8660	test_return_mean:          6.5533
+test_return_std:           2.3130	
+[INFO 20:34:42] my_main t_env: 400160 / 1505000
+[INFO 20:34:42] my_main Estimated time left: 10 hours, 5 minutes, 40 seconds. Time passed: 3 hours, 41 minutes, 10 seconds
+[INFO 20:35:53] my_main Updated target network
+[INFO 20:36:49] my_main Updated target network
+[INFO 20:37:45] my_main Updated target network
+[INFO 20:38:42] my_main Updated target network
+[INFO 20:39:38] my_main Updated target network
+[INFO 20:39:57] my_main Recent Stats | t_env:     410148 | Episode:    42472
+battle_won_mean:           0.2428	ep_length_mean:            9.9414	epsilon:                   0.0500	loss:                      0.0961
+q_taken_mean:              0.1342	return_mean:               5.0344	return_std:                3.4847	target_mean:               1.2905
+td_error_abs:              0.2177	test_battle_won_mean:      0.3113	test_ep_length_mean:       9.8880	test_return_mean:          6.5567
+test_return_std:           2.3142	
+[INFO 20:39:58] my_main t_env: 410168 / 1505000
+[INFO 20:39:58] my_main Estimated time left: 9 hours, 35 minutes, 6 seconds. Time passed: 3 hours, 46 minutes, 25 seconds
+[INFO 20:41:08] my_main Updated target network
+[INFO 20:42:05] my_main Updated target network
+[INFO 20:43:02] my_main Updated target network
+[INFO 20:43:58] my_main Updated target network
+[INFO 20:44:55] my_main Updated target network
+[INFO 20:45:15] my_main Recent Stats | t_env:     420157 | Episode:    43475
+battle_won_mean:           0.2386	ep_length_mean:            9.9482	epsilon:                   0.0500	loss:                      0.1156
+q_taken_mean:              0.1366	return_mean:               4.9638	return_std:                3.5021	target_mean:               1.2680
+td_error_abs:              0.2362	test_battle_won_mean:      0.3087	test_ep_length_mean:       9.9040	test_return_mean:          6.5433
+test_return_std:           2.3089	
+[INFO 20:45:16] my_main t_env: 420177 / 1505000
+[INFO 20:45:16] my_main Estimated time left: 9 hours, 34 minutes, 58 seconds. Time passed: 3 hours, 51 minutes, 43 seconds
+[INFO 20:46:25] my_main Updated target network
+[INFO 20:47:22] my_main Updated target network
+[INFO 20:48:19] my_main Updated target network
+[INFO 20:49:16] my_main Updated target network
+[INFO 20:50:14] my_main Updated target network
+[INFO 20:50:35] my_main Recent Stats | t_env:     430159 | Episode:    44477
+battle_won_mean:           0.2340	ep_length_mean:            9.9650	epsilon:                   0.0500	loss:                      0.0923
+q_taken_mean:              0.1360	return_mean:               4.8586	return_std:                3.5483	target_mean:               1.2301
+td_error_abs:              0.1969	test_battle_won_mean:      0.3200	test_ep_length_mean:       9.9313	test_return_mean:          6.6000
+test_return_std:           2.3297	
+[INFO 20:50:35] my_main t_env: 430179 / 1505000
+[INFO 20:50:35] my_main Estimated time left: 9 hours, 31 minutes, 38 seconds. Time passed: 3 hours, 57 minutes, 3 seconds
+[INFO 20:51:44] my_main Updated target network
+[INFO 20:52:39] my_main Updated target network
+[INFO 20:53:34] my_main Updated target network
+[INFO 20:54:31] my_main Updated target network
+[INFO 20:55:29] my_main Updated target network
+[INFO 20:55:54] my_main Recent Stats | t_env:     440166 | Episode:    45482
+battle_won_mean:           0.2302	ep_length_mean:            9.9697	epsilon:                   0.0500	loss:                      0.0966
+q_taken_mean:              0.1362	return_mean:               4.8844	return_std:                3.5042	target_mean:               1.2260
+td_error_abs:              0.1969	test_battle_won_mean:      0.3167	test_ep_length_mean:       9.9353	test_return_mean:          6.5833
+test_return_std:           2.3220	
+[INFO 20:55:55] my_main t_env: 440186 / 1505000
+[INFO 20:55:55] my_main Estimated time left: 9 hours, 26 minutes, 18 seconds. Time passed: 4 hours, 2 minutes, 22 seconds
+[INFO 20:57:08] my_main Updated target network
+[INFO 20:58:09] my_main Updated target network
+[INFO 20:59:10] my_main Updated target network
+[INFO 21:00:12] my_main Updated target network
+[INFO 21:01:11] my_main Updated target network
+[INFO 21:01:35] my_main Recent Stats | t_env:     450174 | Episode:    46485
+battle_won_mean:           0.2293	ep_length_mean:            9.9677	epsilon:                   0.0500	loss:                      0.0997
+q_taken_mean:              0.1373	return_mean:               4.8616	return_std:                3.5165	target_mean:               1.2326
+td_error_abs:              0.2034	test_battle_won_mean:      0.3193	test_ep_length_mean:       9.9413	test_return_mean:          6.5967
+test_return_std:           2.3275	
+[INFO 21:01:36] my_main t_env: 450194 / 1505000
+[INFO 21:01:36] my_main Estimated time left: 9 hours, 59 minutes, 23 seconds. Time passed: 4 hours, 8 minutes, 3 seconds
+[INFO 21:02:42] my_main Updated target network
+[INFO 21:03:38] my_main Updated target network
+[INFO 21:04:34] my_main Updated target network
+[INFO 21:05:30] my_main Updated target network
+[INFO 21:06:27] my_main Updated target network
+[INFO 21:06:51] my_main Recent Stats | t_env:     460179 | Episode:    47488
+battle_won_mean:           0.2336	ep_length_mean:            9.9729	epsilon:                   0.0500	loss:                      0.0991
+q_taken_mean:              0.1396	return_mean:               4.8346	return_std:                3.5700	target_mean:               1.2197
+td_error_abs:              0.2122	test_battle_won_mean:      0.3127	test_ep_length_mean:       9.9587	test_return_mean:          6.5633
+test_return_std:           2.3141	
+[INFO 21:06:51] my_main t_env: 460199 / 1505000
+[INFO 21:06:51] my_main Estimated time left: 9 hours, 9 minutes, 3 seconds. Time passed: 4 hours, 13 minutes, 19 seconds
+[INFO 21:07:56] my_main Updated target network
+[INFO 21:08:52] my_main Updated target network
+[INFO 21:09:48] my_main Updated target network
+[INFO 21:10:42] my_main Updated target network
+[INFO 21:11:37] my_main Updated target network
+[INFO 21:12:01] my_main Recent Stats | t_env:     470184 | Episode:    48491
+battle_won_mean:           0.2364	ep_length_mean:            9.9743	epsilon:                   0.0500	loss:                      0.0856
+q_taken_mean:              0.1366	return_mean:               4.8236	return_std:                3.5993	target_mean:               1.2047
+td_error_abs:              0.1989	test_battle_won_mean:      0.3127	test_ep_length_mean:       9.9600	test_return_mean:          6.5633
+test_return_std:           2.3141	
+[INFO 21:12:02] my_main t_env: 470204 / 1505000
+[INFO 21:12:02] my_main Estimated time left: 8 hours, 54 minutes, 58 seconds. Time passed: 4 hours, 18 minutes, 29 seconds
+[INFO 21:13:05] my_main Updated target network
+[INFO 21:14:02] my_main Updated target network
+[INFO 21:15:01] my_main Updated target network
+[INFO 21:15:57] my_main Updated target network
+[INFO 21:16:53] my_main Updated target network
+[INFO 21:17:20] my_main Recent Stats | t_env:     480186 | Episode:    49492
+battle_won_mean:           0.2368	ep_length_mean:            9.9735	epsilon:                   0.0500	loss:                      0.0931
+q_taken_mean:              0.1362	return_mean:               4.7937	return_std:                3.6254	target_mean:               1.1898
+td_error_abs:              0.2079	test_battle_won_mean:      0.2973	test_ep_length_mean:       9.9620	test_return_mean:          6.4867
+test_return_std:           2.2841	
+[INFO 21:17:20] my_main t_env: 480206 / 1505000
+[INFO 21:17:20] my_main Estimated time left: 9 hours, 4 minutes, 9 seconds. Time passed: 4 hours, 23 minutes, 48 seconds
+[INFO 21:18:25] my_main Updated target network
+[INFO 21:19:20] my_main Updated target network
+[INFO 21:20:18] my_main Updated target network
+[INFO 21:21:15] my_main Updated target network
+[INFO 21:22:09] my_main Updated target network
+[INFO 21:22:36] my_main Recent Stats | t_env:     490186 | Episode:    50493
+battle_won_mean:           0.2351	ep_length_mean:            9.9755	epsilon:                   0.0500	loss:                      0.1210
+q_taken_mean:              0.1359	return_mean:               4.7118	return_std:                3.6795	target_mean:               1.2053
+td_error_abs:              0.2217	test_battle_won_mean:      0.2893	test_ep_length_mean:       9.9667	test_return_mean:          6.4467
+test_return_std:           2.2626	
+[INFO 21:22:37] my_main t_env: 490215 / 1505000
+[INFO 21:22:37] my_main Estimated time left: 8 hours, 54 minutes, 44 seconds. Time passed: 4 hours, 29 minutes, 4 seconds
+[INFO 21:23:42] my_main Updated target network
+[INFO 21:24:42] my_main Updated target network
+[INFO 21:25:41] my_main Updated target network
+[INFO 21:26:41] my_main Updated target network
+[INFO 21:27:40] my_main Updated target network
+[INFO 21:28:03] my_main Saving models to result/result.gather/cgmix_mixemb4_alpha0.5_onff8/models/cgmix__2022-11-11_16-53-26/500016
+[INFO 21:28:08] my_main Recent Stats | t_env:     500186 | Episode:    51495
+battle_won_mean:           0.2318	ep_length_mean:            9.9818	epsilon:                   0.0500	loss:                      0.1266
+q_taken_mean:              0.1340	return_mean:               4.5909	return_std:                3.7412	target_mean:               1.1850
+td_error_abs:              0.2256	test_battle_won_mean:      0.2927	test_ep_length_mean:       9.9480	test_return_mean:          6.4633
+test_return_std:           2.2688	
+[INFO 21:28:09] my_main t_env: 500215 / 1505000
+[INFO 21:28:09] my_main Estimated time left: 9 hours, 16 minutes, 47 seconds. Time passed: 4 hours, 34 minutes, 36 seconds
+[INFO 21:29:20] my_main Updated target network
+[INFO 21:30:16] my_main Updated target network
+[INFO 21:31:11] my_main Updated target network
+[INFO 21:32:07] my_main Updated target network
+[INFO 21:33:05] my_main Updated target network
+[INFO 21:33:33] my_main Recent Stats | t_env:     510191 | Episode:    52498
+battle_won_mean:           0.2249	ep_length_mean:            9.9822	epsilon:                   0.0500	loss:                      0.1265
+q_taken_mean:              0.1301	return_mean:               4.5240	return_std:                3.7387	target_mean:               1.1613
+td_error_abs:              0.2097	test_battle_won_mean:      0.2920	test_ep_length_mean:       9.9507	test_return_mean:          6.4600
+test_return_std:           2.2673	
+[INFO 21:33:34] my_main t_env: 510221 / 1505000
+[INFO 21:33:34] my_main Estimated time left: 8 hours, 58 minutes, 5 seconds. Time passed: 4 hours, 40 minutes, 1 seconds
+[INFO 21:34:37] my_main Updated target network
+[INFO 21:35:32] my_main Updated target network
+[INFO 21:36:29] my_main Updated target network
+[INFO 21:37:25] my_main Updated target network
+[INFO 21:38:23] my_main Updated target network
+[INFO 21:38:50] my_main Recent Stats | t_env:     520194 | Episode:    53500
+battle_won_mean:           0.2217	ep_length_mean:            9.9824	epsilon:                   0.0500	loss:                      0.1101
+q_taken_mean:              0.1305	return_mean:               4.4692	return_std:                3.7579	target_mean:               1.1819
+td_error_abs:              0.1929	test_battle_won_mean:      0.2900	test_ep_length_mean:       9.9593	test_return_mean:          6.4500
+test_return_std:           2.2630	
+[INFO 21:38:51] my_main t_env: 520224 / 1505000
+[INFO 21:38:51] my_main Estimated time left: 8 hours, 39 minutes, 56 seconds. Time passed: 4 hours, 45 minutes, 18 seconds
+[INFO 21:39:53] my_main Updated target network
+[INFO 21:40:50] my_main Updated target network
+[INFO 21:41:45] my_main Updated target network
+[INFO 21:42:42] my_main Updated target network
+[INFO 21:43:40] my_main Updated target network
+[INFO 21:44:09] my_main Recent Stats | t_env:     530195 | Episode:    54504
+battle_won_mean:           0.2194	ep_length_mean:            9.9840	epsilon:                   0.0500	loss:                      0.1214
+q_taken_mean:              0.1299	return_mean:               4.4282	return_std:                3.7707	target_mean:               1.1861
+td_error_abs:              0.2045	test_battle_won_mean:      0.3013	test_ep_length_mean:       9.9640	test_return_mean:          6.5067
+test_return_std:           2.2866	
+[INFO 21:44:10] my_main t_env: 530225 / 1505000
+[INFO 21:44:10] my_main Estimated time left: 8 hours, 38 minutes, 10 seconds. Time passed: 4 hours, 50 minutes, 37 seconds
+[INFO 21:45:10] my_main Updated target network
+[INFO 21:46:06] my_main Updated target network
+[INFO 21:47:02] my_main Updated target network
+[INFO 21:47:58] my_main Updated target network
+[INFO 21:48:54] my_main Updated target network
+[INFO 21:49:29] my_main Recent Stats | t_env:     540200 | Episode:    55524
+battle_won_mean:           0.2214	ep_length_mean:            9.9779	epsilon:                   0.0500	loss:                      0.1008
+q_taken_mean:              0.1302	return_mean:               4.4005	return_std:                3.8022	target_mean:               1.1826
+td_error_abs:              0.1875	test_battle_won_mean:      0.3193	test_ep_length_mean:       9.9520	test_return_mean:          6.5967
+test_return_std:           2.3289	
+[INFO 21:49:30] my_main t_env: 540230 / 1505000
+[INFO 21:49:30] my_main Estimated time left: 8 hours, 34 minutes, 25 seconds. Time passed: 4 hours, 55 minutes, 57 seconds
+[INFO 21:50:25] my_main Updated target network
+[INFO 21:51:21] my_main Updated target network
+[INFO 21:52:23] my_main Updated target network
+[INFO 21:53:23] my_main Updated target network
+[INFO 21:54:25] my_main Updated target network
+[INFO 21:55:12] my_main Recent Stats | t_env:     550208 | Episode:    56553
+battle_won_mean:           0.2254	ep_length_mean:            9.9418	epsilon:                   0.0500	loss:                      0.1050
+q_taken_mean:              0.1289	return_mean:               4.3650	return_std:                3.8412	target_mean:               1.1599
+td_error_abs:              0.1890	test_battle_won_mean:      0.3353	test_ep_length_mean:       9.9167	test_return_mean:          6.6767
+test_return_std:           2.3500	
+[INFO 21:55:13] my_main t_env: 550238 / 1505000
+[INFO 21:55:13] my_main Estimated time left: 9 hours, 5 minutes, 52 seconds. Time passed: 5 hours, 1 minutes, 40 seconds
+[INFO 21:56:06] my_main Updated target network
+[INFO 21:57:07] my_main Updated target network
+[INFO 21:58:06] my_main Updated target network
+[INFO 21:59:03] my_main Updated target network
+[INFO 22:00:00] my_main Updated target network
+[INFO 22:00:55] my_main Recent Stats | t_env:     560213 | Episode:    57597
+battle_won_mean:           0.2481	ep_length_mean:            9.8910	epsilon:                   0.0500	loss:                      0.1453
+q_taken_mean:              0.1274	return_mean:               4.4769	return_std:                3.9181	target_mean:               1.1534
+td_error_abs:              0.2232	test_battle_won_mean:      0.3627	test_ep_length_mean:       9.8587	test_return_mean:          6.8133
+test_return_std:           2.3897	
+[INFO 22:00:56] my_main t_env: 560243 / 1505000
+[INFO 22:00:56] my_main Estimated time left: 8 hours, 58 minutes, 46 seconds. Time passed: 5 hours, 7 minutes, 23 seconds
+[INFO 22:01:26] my_main Updated target network
+[INFO 22:02:22] my_main Updated target network
+[INFO 22:03:19] my_main Updated target network
+[INFO 22:04:15] my_main Updated target network
+[INFO 22:05:11] my_main Updated target network
+[INFO 22:06:09] my_main Updated target network
+[INFO 22:06:33] my_main Recent Stats | t_env:     570222 | Episode:    58687
+battle_won_mean:           0.2776	ep_length_mean:            9.8125	epsilon:                   0.0500	loss:                      0.1719
+q_taken_mean:              0.1305	return_mean:               4.6380	return_std:                4.0128	target_mean:               1.1721
+td_error_abs:              0.2498	test_battle_won_mean:      0.4600	test_ep_length_mean:       9.5853	test_return_mean:          7.3000
+test_return_std:           2.3411	
+[INFO 22:06:34] my_main t_env: 570249 / 1505000
+[INFO 22:06:34] my_main Estimated time left: 8 hours, 46 minutes, 55 seconds. Time passed: 5 hours, 13 minutes, 1 seconds
+[INFO 22:07:36] my_main Updated target network
+[INFO 22:08:32] my_main Updated target network
+[INFO 22:09:29] my_main Updated target network
+[INFO 22:10:26] my_main Updated target network
+[INFO 22:11:24] my_main Updated target network
+[INFO 22:12:17] my_main Recent Stats | t_env:     580224 | Episode:    59791
+battle_won_mean:           0.3271	ep_length_mean:            9.6518	epsilon:                   0.0500	loss:                      0.2152
+q_taken_mean:              0.1330	return_mean:               4.8790	return_std:                4.1633	target_mean:               1.2572
+td_error_abs:              0.2900	test_battle_won_mean:      0.5473	test_ep_length_mean:       9.3180	test_return_mean:          7.7367
+test_return_std:           2.2872	
+[INFO 22:12:18] my_main t_env: 580258 / 1505000
+[INFO 22:12:18] my_main Estimated time left: 8 hours, 49 minutes, 38 seconds. Time passed: 5 hours, 18 minutes, 45 seconds
+[INFO 22:12:50] my_main Updated target network
+[INFO 22:13:47] my_main Updated target network
+[INFO 22:14:45] my_main Updated target network
+[INFO 22:15:42] my_main Updated target network
+[INFO 22:16:38] my_main Updated target network
+[INFO 22:17:35] my_main Updated target network
+[INFO 22:18:05] my_main Recent Stats | t_env:     590224 | Episode:    60907
+battle_won_mean:           0.3915	ep_length_mean:            9.4712	epsilon:                   0.0500	loss:                      0.3097
+q_taken_mean:              0.1352	return_mean:               5.2488	return_std:                4.2870	target_mean:               1.3050
+td_error_abs:              0.3404	test_battle_won_mean:      0.6393	test_ep_length_mean:       9.0833	test_return_mean:          8.1967
+test_return_std:           2.2208	
+[INFO 22:18:06] my_main t_env: 590261 / 1505000
+[INFO 22:18:06] my_main Estimated time left: 8 hours, 50 minutes, 21 seconds. Time passed: 5 hours, 24 minutes, 33 seconds
+[INFO 22:19:02] my_main Updated target network
+[INFO 22:19:59] my_main Updated target network
+[INFO 22:20:58] my_main Updated target network
+[INFO 22:21:58] my_main Updated target network
+[INFO 22:22:59] my_main Updated target network
+[INFO 22:23:59] my_main Updated target network
+[INFO 22:24:03] my_main Recent Stats | t_env:     600227 | Episode:    62012
+battle_won_mean:           0.4544	ep_length_mean:            9.3021	epsilon:                   0.0500	loss:                      0.3526
+q_taken_mean:              0.1417	return_mean:               5.6592	return_std:                4.4026	target_mean:               1.4347
+td_error_abs:              0.3749	test_battle_won_mean:      0.7053	test_ep_length_mean:       8.8947	test_return_mean:          8.5233
+test_return_std:           2.1745	
+[INFO 22:24:04] my_main t_env: 600265 / 1505000
+[INFO 22:24:04] my_main Estimated time left: 8 hours, 59 minutes, 27 seconds. Time passed: 5 hours, 30 minutes, 31 seconds
+[INFO 22:25:33] my_main Updated target network
+[INFO 22:26:30] my_main Updated target network
+[INFO 22:27:27] my_main Updated target network
+[INFO 22:28:24] my_main Updated target network
+[INFO 22:29:21] my_main Updated target network
+[INFO 22:29:54] my_main Recent Stats | t_env:     610228 | Episode:    63116
+battle_won_mean:           0.4937	ep_length_mean:            9.1675	epsilon:                   0.0500	loss:                      0.3576
+q_taken_mean:              0.1464	return_mean:               5.8488	return_std:                4.5075	target_mean:               1.5139
+td_error_abs:              0.3733	test_battle_won_mean:      0.7760	test_ep_length_mean:       8.6893	test_return_mean:          8.8767
+test_return_std:           2.0914	
+[INFO 22:29:56] my_main t_env: 610270 / 1505000
+[INFO 22:29:56] my_main Estimated time left: 8 hours, 44 minutes, 26 seconds. Time passed: 5 hours, 36 minutes, 23 seconds
+[INFO 22:30:49] my_main Updated target network
+[INFO 22:31:47] my_main Updated target network
+[INFO 22:32:44] my_main Updated target network
+[INFO 22:33:41] my_main Updated target network
+[INFO 22:34:38] my_main Updated target network
+[INFO 22:35:34] my_main Updated target network
+[INFO 22:35:39] my_main Recent Stats | t_env:     620228 | Episode:    64222
+battle_won_mean:           0.5294	ep_length_mean:            9.0617	epsilon:                   0.0500	loss:                      0.3615
+q_taken_mean:              0.1461	return_mean:               6.0374	return_std:                4.5707	target_mean:               1.5611
+td_error_abs:              0.3722	test_battle_won_mean:      0.7800	test_ep_length_mean:       8.6853	test_return_mean:          8.8933
+test_return_std:           2.0875	
+[INFO 22:35:41] my_main t_env: 620272 / 1505000
+[INFO 22:35:41] my_main Estimated time left: 8 hours, 28 minutes, 51 seconds. Time passed: 5 hours, 42 minutes, 8 seconds
+[INFO 22:37:01] my_main Updated target network
+[INFO 22:37:58] my_main Updated target network
+[INFO 22:38:55] my_main Updated target network
+[INFO 22:39:51] my_main Updated target network
+[INFO 22:40:45] my_main Updated target network
+[INFO 22:41:20] my_main Recent Stats | t_env:     630229 | Episode:    65327
+battle_won_mean:           0.5507	ep_length_mean:            9.0345	epsilon:                   0.0500	loss:                      0.3956
+q_taken_mean:              0.1452	return_mean:               6.2039	return_std:                4.5658	target_mean:               1.5667
+td_error_abs:              0.3629	test_battle_won_mean:      0.7820	test_ep_length_mean:       8.7353	test_return_mean:          8.9033
+test_return_std:           2.0808	
+[INFO 22:41:22] my_main t_env: 630272 / 1505000
+[INFO 22:41:22] my_main Estimated time left: 8 hours, 16 minutes, 42 seconds. Time passed: 5 hours, 47 minutes, 49 seconds
+[INFO 22:42:11] my_main Updated target network
+[INFO 22:43:08] my_main Updated target network
+[INFO 22:44:05] my_main Updated target network
+[INFO 22:45:02] my_main Updated target network
+[INFO 22:45:58] my_main Updated target network
+[INFO 22:46:54] my_main Updated target network
+[INFO 22:47:06] my_main Recent Stats | t_env:     640236 | Episode:    66442
+battle_won_mean:           0.5521	ep_length_mean:            9.0328	epsilon:                   0.0500	loss:                      0.3180
+q_taken_mean:              0.1478	return_mean:               6.1894	return_std:                4.6008	target_mean:               1.5651
+td_error_abs:              0.3327	test_battle_won_mean:      0.7813	test_ep_length_mean:       8.7373	test_return_mean:          8.9000
+test_return_std:           2.0832	
+[INFO 22:47:07] my_main t_env: 640281 / 1505000
+[INFO 22:47:07] my_main Estimated time left: 8 hours, 18 minutes, 0 seconds. Time passed: 5 hours, 53 minutes, 35 seconds
+[INFO 22:48:22] my_main Updated target network
+[INFO 22:49:23] my_main Updated target network
+[INFO 22:50:24] my_main Updated target network
+[INFO 22:51:25] my_main Updated target network
+[INFO 22:52:25] my_main Updated target network
+[INFO 22:53:12] my_main Recent Stats | t_env:     650243 | Episode:    67553
+battle_won_mean:           0.5561	ep_length_mean:            9.0355	epsilon:                   0.0500	loss:                      0.3072
+q_taken_mean:              0.1453	return_mean:               6.2479	return_std:                4.5720	target_mean:               1.5367
+td_error_abs:              0.3258	test_battle_won_mean:      0.7907	test_ep_length_mean:       8.7540	test_return_mean:          8.9433
+test_return_std:           2.0649	
+[INFO 22:53:13] my_main t_env: 650290 / 1505000
+[INFO 22:53:13] my_main Estimated time left: 8 hours, 41 minutes, 0 seconds. Time passed: 5 hours, 59 minutes, 41 seconds
+[INFO 22:53:58] my_main Updated target network
+[INFO 22:54:56] my_main Updated target network
+[INFO 22:55:53] my_main Updated target network
+[INFO 22:56:49] my_main Updated target network
+[INFO 22:57:46] my_main Updated target network
+[INFO 22:58:43] my_main Updated target network
+[INFO 22:58:58] my_main Recent Stats | t_env:     660244 | Episode:    68657
+battle_won_mean:           0.5711	ep_length_mean:            9.0266	epsilon:                   0.0500	loss:                      0.3026
+q_taken_mean:              0.1468	return_mean:               6.4224	return_std:                4.4970	target_mean:               1.5164
+td_error_abs:              0.3286	test_battle_won_mean:      0.7953	test_ep_length_mean:       8.7293	test_return_mean:          8.9533
+test_return_std:           2.0895	
+[INFO 22:59:00] my_main t_env: 660295 / 1505000
+[INFO 22:59:00] my_main Estimated time left: 8 hours, 7 minutes, 45 seconds. Time passed: 6 hours, 5 minutes, 27 seconds
+[INFO 23:00:09] my_main Updated target network
+[INFO 23:01:05] my_main Updated target network
+[INFO 23:02:01] my_main Updated target network
+[INFO 23:02:56] my_main Updated target network
+[INFO 23:03:52] my_main Updated target network
+[INFO 23:04:45] my_main Recent Stats | t_env:     670251 | Episode:    69788
+battle_won_mean:           0.5752	ep_length_mean:            9.0266	epsilon:                   0.0500	loss:                      0.2974
+q_taken_mean:              0.1434	return_mean:               6.4686	return_std:                4.4818	target_mean:               1.5170
+td_error_abs:              0.3225	test_battle_won_mean:      0.7960	test_ep_length_mean:       8.7180	test_return_mean:          8.9600
+test_return_std:           2.0760	
+[INFO 23:04:46] my_main t_env: 670299 / 1505000
+[INFO 23:04:46] my_main Estimated time left: 8 hours, 1 minutes, 31 seconds. Time passed: 6 hours, 11 minutes, 14 seconds
+[INFO 23:05:19] my_main Updated target network
+[INFO 23:06:16] my_main Updated target network
+[INFO 23:07:14] my_main Updated target network
+[INFO 23:08:13] my_main Updated target network
+[INFO 23:09:11] my_main Updated target network
+[INFO 23:10:07] my_main Updated target network
+[INFO 23:10:41] my_main Recent Stats | t_env:     680259 | Episode:    70924
+battle_won_mean:           0.5832	ep_length_mean:            8.9886	epsilon:                   0.0500	loss:                      0.2732
+q_taken_mean:              0.1426	return_mean:               6.5430	return_std:                4.4675	target_mean:               1.5168
+td_error_abs:              0.3125	test_battle_won_mean:      0.8193	test_ep_length_mean:       8.6253	test_return_mean:          9.0767
+test_return_std:           1.9641	
+[INFO 23:10:42] my_main t_env: 680300 / 1505000
+[INFO 23:10:42] my_main Estimated time left: 8 hours, 9 minutes, 20 seconds. Time passed: 6 hours, 17 minutes, 10 seconds
+[INFO 23:11:31] my_main Updated target network
+[INFO 23:12:29] my_main Updated target network
+[INFO 23:13:29] my_main Updated target network
+[INFO 23:14:27] my_main Updated target network
+[INFO 23:15:25] my_main Updated target network
+[INFO 23:16:22] my_main Updated target network
+[INFO 23:16:43] my_main Recent Stats | t_env:     690263 | Episode:    72073
+battle_won_mean:           0.5906	ep_length_mean:            8.9394	epsilon:                   0.0500	loss:                      0.2668
+q_taken_mean:              0.1434	return_mean:               6.6048	return_std:                4.4580	target_mean:               1.5753
+td_error_abs:              0.3122	test_battle_won_mean:      0.8553	test_ep_length_mean:       8.5000	test_return_mean:          9.2567
+test_return_std:           1.7273	
+[INFO 23:16:45] my_main t_env: 690305 / 1505000
+[INFO 23:16:45] my_main Estimated time left: 8 hours, 11 minutes, 43 seconds. Time passed: 6 hours, 23 minutes, 12 seconds
+[INFO 23:17:54] my_main Updated target network
+[INFO 23:18:55] my_main Updated target network
+[INFO 23:19:56] my_main Updated target network
+[INFO 23:20:57] my_main Updated target network
+[INFO 23:21:57] my_main Updated target network
+[INFO 23:22:55] my_main Updated target network
+[INFO 23:23:03] my_main Recent Stats | t_env:     700271 | Episode:    73228
+battle_won_mean:           0.6034	ep_length_mean:            8.8855	epsilon:                   0.0500	loss:                      0.2759
+q_taken_mean:              0.1465	return_mean:               6.7036	return_std:                4.4520	target_mean:               1.5814
+td_error_abs:              0.3191	test_battle_won_mean:      0.8880	test_ep_length_mean:       8.3547	test_return_mean:          9.4267
+test_return_std:           1.5104	
+[INFO 23:23:04] my_main t_env: 700306 / 1505000
+[INFO 23:23:04] my_main Estimated time left: 8 hours, 29 minutes, 7 seconds. Time passed: 6 hours, 29 minutes, 32 seconds
+[INFO 23:24:21] my_main Updated target network
+[INFO 23:25:19] my_main Updated target network
+[INFO 23:26:17] my_main Updated target network
+[INFO 23:27:14] my_main Updated target network
+[INFO 23:28:11] my_main Updated target network
+[INFO 23:29:07] my_main Updated target network
+[INFO 23:29:09] my_main Recent Stats | t_env:     710279 | Episode:    74406
+battle_won_mean:           0.6183	ep_length_mean:            8.8170	epsilon:                   0.0500	loss:                      0.3114
+q_taken_mean:              0.1452	return_mean:               6.7969	return_std:                4.4485	target_mean:               1.5930
+td_error_abs:              0.3294	test_battle_won_mean:      0.9127	test_ep_length_mean:       8.2633	test_return_mean:          9.5467
+test_return_std:           1.4092	
+[INFO 23:29:10] my_main t_env: 710310 / 1505000
+[INFO 23:29:10] my_main Estimated time left: 8 hours, 4 minutes, 31 seconds. Time passed: 6 hours, 35 minutes, 38 seconds
+[INFO 23:30:34] my_main Updated target network
+[INFO 23:31:31] my_main Updated target network
+[INFO 23:32:28] my_main Updated target network
+[INFO 23:33:24] my_main Updated target network
+[INFO 23:34:22] my_main Updated target network
+[INFO 23:35:10] my_main Recent Stats | t_env:     720283 | Episode:    75572
+battle_won_mean:           0.6465	ep_length_mean:            8.7046	epsilon:                   0.0500	loss:                      0.3520
+q_taken_mean:              0.1535	return_mean:               7.0257	return_std:                4.3619	target_mean:               1.6219
+td_error_abs:              0.3567	test_battle_won_mean:      0.9507	test_ep_length_mean:       8.1453	test_return_mean:          9.7367
+test_return_std:           1.0169	
+[INFO 23:35:11] my_main t_env: 720314 / 1505000
+[INFO 23:35:11] my_main Estimated time left: 7 hours, 51 minutes, 18 seconds. Time passed: 6 hours, 41 minutes, 38 seconds
+[INFO 23:35:47] my_main Updated target network
+[INFO 23:36:45] my_main Updated target network
+[INFO 23:37:41] my_main Updated target network
+[INFO 23:38:38] my_main Updated target network
+[INFO 23:39:35] my_main Updated target network
+[INFO 23:40:31] my_main Updated target network
+[INFO 23:41:14] my_main Recent Stats | t_env:     730289 | Episode:    76750
+battle_won_mean:           0.6599	ep_length_mean:            8.6500	epsilon:                   0.0500	loss:                      0.3634
+q_taken_mean:              0.1589	return_mean:               7.1209	return_std:                4.3327	target_mean:               1.6576
+td_error_abs:              0.3716	test_battle_won_mean:      0.9707	test_ep_length_mean:       8.0427	test_return_mean:          9.8367
+test_return_std:           0.7169	
+[INFO 23:41:15] my_main t_env: 730318 / 1505000
+[INFO 23:41:15] my_main Estimated time left: 7 hours, 49 minutes, 27 seconds. Time passed: 6 hours, 47 minutes, 42 seconds
+[INFO 23:41:59] my_main Updated target network
+[INFO 23:42:57] my_main Updated target network
+[INFO 23:43:52] my_main Updated target network
+[INFO 23:44:49] my_main Updated target network
+[INFO 23:45:46] my_main Updated target network
+[INFO 23:46:47] my_main Updated target network
+[INFO 23:47:25] my_main Recent Stats | t_env:     740295 | Episode:    77922
+battle_won_mean:           0.6855	ep_length_mean:            8.5891	epsilon:                   0.0500	loss:                      0.3982
+q_taken_mean:              0.1598	return_mean:               7.3436	return_std:                4.2253	target_mean:               1.6440
+td_error_abs:              0.3811	test_battle_won_mean:      0.9767	test_ep_length_mean:       8.0507	test_return_mean:          9.8667
+test_return_std:           0.5463	
+[INFO 23:47:26] my_main t_env: 740323 / 1505000
+[INFO 23:47:26] my_main Estimated time left: 7 hours, 52 minutes, 49 seconds. Time passed: 6 hours, 53 minutes, 53 seconds
+[INFO 23:48:23] my_main Updated target network
+[INFO 23:49:26] my_main Updated target network
+[INFO 23:50:29] my_main Updated target network
+[INFO 23:51:28] my_main Updated target network
+[INFO 23:52:25] my_main Updated target network
+[INFO 23:53:22] my_main Updated target network
+[INFO 23:53:45] my_main Recent Stats | t_env:     750303 | Episode:    79083
+battle_won_mean:           0.7028	ep_length_mean:            8.5550	epsilon:                   0.0500	loss:                      0.3943
+q_taken_mean:              0.1639	return_mean:               7.4847	return_std:                4.1598	target_mean:               1.6634
+td_error_abs:              0.3703	test_battle_won_mean:      0.9860	test_ep_length_mean:       8.0480	test_return_mean:          9.9133
+test_return_std:           0.3354	
+[INFO 23:53:46] my_main t_env: 750329 / 1505000
+[INFO 23:53:46] my_main Estimated time left: 7 hours, 57 minutes, 33 seconds. Time passed: 7 hours, 13 seconds
+[INFO 23:54:47] my_main Updated target network
+[INFO 23:55:45] my_main Updated target network
+[INFO 23:56:44] my_main Updated target network
+[INFO 23:57:40] my_main Updated target network
+[INFO 23:58:37] my_main Updated target network
+[INFO 23:59:35] my_main Updated target network
+[INFO 23:59:48] my_main Recent Stats | t_env:     760311 | Episode:    80247
+battle_won_mean:           0.7082	ep_length_mean:            8.5439	epsilon:                   0.0500	loss:                      0.3601
+q_taken_mean:              0.1652	return_mean:               7.5263	return_std:                4.1511	target_mean:               1.7140
+td_error_abs:              0.3438	test_battle_won_mean:      0.9993	test_ep_length_mean:       8.0027	test_return_mean:          9.9967
+test_return_std:           0.0576	
+[INFO 23:59:48] my_main t_env: 760335 / 1505000
+[INFO 23:59:48] my_main Estimated time left: 7 hours, 29 minutes, 40 seconds. Time passed: 7 hours, 6 minutes, 16 seconds
+[INFO 00:00:59] my_main Updated target network
+[INFO 00:01:56] my_main Updated target network
+[INFO 00:02:55] my_main Updated target network
+[INFO 00:03:53] my_main Updated target network
+[INFO 00:04:52] my_main Updated target network
+[INFO 00:05:50] my_main Updated target network
+[INFO 00:05:50] my_main Recent Stats | t_env:     770319 | Episode:    81401
+battle_won_mean:           0.7040	ep_length_mean:            8.5661	epsilon:                   0.0500	loss:                      0.3889
+q_taken_mean:              0.1653	return_mean:               7.4815	return_std:                4.1905	target_mean:               1.7457
+td_error_abs:              0.3441	test_battle_won_mean:      0.9987	test_ep_length_mean:       8.0460	test_return_mean:          9.9933
+test_return_std:           0.1153	
+[INFO 00:05:51] my_main t_env: 770343 / 1505000
+[INFO 00:05:51] my_main Estimated time left: 7 hours, 23 minutes, 12 seconds. Time passed: 7 hours, 12 minutes, 18 seconds
+[INFO 00:07:14] my_main Updated target network
+[INFO 00:08:12] my_main Updated target network
+[INFO 00:09:09] my_main Updated target network
+[INFO 00:10:06] my_main Updated target network
+[INFO 00:11:04] my_main Updated target network
+[INFO 00:11:52] my_main Recent Stats | t_env:     780324 | Episode:    82569
+battle_won_mean:           0.7046	ep_length_mean:            8.5847	epsilon:                   0.0500	loss:                      0.3583
+q_taken_mean:              0.1711	return_mean:               7.4749	return_std:                4.2011	target_mean:               1.7415
+td_error_abs:              0.3313	test_battle_won_mean:      0.9953	test_ep_length_mean:       8.0693	test_return_mean:          9.9767
+test_return_std:           0.2433	
+[INFO 00:11:53] my_main t_env: 780352 / 1505000
+[INFO 00:11:53] my_main Estimated time left: 7 hours, 17 minutes, 15 seconds. Time passed: 7 hours, 18 minutes, 20 seconds
+[INFO 00:12:30] my_main Updated target network
+[INFO 00:13:27] my_main Updated target network
+[INFO 00:14:22] my_main Updated target network
+[INFO 00:15:21] my_main Updated target network
+[INFO 00:16:25] my_main Updated target network
+[INFO 00:17:26] my_main Updated target network
+[INFO 00:18:08] my_main Recent Stats | t_env:     790332 | Episode:    83742
+battle_won_mean:           0.7030	ep_length_mean:            8.5986	epsilon:                   0.0500	loss:                      0.3643
+q_taken_mean:              0.1683	return_mean:               7.4739	return_std:                4.1945	target_mean:               1.7583
+td_error_abs:              0.3411	test_battle_won_mean:      0.9873	test_ep_length_mean:       8.1047	test_return_mean:          9.9267
+test_return_std:           0.5031	
+[INFO 00:18:09] my_main t_env: 790360 / 1505000
+[INFO 00:18:09] my_main Estimated time left: 7 hours, 27 minutes, 58 seconds. Time passed: 7 hours, 24 minutes, 37 seconds
+[INFO 00:18:59] my_main Updated target network
+[INFO 00:20:01] my_main Updated target network
+[INFO 00:21:00] my_main Updated target network
+[INFO 00:21:57] my_main Updated target network
+[INFO 00:22:54] my_main Updated target network
+[INFO 00:23:52] my_main Updated target network
+[INFO 00:24:25] my_main Recent Stats | t_env:     800339 | Episode:    84914
+battle_won_mean:           0.7006	ep_length_mean:            8.5977	epsilon:                   0.0500	loss:                      0.3514
+q_taken_mean:              0.1706	return_mean:               7.4812	return_std:                4.1680	target_mean:               1.7758
+td_error_abs:              0.3365	test_battle_won_mean:      0.9873	test_ep_length_mean:       8.0973	test_return_mean:          9.9267
+test_return_std:           0.5031	
+[INFO 00:24:26] my_main t_env: 800369 / 1505000
+[INFO 00:24:26] my_main Estimated time left: 7 hours, 22 minutes, 11 seconds. Time passed: 7 hours, 30 minutes, 53 seconds
+[INFO 00:25:19] my_main Updated target network
+[INFO 00:26:16] my_main Updated target network
+[INFO 00:27:15] my_main Updated target network
+[INFO 00:28:11] my_main Updated target network
+[INFO 00:29:08] my_main Updated target network
+[INFO 00:30:05] my_main Updated target network
+[INFO 00:30:29] my_main Recent Stats | t_env:     810344 | Episode:    86082
+battle_won_mean:           0.7047	ep_length_mean:            8.5835	epsilon:                   0.0500	loss:                      0.3540
+q_taken_mean:              0.1767	return_mean:               7.5341	return_std:                4.1154	target_mean:               1.7723
+td_error_abs:              0.3466	test_battle_won_mean:      0.9873	test_ep_length_mean:       8.1627	test_return_mean:          9.9233
+test_return_std:           0.5607	
+[INFO 00:30:30] my_main t_env: 810372 / 1505000
+[INFO 00:30:30] my_main Estimated time left: 7 hours, 50 seconds. Time passed: 7 hours, 36 minutes, 57 seconds
+[INFO 00:31:33] my_main Updated target network
+[INFO 00:32:30] my_main Updated target network
+[INFO 00:33:28] my_main Updated target network
+[INFO 00:34:25] my_main Updated target network
+[INFO 00:35:22] my_main Updated target network
+[INFO 00:36:20] my_main Updated target network
+[INFO 00:36:34] my_main Recent Stats | t_env:     820347 | Episode:    87247
+battle_won_mean:           0.7123	ep_length_mean:            8.5756	epsilon:                   0.0500	loss:                      0.2808
+q_taken_mean:              0.1828	return_mean:               7.5937	return_std:                4.0767	target_mean:               1.7686
+td_error_abs:              0.3219	test_battle_won_mean:      0.9873	test_ep_length_mean:       8.1507	test_return_mean:          9.9233
+test_return_std:           0.5607	
+[INFO 00:36:35] my_main t_env: 820381 / 1505000
+[INFO 00:36:35] my_main Estimated time left: 6 hours, 56 minutes, 0 seconds. Time passed: 7 hours, 43 minutes, 2 seconds
+[INFO 00:37:46] my_main Updated target network
+[INFO 00:38:44] my_main Updated target network
+[INFO 00:39:42] my_main Updated target network
+[INFO 00:40:39] my_main Updated target network
+[INFO 00:41:36] my_main Updated target network
+[INFO 00:42:35] my_main Updated target network
+[INFO 00:42:39] my_main Recent Stats | t_env:     830349 | Episode:    88415
+battle_won_mean:           0.7243	ep_length_mean:            8.5579	epsilon:                   0.0500	loss:                      0.2979
+q_taken_mean:              0.1849	return_mean:               7.7160	return_std:                3.9874	target_mean:               1.7839
+td_error_abs:              0.3248	test_battle_won_mean:      0.9907	test_ep_length_mean:       8.1660	test_return_mean:          9.9400
+test_return_std:           0.4327	
+[INFO 00:42:40] my_main t_env: 830383 / 1505000
+[INFO 00:42:40] my_main Estimated time left: 6 hours, 50 minutes, 35 seconds. Time passed: 7 hours, 49 minutes, 7 seconds
+[INFO 00:44:04] my_main Updated target network
+[INFO 00:45:05] my_main Updated target network
+[INFO 00:46:07] my_main Updated target network
+[INFO 00:47:09] my_main Updated target network
+[INFO 00:48:09] my_main Updated target network
+[INFO 00:49:01] my_main Recent Stats | t_env:     840358 | Episode:    89572
+battle_won_mean:           0.7310	ep_length_mean:            8.5567	epsilon:                   0.0500	loss:                      0.3005
+q_taken_mean:              0.1863	return_mean:               7.7794	return_std:                3.9435	target_mean:               1.7655
+td_error_abs:              0.3199	test_battle_won_mean:      0.9980	test_ep_length_mean:       8.1733	test_return_mean:          9.9833
+test_return_std:           0.2882	
+[INFO 00:49:02] my_main t_env: 840392 / 1505000
+[INFO 00:49:02] my_main Estimated time left: 7 hours, 2 minutes, 31 seconds. Time passed: 7 hours, 55 minutes, 29 seconds
+[INFO 00:49:40] my_main Updated target network
+[INFO 00:50:37] my_main Updated target network
+[INFO 00:51:35] my_main Updated target network
+[INFO 00:52:31] my_main Updated target network
+[INFO 00:53:29] my_main Updated target network
+[INFO 00:54:27] my_main Updated target network
+[INFO 00:54:54] my_main Recent Stats | t_env:     850367 | Episode:    90696
+battle_won_mean:           0.7323	ep_length_mean:            8.5805	epsilon:                   0.0500	loss:                      0.3031
+q_taken_mean:              0.1833	return_mean:               7.7556	return_std:                3.9799	target_mean:               1.7626
+td_error_abs:              0.3207	test_battle_won_mean:      0.9960	test_ep_length_mean:       8.2807	test_return_mean:          9.9667
+test_return_std:           0.4606	
+[INFO 00:54:55] my_main t_env: 850395 / 1505000
+[INFO 00:54:55] my_main Estimated time left: 6 hours, 25 minutes, 31 seconds. Time passed: 8 hours, 1 minutes, 23 seconds
+[INFO 00:55:55] my_main Updated target network
+[INFO 00:56:53] my_main Updated target network
+[INFO 00:57:50] my_main Updated target network
+[INFO 00:58:47] my_main Updated target network
+[INFO 00:59:45] my_main Updated target network
+[INFO 01:00:41] my_main Updated target network
+[INFO 01:00:54] my_main Recent Stats | t_env:     860369 | Episode:    91846
+battle_won_mean:           0.7314	ep_length_mean:            8.6540	epsilon:                   0.0500	loss:                      0.2856
+q_taken_mean:              0.1846	return_mean:               7.7170	return_std:                4.0209	target_mean:               1.7925
+td_error_abs:              0.3065	test_battle_won_mean:      0.9967	test_ep_length_mean:       8.3447	test_return_mean:          9.9733
+test_return_std:           0.3453	
+[INFO 01:00:55] my_main t_env: 860399 / 1505000
+[INFO 01:00:55] my_main Estimated time left: 6 hours, 26 minutes, 14 seconds. Time passed: 8 hours, 7 minutes, 22 seconds
+[INFO 01:02:09] my_main Updated target network
+[INFO 01:03:08] my_main Updated target network
+[INFO 01:04:06] my_main Updated target network
+[INFO 01:05:02] my_main Updated target network
+[INFO 01:06:00] my_main Updated target network
+[INFO 01:06:48] my_main Recent Stats | t_env:     870370 | Episode:    92971
+battle_won_mean:           0.7316	ep_length_mean:            8.6809	epsilon:                   0.0500	loss:                      0.3042
+q_taken_mean:              0.1810	return_mean:               7.7124	return_std:                4.0304	target_mean:               1.8034
+td_error_abs:              0.3113	test_battle_won_mean:      0.9973	test_ep_length_mean:       8.4100	test_return_mean:          9.9767
+test_return_std:           0.2877	
+[INFO 01:06:49] my_main t_env: 870406 / 1505000
+[INFO 01:06:49] my_main Estimated time left: 6 hours, 14 minutes, 18 seconds. Time passed: 8 hours, 13 minutes, 16 seconds
+[INFO 01:07:28] my_main Updated target network
+[INFO 01:08:26] my_main Updated target network
+[INFO 01:09:23] my_main Updated target network
+[INFO 01:10:19] my_main Updated target network
+[INFO 01:11:16] my_main Updated target network
+[INFO 01:12:13] my_main Updated target network
+[INFO 01:12:40] my_main Recent Stats | t_env:     880374 | Episode:    94097
+battle_won_mean:           0.7284	ep_length_mean:            8.7416	epsilon:                   0.0500	loss:                      0.2603
+q_taken_mean:              0.1709	return_mean:               7.6723	return_std:                4.0754	target_mean:               1.7980
+td_error_abs:              0.2898	test_battle_won_mean:      0.9960	test_ep_length_mean:       8.5027	test_return_mean:          9.9667
+test_return_std:           0.4164	
+[INFO 01:12:41] my_main t_env: 880408 / 1505000
+[INFO 01:12:41] my_main Estimated time left: 6 hours, 5 minutes, 55 seconds. Time passed: 8 hours, 19 minutes, 8 seconds
+[INFO 01:13:42] my_main Updated target network
+[INFO 01:14:44] my_main Updated target network
+[INFO 01:15:44] my_main Updated target network
+[INFO 01:16:46] my_main Updated target network
+[INFO 01:17:47] my_main Updated target network
+[INFO 01:18:46] my_main Updated target network
+[INFO 01:18:57] my_main Recent Stats | t_env:     890376 | Episode:    95237
+battle_won_mean:           0.7235	ep_length_mean:            8.8055	epsilon:                   0.0500	loss:                      0.2534
+q_taken_mean:              0.1779	return_mean:               7.6235	return_std:                4.1143	target_mean:               1.8244
+td_error_abs:              0.2803	test_battle_won_mean:      0.9967	test_ep_length_mean:       8.4467	test_return_mean:          9.9733
+test_return_std:           0.3011	
+[INFO 01:18:58] my_main t_env: 890411 / 1505000
+[INFO 01:18:58] my_main Estimated time left: 6 hours, 26 minutes, 46 seconds. Time passed: 8 hours, 25 minutes, 26 seconds
+[INFO 01:20:15] my_main Updated target network
+[INFO 01:21:12] my_main Updated target network
+[INFO 01:22:09] my_main Updated target network
+[INFO 01:23:06] my_main Updated target network
+[INFO 01:24:02] my_main Updated target network
+[INFO 01:24:55] my_main Recent Stats | t_env:     900381 | Episode:    96387
+battle_won_mean:           0.7304	ep_length_mean:            8.8302	epsilon:                   0.0500	loss:                      0.2368
+q_taken_mean:              0.1785	return_mean:               7.6986	return_std:                4.0506	target_mean:               1.8262
+td_error_abs:              0.2631	test_battle_won_mean:      0.9973	test_ep_length_mean:       8.3693	test_return_mean:          9.9833
+test_return_std:           0.2101	
+[INFO 01:24:56] my_main t_env: 900416 / 1505000
+[INFO 01:24:56] my_main Estimated time left: 6 hours, 33 seconds. Time passed: 8 hours, 31 minutes, 24 seconds
+[INFO 01:25:29] my_main Updated target network
+[INFO 01:26:26] my_main Updated target network
+[INFO 01:27:24] my_main Updated target network
+[INFO 01:28:23] my_main Updated target network
+[INFO 01:29:22] my_main Updated target network
+[INFO 01:30:21] my_main Updated target network
+[INFO 01:30:51] my_main Recent Stats | t_env:     910385 | Episode:    97507
+battle_won_mean:           0.7315	ep_length_mean:            8.7887	epsilon:                   0.0500	loss:                      0.2294
+q_taken_mean:              0.1778	return_mean:               7.7137	return_std:                4.0377	target_mean:               1.8175
+td_error_abs:              0.2789	test_battle_won_mean:      0.9973	test_ep_length_mean:       8.3453	test_return_mean:          9.9833
+test_return_std:           0.2101	
+[INFO 01:30:52] my_main t_env: 910421 / 1505000
+[INFO 01:30:52] my_main Estimated time left: 5 hours, 51 minutes, 58 seconds. Time passed: 8 hours, 37 minutes, 19 seconds
+[INFO 01:31:46] my_main Updated target network
+[INFO 01:32:43] my_main Updated target network
+[INFO 01:33:40] my_main Updated target network
+[INFO 01:34:37] my_main Updated target network
+[INFO 01:35:35] my_main Updated target network
+[INFO 01:36:33] my_main Updated target network
+[INFO 01:36:47] my_main Recent Stats | t_env:     920393 | Episode:    98649
+battle_won_mean:           0.7314	ep_length_mean:            8.8355	epsilon:                   0.0500	loss:                      0.2217
+q_taken_mean:              0.1789	return_mean:               7.7154	return_std:                4.0294	target_mean:               1.7974
+td_error_abs:              0.2835	test_battle_won_mean:      0.9973	test_ep_length_mean:       8.3113	test_return_mean:          9.9833
+test_return_std:           0.2101	
+[INFO 01:36:48] my_main t_env: 920430 / 1505000
+[INFO 01:36:48] my_main Estimated time left: 5 hours, 47 minutes, 2 seconds. Time passed: 8 hours, 43 minutes, 16 seconds
+[INFO 01:38:01] my_main Updated target network
+[INFO 01:38:58] my_main Updated target network
+[INFO 01:39:56] my_main Updated target network
+[INFO 01:40:53] my_main Updated target network
+[INFO 01:41:51] my_main Updated target network
+[INFO 01:42:44] my_main Recent Stats | t_env:     930401 | Episode:    99780
+battle_won_mean:           0.7377	ep_length_mean:            8.8110	epsilon:                   0.0500	loss:                      0.2533
+q_taken_mean:              0.1811	return_mean:               7.7518	return_std:                4.0171	target_mean:               1.8001
+td_error_abs:              0.2907	test_battle_won_mean:      0.9987	test_ep_length_mean:       8.3060	test_return_mean:          9.9933
+test_return_std:           0.0814	
+[INFO 01:42:46] my_main t_env: 930436 / 1505000
+[INFO 01:42:46] my_main Estimated time left: 5 hours, 42 minutes, 10 seconds. Time passed: 8 hours, 49 minutes, 13 seconds
+[INFO 01:43:26] my_main Updated target network
+[INFO 01:44:27] my_main Updated target network
+[INFO 01:45:28] my_main Updated target network
+[INFO 01:46:29] my_main Updated target network
+[INFO 01:47:31] my_main Updated target network
+[INFO 01:48:29] my_main Updated target network
+[INFO 01:48:59] my_main Recent Stats | t_env:     940404 | Episode:   100905
+battle_won_mean:           0.7456	ep_length_mean:            8.8038	epsilon:                   0.0500	loss:                      0.2325
+q_taken_mean:              0.1741	return_mean:               7.7936	return_std:                4.0011	target_mean:               1.7816
+td_error_abs:              0.2831	test_battle_won_mean:      0.9987	test_ep_length_mean:       8.4273	test_return_mean:          9.9933
+test_return_std:           0.0814	
+[INFO 01:49:00] my_main t_env: 940441 / 1505000
+[INFO 01:49:00] my_main Estimated time left: 5 hours, 52 minutes, 10 seconds. Time passed: 8 hours, 55 minutes, 28 seconds
+[INFO 01:49:58] my_main Updated target network
+[INFO 01:50:55] my_main Updated target network
+[INFO 01:51:52] my_main Updated target network
+[INFO 01:52:51] my_main Updated target network
+[INFO 01:53:47] my_main Updated target network
+[INFO 01:54:45] my_main Updated target network
+[INFO 01:54:50] my_main Recent Stats | t_env:     950410 | Episode:   102019
+battle_won_mean:           0.7481	ep_length_mean:            8.8276	epsilon:                   0.0500	loss:                      0.2381
+q_taken_mean:              0.1709	return_mean:               7.7915	return_std:                4.0280	target_mean:               1.7762
+td_error_abs:              0.2901	test_battle_won_mean:      1.0000	test_ep_length_mean:       8.5033	test_return_mean:         10.0000
+test_return_std:           0.0000	
+[INFO 01:54:51] my_main t_env: 950450 / 1505000
+[INFO 01:54:51] my_main Estimated time left: 5 hours, 23 minutes, 49 seconds. Time passed: 9 hours, 1 minutes, 18 seconds
+[INFO 01:56:14] my_main Updated target network
+[INFO 01:57:11] my_main Updated target network
+[INFO 01:58:09] my_main Updated target network
+[INFO 01:59:06] my_main Updated target network
+[INFO 02:00:05] my_main Updated target network
+[INFO 02:00:44] my_main Recent Stats | t_env:     960418 | Episode:   103137
+battle_won_mean:           0.7519	ep_length_mean:            8.8845	epsilon:                   0.0500	loss:                      0.2443
+q_taken_mean:              0.1677	return_mean:               7.8173	return_std:                4.0177	target_mean:               1.7662
+td_error_abs:              0.2849	test_battle_won_mean:      1.0000	test_ep_length_mean:       8.5520	test_return_mean:         10.0000
+test_return_std:           0.0000	
+[INFO 02:00:45] my_main t_env: 960456 / 1505000
+[INFO 02:00:45] my_main Estimated time left: 5 hours, 21 minutes, 27 seconds. Time passed: 9 hours, 7 minutes, 13 seconds
+[INFO 02:01:34] my_main Updated target network
+[INFO 02:02:30] my_main Updated target network
+[INFO 02:03:26] my_main Updated target network
+[INFO 02:04:23] my_main Updated target network
+[INFO 02:05:19] my_main Updated target network
+[INFO 02:06:15] my_main Updated target network
+[INFO 02:06:28] my_main Recent Stats | t_env:     970427 | Episode:   104248
+battle_won_mean:           0.7568	ep_length_mean:            8.8879	epsilon:                   0.0500	loss:                      0.2424
+q_taken_mean:              0.1698	return_mean:               7.8460	return_std:                4.0175	target_mean:               1.8026
+td_error_abs:              0.2895	test_battle_won_mean:      1.0000	test_ep_length_mean:       8.6313	test_return_mean:         10.0000
+test_return_std:           0.0000	
+[INFO 02:06:29] my_main t_env: 970457 / 1505000
+[INFO 02:06:29] my_main Estimated time left: 5 hours, 5 minutes, 55 seconds. Time passed: 9 hours, 12 minutes, 56 seconds
+[INFO 02:07:41] my_main Updated target network
+[INFO 02:08:38] my_main Updated target network
+[INFO 02:09:36] my_main Updated target network
+[INFO 02:10:33] my_main Updated target network
+[INFO 02:11:30] my_main Updated target network
+[INFO 02:12:23] my_main Recent Stats | t_env:     980430 | Episode:   105381
+battle_won_mean:           0.7588	ep_length_mean:            8.9370	epsilon:                   0.0500	loss:                      0.2075
+q_taken_mean:              0.1746	return_mean:               7.8705	return_std:                3.9907	target_mean:               1.8329
+td_error_abs:              0.2846	test_battle_won_mean:      1.0000	test_ep_length_mean:       8.6540	test_return_mean:         10.0000
+test_return_std:           0.0000	
+[INFO 02:12:24] my_main t_env: 980466 / 1505000
+[INFO 02:12:24] my_main Estimated time left: 5 hours, 10 minutes, 33 seconds. Time passed: 9 hours, 18 minutes, 52 seconds
+[INFO 02:13:03] my_main Updated target network
+[INFO 02:14:04] my_main Updated target network
+[INFO 02:15:04] my_main Updated target network
+[INFO 02:16:08] my_main Updated target network
+[INFO 02:17:08] my_main Updated target network
+[INFO 02:18:05] my_main Updated target network
+[INFO 02:18:36] my_main Recent Stats | t_env:     990436 | Episode:   106506
+battle_won_mean:           0.7618	ep_length_mean:            8.9328	epsilon:                   0.0500	loss:                      0.1865
+q_taken_mean:              0.1826	return_mean:               7.8839	return_std:                3.9896	target_mean:               1.8656
+td_error_abs:              0.2822	test_battle_won_mean:      0.9980	test_ep_length_mean:       8.6100	test_return_mean:          9.9800
+test_return_std:           0.1990	
+[INFO 02:18:37] my_main t_env: 990473 / 1505000
+[INFO 02:18:37] my_main Estimated time left: 5 hours, 19 minutes, 23 seconds. Time passed: 9 hours, 25 minutes, 4 seconds
+[INFO 02:19:34] my_main Updated target network
+[INFO 02:20:31] my_main Updated target network
+[INFO 02:21:28] my_main Updated target network
+[INFO 02:22:25] my_main Updated target network
+[INFO 02:23:23] my_main Updated target network
+[INFO 02:24:17] my_main Saving models to result/result.gather/cgmix_mixemb4_alpha0.5_onff8/models/cgmix__2022-11-11_16-53-26/1000016
+[INFO 02:24:21] my_main Updated target network
+[INFO 02:24:31] my_main Recent Stats | t_env:    1000441 | Episode:   107636
+battle_won_mean:           0.7635	ep_length_mean:            8.9332	epsilon:                   0.0500	loss:                      0.2321
+q_taken_mean:              0.1875	return_mean:               7.8937	return_std:                3.9919	target_mean:               1.8714
+td_error_abs:              0.2905	test_battle_won_mean:      0.9973	test_ep_length_mean:       8.5840	test_return_mean:          9.9733
+test_return_std:           0.3143	
+[INFO 02:24:32] my_main t_env: 1000473 / 1505000
+[INFO 02:24:32] my_main Estimated time left: 4 hours, 58 minutes, 35 seconds. Time passed: 9 hours, 30 minutes, 59 seconds
+[INFO 02:25:48] my_main Updated target network
+[INFO 02:26:46] my_main Updated target network
+[INFO 02:27:43] my_main Updated target network
+[INFO 02:28:41] my_main Updated target network
+[INFO 02:29:38] my_main Updated target network
+[INFO 02:30:23] my_main Recent Stats | t_env:    1010444 | Episode:   108756
+battle_won_mean:           0.7683	ep_length_mean:            8.9062	epsilon:                   0.0500	loss:                      0.2062
+q_taken_mean:              0.1902	return_mean:               7.9222	return_std:                3.9861	target_mean:               1.8947
+td_error_abs:              0.2754	test_battle_won_mean:      0.9973	test_ep_length_mean:       8.5447	test_return_mean:          9.9733
+test_return_std:           0.3143	
+[INFO 02:30:24] my_main t_env: 1010480 / 1505000
+[INFO 02:30:24] my_main Estimated time left: 4 hours, 49 minutes, 40 seconds. Time passed: 9 hours, 36 minutes, 51 seconds
+[INFO 02:31:05] my_main Updated target network
+[INFO 02:32:02] my_main Updated target network
+[INFO 02:32:59] my_main Updated target network
+[INFO 02:33:57] my_main Updated target network
+[INFO 02:34:53] my_main Updated target network
+[INFO 02:35:50] my_main Updated target network
+[INFO 02:36:13] my_main Recent Stats | t_env:    1020444 | Episode:   109881
+battle_won_mean:           0.7729	ep_length_mean:            8.9031	epsilon:                   0.0500	loss:                      0.2123
+q_taken_mean:              0.1812	return_mean:               7.9730	return_std:                3.9347	target_mean:               1.8651
+td_error_abs:              0.2653	test_battle_won_mean:      0.9973	test_ep_length_mean:       8.5153	test_return_mean:          9.9733
+test_return_std:           0.3143	
+[INFO 02:36:14] my_main t_env: 1020480 / 1505000
+[INFO 02:36:14] my_main Estimated time left: 4 hours, 42 minutes, 24 seconds. Time passed: 9 hours, 42 minutes, 41 seconds
+[INFO 02:37:16] my_main Updated target network
+[INFO 02:38:13] my_main Updated target network
+[INFO 02:39:12] my_main Updated target network
+[INFO 02:40:14] my_main Updated target network
+[INFO 02:41:15] my_main Updated target network
+[INFO 02:42:16] my_main Updated target network
+[INFO 02:42:21] my_main Recent Stats | t_env:    1030450 | Episode:   111017
+battle_won_mean:           0.7774	ep_length_mean:            8.8789	epsilon:                   0.0500	loss:                      0.2313
+q_taken_mean:              0.1788	return_mean:               8.0060	return_std:                3.9165	target_mean:               1.8339
+td_error_abs:              0.2777	test_battle_won_mean:      0.9973	test_ep_length_mean:       8.4533	test_return_mean:          9.9733
+test_return_std:           0.3143	
+[INFO 02:42:23] my_main t_env: 1030486 / 1505000
+[INFO 02:42:23] my_main Estimated time left: 4 hours, 51 minutes, 36 seconds. Time passed: 9 hours, 48 minutes, 50 seconds
+[INFO 02:43:52] my_main Updated target network
+[INFO 02:44:51] my_main Updated target network
+[INFO 02:45:48] my_main Updated target network
+[INFO 02:46:44] my_main Updated target network
+[INFO 02:47:42] my_main Updated target network
+[INFO 02:48:17] my_main Recent Stats | t_env:    1040456 | Episode:   112124
+battle_won_mean:           0.7772	ep_length_mean:            8.8753	epsilon:                   0.0500	loss:                      0.2400
+q_taken_mean:              0.1730	return_mean:               8.0014	return_std:                3.9268	target_mean:               1.8301
+td_error_abs:              0.2736	test_battle_won_mean:      0.9987	test_ep_length_mean:       8.4913	test_return_mean:          9.9900
+test_return_std:           0.1729	
+[INFO 02:48:18] my_main t_env: 1040491 / 1505000
+[INFO 02:48:18] my_main Estimated time left: 4 hours, 35 minutes, 8 seconds. Time passed: 9 hours, 54 minutes, 45 seconds
+[INFO 02:49:10] my_main Updated target network
+[INFO 02:50:07] my_main Updated target network
+[INFO 02:51:04] my_main Updated target network
+[INFO 02:52:01] my_main Updated target network
+[INFO 02:52:59] my_main Updated target network
+[INFO 02:53:56] my_main Updated target network
+[INFO 02:54:03] my_main Recent Stats | t_env:    1050458 | Episode:   113227
+battle_won_mean:           0.7714	ep_length_mean:            8.9039	epsilon:                   0.0500	loss:                      0.1882
+q_taken_mean:              0.1652	return_mean:               7.9622	return_std:                3.9308	target_mean:               1.8344
+td_error_abs:              0.2660	test_battle_won_mean:      0.9967	test_ep_length_mean:       8.5220	test_return_mean:          9.9800
+test_return_std:           0.2095	
+[INFO 02:54:04] my_main t_env: 1050492 / 1505000
+[INFO 02:54:04] my_main Estimated time left: 4 hours, 21 minutes, 47 seconds. Time passed: 10 hours, 31 seconds
+[INFO 02:55:24] my_main Updated target network
+[INFO 02:56:23] my_main Updated target network
+[INFO 02:57:21] my_main Updated target network
+[INFO 02:58:19] my_main Updated target network
+[INFO 02:59:15] my_main Updated target network
+[INFO 02:59:52] my_main Recent Stats | t_env:    1060467 | Episode:   114325
+battle_won_mean:           0.7646	ep_length_mean:            8.9474	epsilon:                   0.0500	loss:                      0.2234
+q_taken_mean:              0.1640	return_mean:               7.9119	return_std:                3.9555	target_mean:               1.8208
+td_error_abs:              0.2790	test_battle_won_mean:      0.9860	test_ep_length_mean:       8.5873	test_return_mean:          9.9200
+test_return_std:           0.4859	
+[INFO 02:59:53] my_main t_env: 1060494 / 1505000
+[INFO 02:59:53] my_main Estimated time left: 4 hours, 18 minutes, 34 seconds. Time passed: 10 hours, 6 minutes, 20 seconds
+[INFO 03:00:45] my_main Updated target network
+[INFO 03:01:43] my_main Updated target network
+[INFO 03:02:41] my_main Updated target network
+[INFO 03:03:37] my_main Updated target network
+[INFO 03:04:34] my_main Updated target network
+[INFO 03:05:30] my_main Updated target network
+[INFO 03:05:38] my_main Recent Stats | t_env:    1070470 | Episode:   115429
+battle_won_mean:           0.7551	ep_length_mean:            8.9839	epsilon:                   0.0500	loss:                      0.2145
+q_taken_mean:              0.1625	return_mean:               7.8282	return_std:                4.0170	target_mean:               1.8302
+td_error_abs:              0.2727	test_battle_won_mean:      0.9847	test_ep_length_mean:       8.6240	test_return_mean:          9.9100
+test_return_std:           0.6146	
+[INFO 03:05:38] my_main t_env: 1070497 / 1505000
+[INFO 03:05:38] my_main Estimated time left: 4 hours, 10 minutes, 12 seconds. Time passed: 10 hours, 12 minutes, 6 seconds
+[INFO 03:06:59] my_main Updated target network
+[INFO 03:08:01] my_main Updated target network
+[INFO 03:09:03] my_main Updated target network
+[INFO 03:10:04] my_main Updated target network
+[INFO 03:11:05] my_main Updated target network
+[INFO 03:11:45] my_main Recent Stats | t_env:    1080476 | Episode:   116532
+battle_won_mean:           0.7487	ep_length_mean:            9.0183	epsilon:                   0.0500	loss:                      0.1886
+q_taken_mean:              0.1644	return_mean:               7.7830	return_std:                4.0413	target_mean:               1.8547
+td_error_abs:              0.2551	test_battle_won_mean:      0.9847	test_ep_length_mean:       8.6987	test_return_mean:          9.9100
+test_return_std:           0.6146	
+[INFO 03:11:46] my_main t_env: 1080505 / 1505000
+[INFO 03:11:46] my_main Estimated time left: 4 hours, 20 minutes, 5 seconds. Time passed: 10 hours, 18 minutes, 14 seconds
+[INFO 03:12:42] my_main Updated target network
+[INFO 03:13:40] my_main Updated target network
+[INFO 03:14:37] my_main Updated target network
+[INFO 03:15:34] my_main Updated target network
+[INFO 03:16:31] my_main Updated target network
+[INFO 03:17:28] my_main Updated target network
+[INFO 03:17:36] my_main Recent Stats | t_env:    1090480 | Episode:   117629
+battle_won_mean:           0.7403	ep_length_mean:            9.0713	epsilon:                   0.0500	loss:                      0.2011
+q_taken_mean:              0.1666	return_mean:               7.7202	return_std:                4.0751	target_mean:               1.8503
+td_error_abs:              0.2579	test_battle_won_mean:      0.9853	test_ep_length_mean:       8.7133	test_return_mean:          9.9133
+test_return_std:           0.5570	
+[INFO 03:17:37] my_main t_env: 1090508 / 1505000
+[INFO 03:17:37] my_main Estimated time left: 4 hours, 2 minutes, 13 seconds. Time passed: 10 hours, 24 minutes, 4 seconds
+[INFO 03:18:58] my_main Updated target network
+[INFO 03:19:52] my_main Updated target network
+[INFO 03:20:48] my_main Updated target network
+[INFO 03:21:46] my_main Updated target network
+[INFO 03:22:43] my_main Updated target network
+[INFO 03:23:20] my_main Recent Stats | t_env:    1100485 | Episode:   118731
+battle_won_mean:           0.7376	ep_length_mean:            9.0875	epsilon:                   0.0500	loss:                      0.2078
+q_taken_mean:              0.1700	return_mean:               7.6906	return_std:                4.1050	target_mean:               1.8626
+td_error_abs:              0.2664	test_battle_won_mean:      0.9847	test_ep_length_mean:       8.7440	test_return_mean:          9.9133
+test_return_std:           0.5331	
+[INFO 03:23:21] my_main t_env: 1100515 / 1505000
+[INFO 03:23:21] my_main Estimated time left: 3 hours, 51 minutes, 37 seconds. Time passed: 10 hours, 29 minutes, 48 seconds
+[INFO 03:24:12] my_main Updated target network
+[INFO 03:25:11] my_main Updated target network
+[INFO 03:26:09] my_main Updated target network
+[INFO 03:27:07] my_main Updated target network
+[INFO 03:28:05] my_main Updated target network
+[INFO 03:29:02] my_main Updated target network
+[INFO 03:29:10] my_main Recent Stats | t_env:    1110486 | Episode:   119828
+battle_won_mean:           0.7423	ep_length_mean:            9.0902	epsilon:                   0.0500	loss:                      0.1882
+q_taken_mean:              0.1715	return_mean:               7.7373	return_std:                4.0700	target_mean:               1.8684
+td_error_abs:              0.2644	test_battle_won_mean:      0.9940	test_ep_length_mean:       8.7653	test_return_mean:          9.9633
+test_return_std:           0.3854	
+[INFO 03:29:11] my_main t_env: 1110523 / 1505000
+[INFO 03:29:11] my_main Estimated time left: 3 hours, 49 minutes, 46 seconds. Time passed: 10 hours, 35 minutes, 38 seconds
+[INFO 03:30:30] my_main Updated target network
+[INFO 03:31:27] my_main Updated target network
+[INFO 03:32:24] my_main Updated target network
+[INFO 03:33:21] my_main Updated target network
+[INFO 03:34:20] my_main Updated target network
+[INFO 03:35:02] my_main Recent Stats | t_env:    1120490 | Episode:   120935
+battle_won_mean:           0.7429	ep_length_mean:            9.0896	epsilon:                   0.0500	loss:                      0.2140
+q_taken_mean:              0.1742	return_mean:               7.7451	return_std:                4.0572	target_mean:               1.8662
+td_error_abs:              0.2866	test_battle_won_mean:      0.9953	test_ep_length_mean:       8.7733	test_return_mean:          9.9733
+test_return_std:           0.2567	
+[INFO 03:35:03] my_main t_env: 1120527 / 1505000
+[INFO 03:35:03] my_main Estimated time left: 3 hours, 45 minutes, 35 seconds. Time passed: 10 hours, 41 minutes, 30 seconds
+[INFO 03:35:57] my_main Updated target network
+[INFO 03:36:58] my_main Updated target network
+[INFO 03:37:58] my_main Updated target network
+[INFO 03:38:59] my_main Updated target network
+[INFO 03:40:01] my_main Updated target network
+[INFO 03:40:59] my_main Updated target network
+[INFO 03:41:15] my_main Recent Stats | t_env:    1130490 | Episode:   122054
+battle_won_mean:           0.7354	ep_length_mean:            9.0849	epsilon:                   0.0500	loss:                      0.2413
+q_taken_mean:              0.1686	return_mean:               7.6685	return_std:                4.1093	target_mean:               1.8393
+td_error_abs:              0.2890	test_battle_won_mean:      0.9953	test_ep_length_mean:       8.7887	test_return_mean:          9.9733
+test_return_std:           0.2567	
+[INFO 03:41:16] my_main t_env: 1130527 / 1505000
+[INFO 03:41:16] my_main Estimated time left: 3 hours, 52 minutes, 53 seconds. Time passed: 10 hours, 47 minutes, 43 seconds
+[INFO 03:42:28] my_main Updated target network
+[INFO 03:43:24] my_main Updated target network
+[INFO 03:44:21] my_main Updated target network
+[INFO 03:45:17] my_main Updated target network
+[INFO 03:46:16] my_main Updated target network
+[INFO 03:47:04] my_main Recent Stats | t_env:    1140499 | Episode:   123169
+battle_won_mean:           0.7476	ep_length_mean:            9.0575	epsilon:                   0.0500	loss:                      0.2353
+q_taken_mean:              0.1626	return_mean:               7.7654	return_std:                4.0500	target_mean:               1.8367
+td_error_abs:              0.2943	test_battle_won_mean:      0.9947	test_ep_length_mean:       8.7633	test_return_mean:          9.9700
+test_return_std:           0.3144	
+[INFO 03:47:05] my_main t_env: 1140534 / 1505000
+[INFO 03:47:05] my_main Estimated time left: 3 hours, 31 minutes, 49 seconds. Time passed: 10 hours, 53 minutes, 32 seconds
+[INFO 03:47:44] my_main Updated target network
+[INFO 03:48:41] my_main Updated target network
+[INFO 03:49:39] my_main Updated target network
+[INFO 03:50:35] my_main Updated target network
+[INFO 03:51:31] my_main Updated target network
+[INFO 03:52:29] my_main Updated target network
+[INFO 03:52:54] my_main Recent Stats | t_env:    1150508 | Episode:   124289
+battle_won_mean:           0.7589	ep_length_mean:            9.0288	epsilon:                   0.0500	loss:                      0.2268
+q_taken_mean:              0.1612	return_mean:               7.8647	return_std:                3.9803	target_mean:               1.8173
+td_error_abs:              0.2845	test_battle_won_mean:      0.9980	test_ep_length_mean:       8.7480	test_return_mean:          9.9867
+test_return_std:           0.1864	
+[INFO 03:52:54] my_main t_env: 1150534 / 1505000
+[INFO 03:52:54] my_main Estimated time left: 3 hours, 26 minutes, 26 seconds. Time passed: 10 hours, 59 minutes, 22 seconds
+[INFO 03:53:57] my_main Updated target network
+[INFO 03:54:54] my_main Updated target network
+[INFO 03:55:51] my_main Updated target network
+[INFO 03:56:48] my_main Updated target network
+[INFO 03:57:45] my_main Updated target network
+[INFO 03:58:42] my_main Updated target network
+[INFO 03:58:42] my_main Recent Stats | t_env:    1160515 | Episode:   125402
+battle_won_mean:           0.7632	ep_length_mean:            9.0000	epsilon:                   0.0500	loss:                      0.2328
+q_taken_mean:              0.1564	return_mean:               7.8872	return_std:                3.9765	target_mean:               1.7874
+td_error_abs:              0.2826	test_battle_won_mean:      0.9993	test_ep_length_mean:       8.7173	test_return_mean:          9.9967
+test_return_std:           0.0576	
+[INFO 03:58:43] my_main t_env: 1160543 / 1505000
+[INFO 03:58:43] my_main Estimated time left: 3 hours, 20 minutes, 3 seconds. Time passed: 11 hours, 5 minutes, 10 seconds
+[INFO 04:00:12] my_main Updated target network
+[INFO 04:01:10] my_main Updated target network
+[INFO 04:02:09] my_main Updated target network
+[INFO 04:03:11] my_main Updated target network
+[INFO 04:04:15] my_main Updated target network
+[INFO 04:04:44] my_main Recent Stats | t_env:    1170522 | Episode:   126494
+battle_won_mean:           0.7711	ep_length_mean:            8.9756	epsilon:                   0.0500	loss:                      0.1950
+q_taken_mean:              0.1613	return_mean:               7.9519	return_std:                3.9378	target_mean:               1.8133
+td_error_abs:              0.2570	test_battle_won_mean:      0.9993	test_ep_length_mean:       8.7180	test_return_mean:          9.9967
+test_return_std:           0.0576	
+[INFO 04:04:45] my_main t_env: 1170550 / 1505000
+[INFO 04:04:45] my_main Estimated time left: 3 hours, 21 minutes, 33 seconds. Time passed: 11 hours, 11 minutes, 12 seconds
+[INFO 04:05:50] my_main Updated target network
+[INFO 04:06:51] my_main Updated target network
+[INFO 04:07:53] my_main Updated target network
+[INFO 04:08:52] my_main Updated target network
+[INFO 04:09:49] my_main Updated target network
+[INFO 04:10:46] my_main Updated target network
+[INFO 04:10:48] my_main Recent Stats | t_env:    1180528 | Episode:   127607
+battle_won_mean:           0.7740	ep_length_mean:            9.0009	epsilon:                   0.0500	loss:                      0.1708
+q_taken_mean:              0.1614	return_mean:               7.9725	return_std:                3.9335	target_mean:               1.8304
+td_error_abs:              0.2522	test_battle_won_mean:      0.9973	test_ep_length_mean:       8.6653	test_return_mean:          9.9767
+test_return_std:           0.2566	
+[INFO 04:10:49] my_main t_env: 1180555 / 1505000
+[INFO 04:10:49] my_main Estimated time left: 3 hours, 16 minutes, 29 seconds. Time passed: 11 hours, 17 minutes, 16 seconds
+[INFO 04:12:15] my_main Updated target network
+[INFO 04:13:15] my_main Updated target network
+[INFO 04:14:12] my_main Updated target network
+[INFO 04:15:10] my_main Updated target network
+[INFO 04:16:08] my_main Updated target network
+[INFO 04:16:41] my_main Recent Stats | t_env:    1190529 | Episode:   128716
+battle_won_mean:           0.7702	ep_length_mean:            9.0115	epsilon:                   0.0500	loss:                      0.1564
+q_taken_mean:              0.1633	return_mean:               7.9391	return_std:                3.9526	target_mean:               1.8133
+td_error_abs:              0.2509	test_battle_won_mean:      0.9980	test_ep_length_mean:       8.6660	test_return_mean:          9.9800
+test_return_std:           0.1990	
+[INFO 04:16:42] my_main t_env: 1190561 / 1505000
+[INFO 04:16:42] my_main Estimated time left: 3 hours, 5 minutes, 3 seconds. Time passed: 11 hours, 23 minutes, 9 seconds
+[INFO 04:17:37] my_main Updated target network
+[INFO 04:18:37] my_main Updated target network
+[INFO 04:19:34] my_main Updated target network
+[INFO 04:20:33] my_main Updated target network
+[INFO 04:21:32] my_main Updated target network
+[INFO 04:22:28] my_main Updated target network
+[INFO 04:22:34] my_main Recent Stats | t_env:    1200531 | Episode:   129821
+battle_won_mean:           0.7651	ep_length_mean:            9.0194	epsilon:                   0.0500	loss:                      0.1447
+q_taken_mean:              0.1635	return_mean:               7.9004	return_std:                3.9757	target_mean:               1.8256
+td_error_abs:              0.2389	test_battle_won_mean:      0.9980	test_ep_length_mean:       8.6833	test_return_mean:          9.9800
+test_return_std:           0.1990	
+[INFO 04:22:35] my_main t_env: 1200567 / 1505000
+[INFO 04:22:35] my_main Estimated time left: 2 hours, 58 minutes, 49 seconds. Time passed: 11 hours, 29 minutes, 2 seconds
+[INFO 04:23:56] my_main Updated target network
+[INFO 04:24:55] my_main Updated target network
+[INFO 04:25:54] my_main Updated target network
+[INFO 04:26:51] my_main Updated target network
+[INFO 04:27:50] my_main Updated target network
+[INFO 04:28:26] my_main Recent Stats | t_env:    1210539 | Episode:   130925
+battle_won_mean:           0.7590	ep_length_mean:            9.0431	epsilon:                   0.0500	loss:                      0.1497
+q_taken_mean:              0.1613	return_mean:               7.8437	return_std:                4.0147	target_mean:               1.8418
+td_error_abs:              0.2332	test_battle_won_mean:      0.9980	test_ep_length_mean:       8.6887	test_return_mean:          9.9800
+test_return_std:           0.1990	
+[INFO 04:28:27] my_main t_env: 1210569 / 1505000
+[INFO 04:28:27] my_main Estimated time left: 2 hours, 52 minutes, 40 seconds. Time passed: 11 hours, 34 minutes, 54 seconds
+[INFO 04:29:20] my_main Updated target network
+[INFO 04:30:24] my_main Updated target network
+[INFO 04:31:28] my_main Updated target network
+[INFO 04:32:31] my_main Updated target network
+[INFO 04:33:34] my_main Updated target network
+[INFO 04:34:37] my_main Updated target network
+[INFO 04:34:41] my_main Recent Stats | t_env:    1220544 | Episode:   132015
+battle_won_mean:           0.7553	ep_length_mean:            9.0582	epsilon:                   0.0500	loss:                      0.1866
+q_taken_mean:              0.1577	return_mean:               7.8102	return_std:                4.0400	target_mean:               1.8295
+td_error_abs:              0.2662	test_battle_won_mean:      0.9953	test_ep_length_mean:       8.7080	test_return_mean:          9.9567
+test_return_std:           0.4059	
+[INFO 04:34:42] my_main t_env: 1220573 / 1505000
+[INFO 04:34:42] my_main Estimated time left: 2 hours, 57 minutes, 53 seconds. Time passed: 11 hours, 41 minutes, 9 seconds
+[INFO 04:36:09] my_main Updated target network
+[INFO 04:37:07] my_main Updated target network
+[INFO 04:38:06] my_main Updated target network
+[INFO 04:39:05] my_main Updated target network
+[INFO 04:40:02] my_main Updated target network
+[INFO 04:40:34] my_main Recent Stats | t_env:    1230547 | Episode:   133111
+battle_won_mean:           0.7585	ep_length_mean:            9.0610	epsilon:                   0.0500	loss:                      0.1985
+q_taken_mean:              0.1602	return_mean:               7.8277	return_std:                4.0332	target_mean:               1.8342
+td_error_abs:              0.2807	test_battle_won_mean:      0.9973	test_ep_length_mean:       8.7407	test_return_mean:          9.9767
+test_return_std:           0.2069	
+[INFO 04:40:35] my_main t_env: 1230577 / 1505000
+[INFO 04:40:35] my_main Estimated time left: 2 hours, 41 minutes, 26 seconds. Time passed: 11 hours, 47 minutes, 2 seconds
+[INFO 04:41:32] my_main Updated target network
+[INFO 04:42:28] my_main Updated target network
+[INFO 04:43:25] my_main Updated target network
+[INFO 04:44:22] my_main Updated target network
+[INFO 04:45:19] my_main Updated target network
+[INFO 04:46:18] my_main Updated target network
+[INFO 04:46:23] my_main Recent Stats | t_env:    1240550 | Episode:   134219
+battle_won_mean:           0.7529	ep_length_mean:            9.0887	epsilon:                   0.0500	loss:                      0.2012
+q_taken_mean:              0.1620	return_mean:               7.7886	return_std:                4.0614	target_mean:               1.8416
+td_error_abs:              0.2727	test_battle_won_mean:      0.9967	test_ep_length_mean:       8.7480	test_return_mean:          9.9700
+test_return_std:           0.3221	
+[INFO 04:46:25] my_main t_env: 1240582 / 1505000
+[INFO 04:46:25] my_main Estimated time left: 2 hours, 33 minutes, 56 seconds. Time passed: 11 hours, 52 minutes, 52 seconds
+[INFO 04:47:48] my_main Updated target network
+[INFO 04:48:45] my_main Updated target network
+[INFO 04:49:43] my_main Updated target network
+[INFO 04:50:40] my_main Updated target network
+[INFO 04:51:37] my_main Updated target network
+[INFO 04:52:13] my_main Recent Stats | t_env:    1250559 | Episode:   135326
+battle_won_mean:           0.7581	ep_length_mean:            9.0901	epsilon:                   0.0500	loss:                      0.2135
+q_taken_mean:              0.1658	return_mean:               7.8261	return_std:                4.0432	target_mean:               1.8442
+td_error_abs:              0.2783	test_battle_won_mean:      0.9967	test_ep_length_mean:       8.7193	test_return_mean:          9.9700
+test_return_std:           0.3221	
+[INFO 04:52:14] my_main t_env: 1250587 / 1505000
+[INFO 04:52:14] my_main Estimated time left: 2 hours, 28 minutes, 13 seconds. Time passed: 11 hours, 58 minutes, 42 seconds
+[INFO 04:53:05] my_main Updated target network
+[INFO 04:54:03] my_main Updated target network
+[INFO 04:55:01] my_main Updated target network
+[INFO 04:55:58] my_main Updated target network
+[INFO 04:56:57] my_main Updated target network
+[INFO 04:57:58] my_main Updated target network
+[INFO 04:58:09] my_main Recent Stats | t_env:    1260559 | Episode:   136435
+battle_won_mean:           0.7616	ep_length_mean:            9.0883	epsilon:                   0.0500	loss:                      0.2260
+q_taken_mean:              0.1711	return_mean:               7.8708	return_std:                3.9993	target_mean:               1.8359
+td_error_abs:              0.2926	test_battle_won_mean:      0.9960	test_ep_length_mean:       8.7320	test_return_mean:          9.9633
+test_return_std:           0.4374	
+[INFO 04:58:10] my_main t_env: 1260590 / 1505000
+[INFO 04:58:10] my_main Estimated time left: 2 hours, 24 minutes, 55 seconds. Time passed: 12 hours, 4 minutes, 37 seconds
+[INFO 04:59:34] my_main Updated target network
+[INFO 05:00:36] my_main Updated target network
+[INFO 05:01:38] my_main Updated target network
+[INFO 05:02:40] my_main Updated target network
+[INFO 05:03:36] my_main Updated target network
+[INFO 05:04:19] my_main Recent Stats | t_env:    1270561 | Episode:   137554
+battle_won_mean:           0.7649	ep_length_mean:            9.0770	epsilon:                   0.0500	loss:                      0.2000
+q_taken_mean:              0.1743	return_mean:               7.8979	return_std:                3.9835	target_mean:               1.8162
+td_error_abs:              0.2622	test_battle_won_mean:      0.9987	test_ep_length_mean:       8.6933	test_return_mean:          9.9867
+test_return_std:           0.2306	
+[INFO 05:04:21] my_main t_env: 1270599 / 1505000
+[INFO 05:04:21] my_main Estimated time left: 2 hours, 24 minutes, 34 seconds. Time passed: 12 hours, 10 minutes, 48 seconds
+[INFO 05:05:06] my_main Updated target network
+[INFO 05:06:03] my_main Updated target network
+[INFO 05:07:01] my_main Updated target network
+[INFO 05:07:59] my_main Updated target network
+[INFO 05:08:58] my_main Updated target network
+[INFO 05:09:55] my_main Updated target network
+[INFO 05:10:17] my_main Recent Stats | t_env:    1280565 | Episode:   138675
+battle_won_mean:           0.7678	ep_length_mean:            9.0304	epsilon:                   0.0500	loss:                      0.1965
+q_taken_mean:              0.1723	return_mean:               7.9303	return_std:                3.9567	target_mean:               1.8078
+td_error_abs:              0.2547	test_battle_won_mean:      0.9987	test_ep_length_mean:       8.6993	test_return_mean:          9.9867
+test_return_std:           0.2306	
+[INFO 05:10:18] my_main t_env: 1280603 / 1505000
+[INFO 05:10:18] my_main Estimated time left: 2 hours, 13 minutes, 40 seconds. Time passed: 12 hours, 16 minutes, 45 seconds
+[INFO 05:11:23] my_main Updated target network
+[INFO 05:12:20] my_main Updated target network
+[INFO 05:13:18] my_main Updated target network
+[INFO 05:14:15] my_main Updated target network
+[INFO 05:15:13] my_main Updated target network
+[INFO 05:16:04] my_main Recent Stats | t_env:    1290572 | Episode:   139780
+battle_won_mean:           0.7757	ep_length_mean:            8.9896	epsilon:                   0.0500	loss:                      0.1748
+q_taken_mean:              0.1715	return_mean:               7.9865	return_std:                3.9198	target_mean:               1.8125
+td_error_abs:              0.2422	test_battle_won_mean:      0.9980	test_ep_length_mean:       8.6947	test_return_mean:          9.9800
+test_return_std:           0.2780	
+[INFO 05:16:05] my_main t_env: 1290610 / 1505000
+[INFO 05:16:05] my_main Estimated time left: 2 hours, 3 minutes, 53 seconds. Time passed: 12 hours, 22 minutes, 32 seconds
+[INFO 05:16:42] my_main Updated target network
+[INFO 05:17:40] my_main Updated target network
+[INFO 05:18:38] my_main Updated target network
+[INFO 05:19:35] my_main Updated target network
+[INFO 05:20:33] my_main Updated target network
+[INFO 05:21:31] my_main Updated target network
+[INFO 05:21:53] my_main Recent Stats | t_env:    1300572 | Episode:   140879
+battle_won_mean:           0.7721	ep_length_mean:            8.9965	epsilon:                   0.0500	loss:                      0.1995
+q_taken_mean:              0.1691	return_mean:               7.9598	return_std:                3.9369	target_mean:               1.8214
+td_error_abs:              0.2492	test_battle_won_mean:      0.9980	test_ep_length_mean:       8.7387	test_return_mean:          9.9800
+test_return_std:           0.2780	
+[INFO 05:21:54] my_main t_env: 1300617 / 1505000
+[INFO 05:21:54] my_main Estimated time left: 1 hours, 58 minutes, 53 seconds. Time passed: 12 hours, 28 minutes, 22 seconds
+[INFO 05:23:00] my_main Updated target network
+[INFO 05:24:00] my_main Updated target network
+[INFO 05:25:01] my_main Updated target network
+[INFO 05:26:04] my_main Updated target network
+[INFO 05:27:06] my_main Updated target network
+[INFO 05:28:03] my_main Recent Stats | t_env:    1310580 | Episode:   141983
+battle_won_mean:           0.7706	ep_length_mean:            9.0068	epsilon:                   0.0500	loss:                      0.1566
+q_taken_mean:              0.1660	return_mean:               7.9484	return_std:                3.9496	target_mean:               1.8283
+td_error_abs:              0.2241	test_battle_won_mean:      0.9987	test_ep_length_mean:       8.7360	test_return_mean:          9.9867
+test_return_std:           0.1628	
+[INFO 05:28:04] my_main t_env: 1310618 / 1505000
+[INFO 05:28:04] my_main Estimated time left: 1 hours, 59 minutes, 45 seconds. Time passed: 12 hours, 34 minutes, 31 seconds
+[INFO 05:28:44] my_main Updated target network
+[INFO 05:29:46] my_main Updated target network
+[INFO 05:30:42] my_main Updated target network
+[INFO 05:31:39] my_main Updated target network
+[INFO 05:32:36] my_main Updated target network
+[INFO 05:33:34] my_main Updated target network
+[INFO 05:33:57] my_main Recent Stats | t_env:    1320582 | Episode:   143084
+battle_won_mean:           0.7652	ep_length_mean:            9.0178	epsilon:                   0.0500	loss:                      0.1493
+q_taken_mean:              0.1634	return_mean:               7.8878	return_std:                3.9997	target_mean:               1.8387
+td_error_abs:              0.2216	test_battle_won_mean:      0.9947	test_ep_length_mean:       8.7627	test_return_mean:          9.9600
+test_return_std:           0.3610	
+[INFO 05:33:58] my_main t_env: 1320620 / 1505000
+[INFO 05:33:58] my_main Estimated time left: 1 hours, 48 minutes, 48 seconds. Time passed: 12 hours, 40 minutes, 26 seconds
+[INFO 05:35:02] my_main Updated target network
+[INFO 05:35:59] my_main Updated target network
+[INFO 05:36:56] my_main Updated target network
+[INFO 05:37:54] my_main Updated target network
+[INFO 05:38:52] my_main Updated target network
+[INFO 05:39:46] my_main Recent Stats | t_env:    1330587 | Episode:   144193
+battle_won_mean:           0.7617	ep_length_mean:            9.0458	epsilon:                   0.0500	loss:                      0.1914
+q_taken_mean:              0.1637	return_mean:               7.8518	return_std:                4.0295	target_mean:               1.8478
+td_error_abs:              0.2235	test_battle_won_mean:      0.9927	test_ep_length_mean:       8.7793	test_return_mean:          9.9500
+test_return_std:           0.4605	
+[INFO 05:39:47] my_main t_env: 1330624 / 1505000
+[INFO 05:39:47] my_main Estimated time left: 1 hours, 41 minutes, 21 seconds. Time passed: 12 hours, 46 minutes, 14 seconds
+[INFO 05:40:20] my_main Updated target network
+[INFO 05:41:16] my_main Updated target network
+[INFO 05:42:14] my_main Updated target network
+[INFO 05:43:12] my_main Updated target network
+[INFO 05:44:09] my_main Updated target network
+[INFO 05:45:06] my_main Updated target network
+[INFO 05:45:34] my_main Recent Stats | t_env:    1340587 | Episode:   145298
+battle_won_mean:           0.7530	ep_length_mean:            9.0651	epsilon:                   0.0500	loss:                      0.2319
+q_taken_mean:              0.1594	return_mean:               7.8007	return_std:                4.0461	target_mean:               1.8527
+td_error_abs:              0.2441	test_battle_won_mean:      0.9940	test_ep_length_mean:       8.7907	test_return_mean:          9.9633
+test_return_std:           0.2977	
+[INFO 05:45:35] my_main t_env: 1340628 / 1505000
+[INFO 05:45:35] my_main Estimated time left: 1 hours, 35 minutes, 16 seconds. Time passed: 12 hours, 52 minutes, 2 seconds
+[INFO 05:46:34] my_main Updated target network
+[INFO 05:47:31] my_main Updated target network
+[INFO 05:48:27] my_main Updated target network
+[INFO 05:49:25] my_main Updated target network
+[INFO 05:50:23] my_main Updated target network
+[INFO 05:51:19] my_main Recent Stats | t_env:    1350591 | Episode:   146393
+battle_won_mean:           0.7557	ep_length_mean:            9.0630	epsilon:                   0.0500	loss:                      0.2104
+q_taken_mean:              0.1558	return_mean:               7.8337	return_std:                4.0110	target_mean:               1.8468
+td_error_abs:              0.2351	test_battle_won_mean:      0.9927	test_ep_length_mean:       8.7793	test_return_mean:          9.9533
+test_return_std:           0.4264	
+[INFO 05:51:20] my_main t_env: 1350631 / 1505000
+[INFO 05:51:20] my_main Estimated time left: 1 hours, 28 minutes, 44 seconds. Time passed: 12 hours, 57 minutes, 47 seconds
+[INFO 05:51:55] my_main Updated target network
+[INFO 05:52:55] my_main Updated target network
+[INFO 05:53:56] my_main Updated target network
+[INFO 05:54:57] my_main Updated target network
+[INFO 05:55:59] my_main Updated target network
+[INFO 05:57:02] my_main Updated target network
+[INFO 05:57:31] my_main Recent Stats | t_env:    1360596 | Episode:   147498
+battle_won_mean:           0.7550	ep_length_mean:            9.0705	epsilon:                   0.0500	loss:                      0.2217
+q_taken_mean:              0.1536	return_mean:               7.8189	return_std:                4.0213	target_mean:               1.8653
+td_error_abs:              0.2458	test_battle_won_mean:      0.9907	test_ep_length_mean:       8.7540	test_return_mean:          9.9433
+test_return_std:           0.5259	
+[INFO 05:57:32] my_main t_env: 1360635 / 1505000
+[INFO 05:57:32] my_main Estimated time left: 1 hours, 29 minutes, 33 seconds. Time passed: 13 hours, 4 minutes, 0 seconds
+[INFO 05:58:32] my_main Updated target network
+[INFO 05:59:30] my_main Updated target network
+[INFO 06:00:28] my_main Updated target network
+[INFO 06:01:24] my_main Updated target network
+[INFO 06:02:22] my_main Updated target network
+[INFO 06:03:18] my_main Recent Stats | t_env:    1370601 | Episode:   148596
+battle_won_mean:           0.7579	ep_length_mean:            9.0694	epsilon:                   0.0500	loss:                      0.2116
+q_taken_mean:              0.1538	return_mean:               7.8610	return_std:                3.9825	target_mean:               1.8795
+td_error_abs:              0.2354	test_battle_won_mean:      0.9947	test_ep_length_mean:       8.7293	test_return_mean:          9.9700
+test_return_std:           0.3277	
+[INFO 06:03:19] my_main t_env: 1370639 / 1505000
+[INFO 06:03:19] my_main Estimated time left: 1 hours, 17 minutes, 35 seconds. Time passed: 13 hours, 9 minutes, 46 seconds
+[INFO 06:03:51] my_main Updated target network
+[INFO 06:04:48] my_main Updated target network
+[INFO 06:05:45] my_main Updated target network
+[INFO 06:06:41] my_main Updated target network
+[INFO 06:07:39] my_main Updated target network
+[INFO 06:08:37] my_main Updated target network
+[INFO 06:09:07] my_main Recent Stats | t_env:    1380604 | Episode:   149701
+battle_won_mean:           0.7598	ep_length_mean:            9.0748	epsilon:                   0.0500	loss:                      0.1785
+q_taken_mean:              0.1585	return_mean:               7.8880	return_std:                3.9571	target_mean:               1.8777
+td_error_abs:              0.2385	test_battle_won_mean:      0.9960	test_ep_length_mean:       8.7220	test_return_mean:          9.9767
+test_return_std:           0.2858	
+[INFO 06:09:08] my_main t_env: 1380642 / 1505000
+[INFO 06:09:08] my_main Estimated time left: 1 hours, 12 minutes, 14 seconds. Time passed: 13 hours, 15 minutes, 35 seconds
+[INFO 06:10:09] my_main Updated target network
+[INFO 06:11:06] my_main Updated target network
+[INFO 06:12:03] my_main Updated target network
+[INFO 06:13:00] my_main Updated target network
+[INFO 06:13:57] my_main Updated target network
+[INFO 06:14:54] my_main Recent Stats | t_env:    1390609 | Episode:   150796
+battle_won_mean:           0.7679	ep_length_mean:            9.0811	epsilon:                   0.0500	loss:                      0.1467
+q_taken_mean:              0.1618	return_mean:               7.9434	return_std:                3.9243	target_mean:               1.8734
+td_error_abs:              0.2287	test_battle_won_mean:      0.9947	test_ep_length_mean:       8.7673	test_return_mean:          9.9700
+test_return_std:           0.3672	
+[INFO 06:14:55] my_main t_env: 1390645 / 1505000
+[INFO 06:14:55] my_main Estimated time left: 1 hours, 6 minutes, 10 seconds. Time passed: 13 hours, 21 minutes, 22 seconds
+[INFO 06:15:27] my_main Updated target network
+[INFO 06:16:26] my_main Updated target network
+[INFO 06:17:25] my_main Updated target network
+[INFO 06:18:22] my_main Updated target network
+[INFO 06:19:19] my_main Updated target network
+[INFO 06:20:21] my_main Updated target network
+[INFO 06:20:47] my_main Recent Stats | t_env:    1400615 | Episode:   151886
+battle_won_mean:           0.7620	ep_length_mean:            9.0991	epsilon:                   0.0500	loss:                      0.1428
+q_taken_mean:              0.1629	return_mean:               7.8894	return_std:                3.9626	target_mean:               1.8714
+td_error_abs:              0.2281	test_battle_won_mean:      0.9960	test_ep_length_mean:       8.7713	test_return_mean:          9.9800
+test_return_std:           0.2385	
+[INFO 06:20:48] my_main t_env: 1400651 / 1505000
+[INFO 06:20:48] my_main Estimated time left: 1 hours, 1 minutes, 23 seconds. Time passed: 13 hours, 27 minutes, 15 seconds
+[INFO 06:21:59] my_main Updated target network
+[INFO 06:23:01] my_main Updated target network
+[INFO 06:24:04] my_main Updated target network
+[INFO 06:25:05] my_main Updated target network
+[INFO 06:26:02] my_main Updated target network
+[INFO 06:26:55] my_main Recent Stats | t_env:    1410623 | Episode:   152987
+battle_won_mean:           0.7574	ep_length_mean:            9.1080	epsilon:                   0.0500	loss:                      0.1384
+q_taken_mean:              0.1645	return_mean:               7.8562	return_std:                3.9755	target_mean:               1.8723
+td_error_abs:              0.2271	test_battle_won_mean:      0.9980	test_ep_length_mean:       8.8047	test_return_mean:          9.9900
+test_return_std:           0.1390	
+[INFO 06:26:56] my_main t_env: 1410657 / 1505000
+[INFO 06:26:56] my_main Estimated time left: 57 minutes, 43 seconds. Time passed: 13 hours, 33 minutes, 23 seconds
+[INFO 06:27:31] my_main Updated target network
+[INFO 06:28:29] my_main Updated target network
+[INFO 06:29:27] my_main Updated target network
+[INFO 06:30:23] my_main Updated target network
+[INFO 06:31:21] my_main Updated target network
+[INFO 06:32:18] my_main Updated target network
+[INFO 06:32:42] my_main Recent Stats | t_env:    1420625 | Episode:   154086
+battle_won_mean:           0.7556	ep_length_mean:            9.1133	epsilon:                   0.0500	loss:                      0.1324
+q_taken_mean:              0.1675	return_mean:               7.8432	return_std:                3.9830	target_mean:               1.8837
+td_error_abs:              0.2263	test_battle_won_mean:      0.9980	test_ep_length_mean:       8.8393	test_return_mean:          9.9900
+test_return_std:           0.1390	
+[INFO 06:32:43] my_main t_env: 1420665 / 1505000
+[INFO 06:32:43] my_main Estimated time left: 48 minutes, 46 seconds. Time passed: 13 hours, 39 minutes, 10 seconds
+[INFO 06:33:47] my_main Updated target network
+[INFO 06:34:43] my_main Updated target network
+[INFO 06:35:42] my_main Updated target network
+[INFO 06:36:40] my_main Updated target network
+[INFO 06:37:36] my_main Updated target network
+[INFO 06:38:31] my_main Recent Stats | t_env:    1430631 | Episode:   155190
+battle_won_mean:           0.7597	ep_length_mean:            9.1124	epsilon:                   0.0500	loss:                      0.1063
+q_taken_mean:              0.1635	return_mean:               7.8855	return_std:                3.9470	target_mean:               1.8794
+td_error_abs:              0.2050	test_battle_won_mean:      0.9973	test_ep_length_mean:       8.8727	test_return_mean:          9.9867
+test_return_std:           0.1628	
+[INFO 06:38:32] my_main t_env: 1430670 / 1505000
+[INFO 06:38:32] my_main Estimated time left: 43 minutes, 12 seconds. Time passed: 13 hours, 44 minutes, 59 seconds
+[INFO 06:39:05] my_main Updated target network
+[INFO 06:40:02] my_main Updated target network
+[INFO 06:40:59] my_main Updated target network
+[INFO 06:41:56] my_main Updated target network
+[INFO 06:42:53] my_main Updated target network
+[INFO 06:43:49] my_main Updated target network
+[INFO 06:44:16] my_main Recent Stats | t_env:    1440635 | Episode:   156293
+battle_won_mean:           0.7578	ep_length_mean:            9.1144	epsilon:                   0.0500	loss:                      0.1173
+q_taken_mean:              0.1603	return_mean:               7.8824	return_std:                3.9429	target_mean:               1.8843
+td_error_abs:              0.2000	test_battle_won_mean:      0.9973	test_ep_length_mean:       8.8660	test_return_mean:          9.9867
+test_return_std:           0.1628	
+[INFO 06:44:17] my_main t_env: 1440671 / 1505000
+[INFO 06:44:17] my_main Estimated time left: 37 minutes, 1 seconds. Time passed: 13 hours, 50 minutes, 44 seconds
+[INFO 06:45:18] my_main Updated target network
+[INFO 06:46:17] my_main Updated target network
+[INFO 06:47:15] my_main Updated target network
+[INFO 06:48:17] my_main Updated target network
+[INFO 06:49:20] my_main Updated target network
+[INFO 06:50:22] my_main Updated target network
+[INFO 06:50:22] my_main Recent Stats | t_env:    1450642 | Episode:   157403
+battle_won_mean:           0.7573	ep_length_mean:            9.1008	epsilon:                   0.0500	loss:                      0.1153
+q_taken_mean:              0.1630	return_mean:               7.8574	return_std:                3.9851	target_mean:               1.8766
+td_error_abs:              0.1944	test_battle_won_mean:      0.9973	test_ep_length_mean:       8.8353	test_return_mean:          9.9867
+test_return_std:           0.1628	
+[INFO 06:50:23] my_main t_env: 1450677 / 1505000
+[INFO 06:50:23] my_main Estimated time left: 33 minutes, 8 seconds. Time passed: 13 hours, 56 minutes, 51 seconds
+[INFO 06:51:56] my_main Updated target network
+[INFO 06:52:57] my_main Updated target network
+[INFO 06:53:53] my_main Updated target network
+[INFO 06:54:50] my_main Updated target network
+[INFO 06:55:48] my_main Updated target network
+[INFO 06:56:18] my_main Recent Stats | t_env:    1460649 | Episode:   158505
+battle_won_mean:           0.7651	ep_length_mean:            9.0677	epsilon:                   0.0500	loss:                      0.1311
+q_taken_mean:              0.1618	return_mean:               7.9210	return_std:                3.9524	target_mean:               1.8678
+td_error_abs:              0.1989	test_battle_won_mean:      0.9973	test_ep_length_mean:       8.7860	test_return_mean:          9.9867
+test_return_std:           0.1628	
+[INFO 06:56:19] my_main t_env: 1460677 / 1505000
+[INFO 06:56:19] my_main Estimated time left: 26 minutes, 14 seconds. Time passed: 14 hours, 2 minutes, 46 seconds
+[INFO 06:57:17] my_main Updated target network
+[INFO 06:58:16] my_main Updated target network
+[INFO 06:59:14] my_main Updated target network
+[INFO 07:00:12] my_main Updated target network
+[INFO 07:01:09] my_main Updated target network
+[INFO 07:02:07] my_main Recent Stats | t_env:    1470658 | Episode:   159600
+battle_won_mean:           0.7678	ep_length_mean:            9.0666	epsilon:                   0.0500	loss:                      0.1464
+q_taken_mean:              0.1553	return_mean:               7.9409	return_std:                3.9380	target_mean:               1.8452
+td_error_abs:              0.2085	test_battle_won_mean:      0.9967	test_ep_length_mean:       8.7793	test_return_mean:          9.9833
+test_return_std:           0.2204	
+[INFO 07:02:07] my_main Updated target network
+[INFO 07:02:07] my_main t_env: 1470678 / 1505000
+[INFO 07:02:07] my_main Estimated time left: 19 minutes, 55 seconds. Time passed: 14 hours, 8 minutes, 34 seconds
+[INFO 07:03:36] my_main Updated target network
+[INFO 07:04:34] my_main Updated target network
+[INFO 07:05:32] my_main Updated target network
+[INFO 07:06:29] my_main Updated target network
+[INFO 07:07:25] my_main Updated target network
+[INFO 07:07:53] my_main Recent Stats | t_env:    1480662 | Episode:   160697
+battle_won_mean:           0.7636	ep_length_mean:            9.0737	epsilon:                   0.0500	loss:                      0.2349
+q_taken_mean:              0.1578	return_mean:               7.9008	return_std:                3.9702	target_mean:               1.8508
+td_error_abs:              0.2443	test_battle_won_mean:      0.9980	test_ep_length_mean:       8.7733	test_return_mean:          9.9900
+test_return_std:           0.1390	
+[INFO 07:07:54] my_main t_env: 1480680 / 1505000
+[INFO 07:07:54] my_main Estimated time left: 14 minutes, 3 seconds. Time passed: 14 hours, 14 minutes, 21 seconds
+[INFO 07:08:54] my_main Updated target network
+[INFO 07:09:51] my_main Updated target network
+[INFO 07:10:50] my_main Updated target network
+[INFO 07:11:48] my_main Updated target network
+[INFO 07:12:45] my_main Updated target network
+[INFO 07:13:37] my_main Recent Stats | t_env:    1490669 | Episode:   161785
+battle_won_mean:           0.7646	ep_length_mean:            9.0847	epsilon:                   0.0500	loss:                      0.2414
+q_taken_mean:              0.1648	return_mean:               7.8947	return_std:                3.9869	target_mean:               1.8501
+td_error_abs:              0.2513	test_battle_won_mean:      0.9993	test_ep_length_mean:       8.7473	test_return_mean:          9.9967
+test_return_std:           0.0576	
+[INFO 07:13:37] my_main t_env: 1490687 / 1505000
+[INFO 07:13:37] my_main Estimated time left: 8 minutes, 11 seconds. Time passed: 14 hours, 20 minutes, 5 seconds
+[INFO 07:14:14] my_main Updated target network
+[INFO 07:15:10] my_main Updated target network
+[INFO 07:16:11] my_main Updated target network
+[INFO 07:17:14] my_main Updated target network
+[INFO 07:18:16] my_main Updated target network
+[INFO 07:19:18] my_main Updated target network
+[INFO 07:19:20] my_main Saving models to result/result.gather/cgmix_mixemb4_alpha0.5_onff8/models/cgmix__2022-11-11_16-53-26/1500022
+[INFO 07:19:43] my_main Recent Stats | t_env:    1500677 | Episode:   162880
+battle_won_mean:           0.7639	ep_length_mean:            9.1108	epsilon:                   0.0500	loss:                      0.2606
+q_taken_mean:              0.1640	return_mean:               7.9022	return_std:                3.9624	target_mean:               1.8525
+td_error_abs:              0.2638	test_battle_won_mean:      0.9987	test_ep_length_mean:       8.8120	test_return_mean:          9.9933
+test_return_std:           0.1153	
+[INFO 07:19:43] my_main t_env: 1500695 / 1505000
+[INFO 07:19:43] my_main Estimated time left: 2 minutes, 37 seconds. Time passed: 14 hours, 26 minutes, 11 seconds
+[INFO 07:20:56] my_main Updated target network
+[INFO 07:21:56] my_main Updated target network
+[INFO 07:22:38] my_main Finished Training
+Exiting Main
+Stopping all threads
+Thread Thread-5183 is alive! Is daemon: False
