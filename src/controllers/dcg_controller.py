@@ -204,6 +204,7 @@ class DeepCoordinationGraphMAC(BasicMAC):
         self.payoff_fun.load_state_dict(th.load("{}/payoffs.th".format(path), map_location=lambda storage, loc: storage))
         if self.duelling:
             self.payoff_fun.load_state_dict(th.load("{}/state_value.th".format(path), map_location=lambda storage, loc: storage))
+            ###???
 
     # ================== Private methods to help the constructor ======================================================
 

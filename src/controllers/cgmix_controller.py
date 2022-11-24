@@ -30,18 +30,19 @@ class CgmixMAC(BasicMAC):
         self.payoff_decomposition = isinstance(self.payoff_rank, int) and self.payoff_rank > 0
         #'''
 
+        self.onoff_configamount = args.onoff_configamount
         self.iterations = args.msg_iterations
         self.normalized = args.msg_normalized
         self.anytime = args.msg_anytime
         # Create neural networks for utilities and payoff functions
         self.utility_fun = self._mlp(self.args.rnn_hidden_dim, args.cg_utilities_hidden_dim, self.n_actions)
-        payoff_out = self.n_actions ** 2
+        #payoff_out = self.n_actions ** 2
         
         #'''
         payoff_out = 2 * self.payoff_rank * self.n_actions if self.payoff_decomposition else self.n_actions ** 2
         self.payoff_out = payoff_out
         #'''
-    
+
         self.payoff_fun = self._mlp(2 * self.args.rnn_hidden_dim, args.cg_payoffs_hidden_dim, payoff_out)
         # Create the edge information of the CG
         self.edges_from = None
@@ -59,6 +60,9 @@ class CgmixMAC(BasicMAC):
                 self.mixer = QMixer_wos(args)
             else:
                 raise ValueError("Mixer {} not recognised.".format(args.mixer))
+        else:
+            assert False
+            #self.state_value = self._mlp(int(np.prod(args.state_shape)), [args.mixing_embed_dim], 1)
         self.leaky_alpha = args.leaky_alpha
         self.greedy_action_selector = GreedyActionSelector(args)
 
@@ -86,7 +90,7 @@ class CgmixMAC(BasicMAC):
         # Compute the payoff matrices for all edges (and flipped counterparts)
         output = self.payoff_fun(inputs)
         
-        #output = th.zeros_like(output)
+        
         
 
 
@@ -243,7 +247,7 @@ class CgmixMAC(BasicMAC):
         #use_relu = np.ones(emb_dim, dtype=np.int)
         moving_tag = self.on_off_tag(use_relu)
         
-        for iteration in range(10):
+        for iteration in range(self.onoff_configamount):
             tags = self.on_off_tag(use_relu)
             explored[range(bs), tags] = 1
                         
@@ -293,7 +297,7 @@ class CgmixMAC(BasicMAC):
         return best_actions
 
     def greedy_heuristic_C(self, f_i, f_ij, w_1, w_final, bias, available_actions=None):
-        return self.greedy_action_selector.solve_graph(f_i, f_ij, w_1, w_final, bias, avail_actions=available_actions, device=f_i.device)
+        return self.greedy_action_selector.solve_graph(f_i, f_ij, w_1, w_final, bias, avail_actions=available_actions, device=f_i.device)[0]
 
 
     def on_off_tag(self, use_relu):
@@ -309,102 +313,108 @@ class CgmixMAC(BasicMAC):
 
 
 
-    # ================== Override methods of BasicMAC to integrate DCG into PyMARL ====================================
+   # ================== Override methods of BasicMAC to integrate DCG into PyMARL ====================================
 
-    def select_actions(self, ep_batch, t_ep, t_env, bs=slice(None), test_mode=False):
-        avail_actions = ep_batch["avail_actions"][:, t_ep]
-        state = ep_batch["state"][:, t_ep]
-        f_i, f_ij = self.annotations(ep_batch, t_ep)
-        
-        assert f_i.shape[0] == 1
-        
-        w_1, w_final, bias = self.mixer.get_para(state)
-        
-        #import time
-        #t0 = time.time()
-        #actions1 = self.max_sum(f_i, f_ij, avail_actions)
-        #t1 = time.time()
-        #actions2 = self.max_sum_C_graph(f_i, f_ij, avail_actions)
-        #t2 = time.time()
-        #assert th.all(actions1==actions2)
-        #actions = actions2
 
-        #actions_traverse = self.greedy(f_i, f_ij, w_1, w_final, bias, avail_actions)
-        #t3 = time.time()
-        #actions_heuristic = self.greedy_heuristic(f_i, f_ij, w_1, w_final, bias, avail_actions)
-        #t4 = time.time()
-        actions_heuristic_C = self.greedy_heuristic_C(f_i, f_ij, w_1, w_final, bias, avail_actions)
-        #t5 = time.time()
-        
-        actions = actions_heuristic_C
-        #actions = actions_traverse
+    def forward(self, ep_batch, t, actions=None, policy_mode=True,  w_1 = None, w_final = None, test_mode=False, compute_grads=False):
+        """ This is the main function that is called by learner and runner.
+            If policy_mode=True,    returns the greedy policy (for controller) for the given ep_batch at time t.
+            If policy_mode=False,   returns either the Q-values for given 'actions'
+                                            or the actions of of the greedy policy for 'actions==None'.  """
+        # Get the utilities and payoffs after observing time step t
+        f_i, f_ij = self.annotations(ep_batch, t, compute_grads, actions)
+        # We either return the values for the given batch and actions...
+        if actions is not None and not policy_mode:
 
-        # if not th.all(actions_traverse == actions_heuristic_C):
-        #     print(actions_traverse.squeeze().transpose(-1,0), actions_heuristic_C.squeeze().transpose(-1,0))
-        #     print((actions_traverse == actions_heuristic_C).squeeze().transpose(-1,0))
-        # if not th.all(actions_heuristic == actions_heuristic_C):
-        #     print(actions_heuristic.squeeze().transpose(-1,0), actions_heuristic_C.squeeze().transpose(-1,0))
-        #     print((actions_heuristic == actions_heuristic_C).squeeze().transpose(-1,0))
-        # if not th.all(actions_traverse == actions_heuristic):
-        #     print(actions_traverse.squeeze().transpose(-1,0), actions_heuristic.squeeze().transpose(-1,0))
-        #     print((actions_traverse == actions_heuristic).squeeze().transpose(-1,0))
-        
-        #print(t1-t0, t2-t1, t3-t2, t4-t3, t5-t4)
-        
-        policy = f_i.new_zeros(ep_batch.batch_size, self.n_agents, self.n_actions)
-        policy.scatter_(dim=-1, index=actions, src=policy.new_ones(1, 1, 1).expand_as(actions))
-        chosen_actions = self.action_selector.select_action(policy[bs], avail_actions[bs], t_env, test_mode=test_mode)
-        return chosen_actions
+            if self.mixer is None:
+                values = self.tot_values(f_i, f_ij, actions)	 
+                with th.no_grad() if not compute_grads else contextlib.suppress():	
+                    values = values + self.state_value(ep_batch['state'][:, t]).squeeze()	
+                return values
 
-    def forward(self, ep_batch, t, actions=None, w_1 = None, w_final = None, test_mode=False):
-        if actions is not None:
-            f_i, f_ij = self.annotations(ep_batch, t, compute_grads=True, actions=actions)
-            
-            #print('foward with action', f_i.shape[0])
+            q_i, q_ij = self.q_values(f_i, f_ij, actions)        
+            with th.no_grad() if not compute_grads else contextlib.suppress():
+                if self.args.learner=="dcg_learner":        
+                    if self.args.doublesqueezeq:
+                        return self.mixer(th.cat((q_i, q_ij), dim=1), ep_batch["state"][:, t]).squeeze(dim=-1).squeeze(dim=-1)
+                    else:
+                        return self.mixer(th.cat((q_i, q_ij), dim=1), ep_batch["state"][:, t])
+                elif self.args.learner == "cgmix_learner" or self.args.learner == "cgmix_learner_old":
+                    return q_i, q_ij
 
-            q_i, q_ij = self.q_values(f_i, f_ij, actions)
-            return q_i, q_ij
-        else:
-            f_i, f_ij = self.annotations(ep_batch, t)
+                else:
+                    assert False
+        # ... or greedy actions  ... or the computed Q-values (for the learner)
 
-            #print('foward with no action', f_i.shape[0])
-
+        if self.mixer is not None:
             if w_1 is None:
                 state = ep_batch["state"][:, t]
                 w_1, w_final, bias = self.mixer.get_para(state)
-            #actions = self.greedy(f_i, f_ij, w_1, w_final, bias, available_actions=ep_batch['avail_actions'][:, t])
-            
-            avail_actions = ep_batch['avail_actions'][:, t]
-            #import time
-            #t0 = time.time()
-            #actions1 = self.max_sum(f_i, f_ij, avail_actions)
-            #t1 = time.time()
-            #actions2 = self.max_sum_C_graph(f_i, f_ij, avail_actions)
-            #t2 = time.time()
-            #assert th.all(actions1==actions2)
-            # action = actions2
+
         
-            #actions_traverse = self.greedy(f_i, f_ij, w_1, w_final, bias, available_actions=avail_actions)
-            #t3 = time.time()
-            #actions_heuristic = self.greedy_heuristic(f_i, f_ij, w_1, w_final, bias, available_actions=avail_actions)
-            #t4 = time.time()
+        avail_actions = ep_batch['avail_actions'][:, t]
+
+        if self.args.greedy_version=='maxsum':
+            actions_maxsum = self.max_sum(f_i, f_ij, available_actions=avail_actions)
+            actions = actions_maxsum
+        elif self.args.greedy_version=='python_greedy':
+            actions_traverse = self.greedy(f_i, f_ij, w_1, w_final, bias, available_actions=avail_actions)
+            actions = actions_traverse
+        elif self.args.greedy_version=='python_greedy_heuristic':
+            actions_heuristic = self.greedy_heuristic(f_i, f_ij, w_1, w_final, bias, available_actions=avail_actions)
+            actions = actions_heuristic
+        elif self.args.greedy_version=='c++_greedy_heuristic':
             actions_heuristic_C = self.greedy_heuristic_C(f_i, f_ij, w_1, w_final, bias, available_actions=avail_actions)
-            #t5 = time.time()
-
             actions = actions_heuristic_C
-            #actions = actions_traverse
+        else:
+            assert False
 
-            # if not th.all(actions_traverse == actions_heuristic_C):
-            #     print(actions_traverse.squeeze().transpose(-1,0), actions_heuristic_C.squeeze().transpose(-1,0))
-            #     print((actions_traverse == actions_heuristic_C).squeeze().transpose(-1,0))
-            # if not th.all(actions_heuristic == actions_heuristic_C):
-            #     print(actions_heuristic.squeeze().transpose(-1,0), actions_heuristic_C.squeeze().transpose(-1,0))
-            #     print((actions_heuristic == actions_heuristic_C).squeeze().transpose(-1,0))
-            # if not th.all(actions_traverse == actions_heuristic):
-            #     print(actions_traverse.squeeze().transpose(-1,0), actions_heuristic.squeeze().transpose(-1,0))
-            #     print((actions_traverse == actions_heuristic).squeeze().transpose(-1,0))
+
+        # #import pdb; pdb.set_trace()
+        # if avail_actions.shape[0] == 1:
+        #     q_i, q_ij = self.q_values(f_i, f_ij, actions)
+        #     qtotvalue = self.mixer(th.cat((q_i, q_ij), dim=1), state)
             
-            #print(t1-t0, t2-t1, t3-t2, t4-t3, t5-t4)
+        #     msactions = self.max_sum(f_i, f_ij, available_actions=avail_actions)
+        #     q_i, q_ij = self.q_values(f_i, f_ij, msactions)
+        #     msqtotvalue = self.mixer(th.cat((q_i, q_ij), dim=1), state)
+
+
+        #     avail_actions_num = []
+
+    
+        #     totaltt = 1
+        #     for nn in range(self.n_agents):
+        #         totaltt *= len(avail_actions[0][nn])
+        #         aa = []
+        #         for na in range(self.n_actions):
+        #             if avail_actions[0][nn][na] == 1:
+        #                 aa.append(na)
+        #         avail_actions_num.append(aa)
+            
+        #     bestqtotvalue = -999999
+        #     bestactions = None
+        #     tt=0
+        #     for tempactions in itertools.product(*avail_actions_num):
+        #         #print(tt, "/", totaltt)
+        #         tt+=1
+        #         q_i, q_ij = self.q_values(f_i, f_ij, th.tensor(tempactions).unsqueeze(dim=-1).unsqueeze(dim=0).cuda())
+        #         tempqtotvalue = self.mixer(th.cat((q_i, q_ij), dim=1), state)
+        #         if tempqtotvalue > bestqtotvalue:
+        #             bestqtotvalue = tempqtotvalue
+        #             bestactions = tempactions
+
+        #     print(bestactions, bestqtotvalue)
+        #     print(actions.squeeze(), qtotvalue)
+        #     print(msactions.squeeze(), msqtotvalue)
+        #     print('...............................................')
+        # #import pdb; pdb.set_trace()
+
+        if policy_mode:     # ... either as policy tensor for the runner ...
+            policy = f_i.new_zeros(ep_batch.batch_size, self.n_agents, self.n_actions)
+            policy.scatter_(dim=-1, index=actions, src=policy.new_ones(1, 1, 1).expand_as(actions))
+            return policy
+        else:               # ... or as action tensor for the learner
             return actions
 
     def cuda(self):

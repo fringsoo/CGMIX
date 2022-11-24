@@ -74,6 +74,12 @@ def config_copy(config):
 if __name__ == '__main__':
     params = deepcopy(sys.argv)
 
+    def join(loader, node):
+        seq = loader.construct_sequence(node)
+        return ''.join([str(i) for i in seq])
+    ## register the tag handler
+    yaml.add_constructor('!join', join)
+
     # Get the defaults from default.yaml
     with open(os.path.join(os.path.dirname(__file__), "config", "default.yaml"), "r") as f:
         try:
@@ -94,12 +100,14 @@ if __name__ == '__main__':
     # Save to disk by default for sacred
     #logger.info("Saving to FileStorageObserver in results.toy/sacred.")
     #file_obs_path = os.path.join(results_path, "sacred")
+    config_dict['local_results_path'] = os.path.join(config_dict['local_results_dir'], config_dict['local_results_path'], )
     if not os.path.exists(config_dict['local_results_path']):
-        os.mkdir(config_dict['local_results_path'])
-    logger.info("Saving to FileStorageObserver in " + config_dict['local_results_path'] + "/sacred.")
-    file_obs_path = os.path.join(config_dict['local_results_path'], "sacred")
-    
-    ex.observers.append(FileStorageObserver.create(file_obs_path)) #remove this line for an existing model
+        os.makedirs(config_dict['local_results_path'])
+    if config_dict['use_sacred']:
+        logger.info("Saving to FileStorageObserver in " + config_dict['local_results_path'] + "/sacred.")
+        file_obs_path = os.path.join(config_dict['local_results_path'], "sacred")
+        
+        ex.observers.append(FileStorageObserver.create(file_obs_path)) #remove this line for an existing model
 
     ex.run_commandline(params)
 

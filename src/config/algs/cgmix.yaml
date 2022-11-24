@@ -8,28 +8,48 @@ epsilon_finish: 0.05          # Final epsilon for exploration
 epsilon_anneal_time: 50000    # Number of time steps until exploration has finished ###???
 
 # specify runner
-buffer_size: 5000              # Number of episodes in the experience replay buffer ###???
-#local_results_path: "results.matrixgame/cgmix_buffer5k_eps50k_heuristicC_mixemb3_alpha0.5_rnnfeat" # Path for local results ###
-local_results_path: "results.5mv6m/cgmix_buffer5k_eps50k_heuristic_mixemb3_alpha0.5_hasstate_rnnfeat" # Path for local results ###
+buffer_size: &bfs 5000              # Number of episodes in the experience replay buffer ###???
+
+
 
 # Specify the CG
 cg_utilities_hidden_dim:      # Hidden layers of utility functions, by default None
 cg_payoffs_hidden_dim:        # Hidden layers of payoff functions, by default None
 msg_anytime: True             # Anytime extension of greedy action selection (Kok and Vlassis, 2006)
-msg_iterations: 4 #???             # Number of message passes in greedy action selection
+msg_iterations: 4 ##???             # Number of message passes in greedy action selection
 msg_normalized: True          # Message normalization during greedy action selection (Kok and Vlassis, 2006)
 
 # specify learner, controller and agent
 agent: "rnn_feat"             # A RNN agent that returns its hidden state instead of its value
 agent_output_type: "q"        # The output format is Q-values
 learner: "cgmix_learner"        # The learner for Cgmix
+doublesqueezeq: &dsq
 mac: "cgmix_mac"                # The multi-agent controller for Cgmix
 target_update_interval: 200   # Update the target network every {} episodes
 
 
 mixer: "qmix"                 # QMIX
-mixing_embed_dim: 3   #?        #original qmix: 32 # Hidden dimensions of the state dependent bias function of CGMIX
-hypernet_layers: 2
+mixing_embed_dim: &m 3  #??        #original qmix: 32 # Hidden dimensions of the state dependent bias function of CGMIX
+hypernet_layers: &hpnl 2
 hypernet_embed: 64
-leaky_alpha: 0.5 #?
+leaky_alpha: &alpha 0.5 #??
+onoff_configamount: &onoff 8 # Amount of pieces to be enumerated.
 cg_payoff_rank:
+
+
+greedy_version: &greedy_version "c++_greedy_heuristic" #c++_greedy_heuristic, python_greedy_heuristic, python_greedy, maxsum
+best_action_version: &bav 1
+epsilon_init: &ei 0
+epsilon_decay: &ed 0
+
+local_results_path: !join [cgmix_, mixemb, *m, _alpha, *alpha, _onff, *onoff] # Path for local results ###
+
+
+###Optimality and Efficiency of the iterative optimization method
+evaluate: False
+#checkpoint_path: "cgmix__2022-10-31_19-53-06" #aloha
+#iterative_onoff_configamount: 4
+# use_tensorboard: False
+# use_sacred: False
+# save_model: False
+###Optimality and Efficiency of the iterative optimization method

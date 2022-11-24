@@ -9,7 +9,7 @@ epsilon_anneal_time: 50000    # Number of time steps until exploration has finis
 
 # specify runner
 buffer_size: 5000              # Number of episodes in the experience replay buffer ###???
-local_results_path: "results.matrixgame/dcg_buffer5k_eps50k_rnnfeat" # Path for local results ###
+local_results_path: "dcg_duelling" # Path for local results ###
 
 
 # Specify the CG
@@ -17,9 +17,9 @@ cg_edges: 'full'    # Defines the CG: {'vdn', 'line', 'cycle', 'star', 'full', n
 cg_utilities_hidden_dim:      # Hidden layers of utility functions, by default None
 cg_payoffs_hidden_dim:        # Hidden layers of payoff functions, by default None
 cg_payoff_rank:                # If > 0, payoff matrices are decomposed with this rank, otherwise full rank
-duelling: True               # If True, runs DCG-V (adds a state-dependent bias function to the value)
+duelling: True ###???               # If True, runs DCG-V (adds a state-dependent bias function to the value)
 msg_anytime: True             # Anytime extension of greedy action selection (Kok and Vlassis, 2006)
-msg_iterations: 8             # Number of message passes in greedy action selection
+msg_iterations: 8 ###???            # Number of message passes in greedy action selection
 msg_normalized: True          # Message normalization during greedy action selection (Kok and Vlassis, 2006)
 
 # specify learner, controller and agent
@@ -28,5 +28,5 @@ agent_output_type: "q"        # The output format is Q-values
 learner: "dcg_learner"        # The learner for DCG
 mac: "dcg_mac"                # The multi-agent controller for DCG
 mixer:                        # No mixing network for DCG
-mixing_embed_dim: 32          # Hidden dimensions of the state dependent bias function of DCG-V
+mixing_embed_dim: 32  ###???        # Hidden dimensions of the state dependent bias function of DCG-V
 target_update_interval: 200   # Update the target network every {} episodes

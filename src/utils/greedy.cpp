@@ -8,8 +8,9 @@
 #include <ctime>
 using namespace std;
 
-const int maxN = 50;
-const int maxM = 50;
+const int maxN = 20;
+const int maxM = 20;
+clock_t clockstart,clockend, cs, ce;
 const int MAX_BATCH_SIZE = 35;
 const int maxL = 305;
 
@@ -142,7 +143,7 @@ class GreedyActionSelector
                 e->maxf = e->f[i];
     }
     
-    void dfs_dp_graph(double *w_i, double *w_ij)
+    void dfs_dp_graph(double *w_i, double *w_ij, int msg_iterations)
     {        
         maxsum_best_value = -1e10;
         memset(maxsum_best_action, 0, sizeof(maxsum_best_action));
@@ -180,7 +181,7 @@ class GreedyActionSelector
         double message1_jsum;
 
         
-        for (iter = 1; iter <= 4; iter++)
+        for (iter = 1; iter <= msg_iterations; iter++)
         {
             memset(msg, 0, sizeof(msg));
             for (ec=1; ec <= edge_count; ec++)
@@ -281,7 +282,7 @@ class GreedyActionSelector
 
 
     public:
-    void solve_maxsum_graph(double *py_f, double *py_g, double *best_actions, int py_n, int py_m){
+    void solve_maxsum_graph(double *py_f, double *py_g, double *best_actions, int py_n, int py_m, int msg_iterations){
         n = py_n, m = py_m, f = py_f, g = py_g;
         
         double w_i[maxN], w_ij[maxN*maxN];
@@ -297,7 +298,7 @@ class GreedyActionSelector
         }
 
         //dfs_dp_graph(best_actions);
-        dfs_dp_graph(w_i, w_ij);
+        dfs_dp_graph(w_i, w_ij, msg_iterations);
         //dfs_dp_graph();
         for (int u=0; u<n;u++)
         {
@@ -318,7 +319,7 @@ class GreedyActionSelector
         return tag;
     }
 
-    int *tag_on_off(int tag, int *relu)
+    void tag_on_off(int tag, int *relu)
     {
         for (int l=0; l<len; l++)
         {
@@ -327,7 +328,8 @@ class GreedyActionSelector
     }
 
     public:
-    void solve_graph(double *py_f, double *py_g, double *best_actions, double *py_w_1, double *py_w_final, double *py_bias, int py_n, int py_m, int py_l, double alpha){
+    //void solve_graph(double *py_f, double *py_g, double *best_actions, double *py_w_1, double *py_w_final, double *py_bias, int py_n, int py_m, int py_l, double alpha, int msg_iterations, int onoff_configamount){
+    void solve_graph(double *py_f, double *py_g, double *best_actions, double *wholeitert_timetotal, double *maxsum_timetotal, double *maxsum_iterounds, double *py_w_1, double *py_w_final, double *py_bias, int py_n, int py_m, int py_l, double alpha, int msg_iterations, int onoff_configamount, float epsilon_init, float epsilon_decay, int bav){
         n = py_n, m = py_m, len = py_l, f = py_f, g = py_g, w_1 = py_w_1, w_final = py_w_final, bias = py_bias;
         
         double best_value = -1e10;
@@ -345,9 +347,23 @@ class GreedyActionSelector
         }
 
         int moving_tag = on_off_tag(use_relu);
-    
-        for (int iter = 0; iter < 10; iter++)
+        
+        //Until local convergence
+        int real_onoff_configamount = 0;
+        if (onoff_configamount <= 0)
         {
+            real_onoff_configamount = pow(2, len);
+        }
+        else
+        {
+            real_onoff_configamount = onoff_configamount;
+        }
+        for (int iter = 0; iter < real_onoff_configamount; iter++) //onoff rounds
+        //for (int iter = 0; iter < onoff_configamount; iter++) //onoff rounds
+        {   
+            cs = clock();
+            maxsum_iterounds[0] = iter + 1;
+            
             int tag = on_off_tag(use_relu);
             explored[tag] = 1;
             
@@ -378,48 +394,98 @@ class GreedyActionSelector
                     }
                 }
             }
-            
-            dfs_dp_graph(w_i, w_ij);
-            maxsum_best_value += res;
-            if (maxsum_best_value > best_value)
-            {
-                for (int u=0; u<n;u++)
-                {
-                    best_actions[u] = maxsum_best_action[u];
-                }
-                best_value = maxsum_best_value;
-            }
 
+            clockstart = clock();
+            dfs_dp_graph(w_i, w_ij, msg_iterations);
+            clockend = clock();
+            double maxsumtime=(double)(clockend-clockstart)/CLOCKS_PER_SEC;
+            maxsum_timetotal[0] += maxsumtime;
+
+            maxsum_best_value += res;
+            if (bav == 0)
+            {
+                if (maxsum_best_value > best_value)
+                {
+                    for (int u=0; u<n;u++)
+                    {
+                        best_actions[u] = maxsum_best_action[u];
+                    }
+                    best_value = maxsum_best_value;
+                }
+            }
             // printf("%.4f,%.4f,%.4f\n",w_1[4],w_1[20],w_final[0]);
             // printf("%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,\n",w_i[0],w_i[1],w_i[2],w_i[3],w_ij[0],w_ij[1],w_ij[2],w_ij[3],w_ij[4],w_ij[5],w_ij[6],res);
-            // //printf("%d ",use_relu[0]);
-            // printf("%d%d%d ",use_relu[0],use_relu[1],use_relu[2]);
-            // printf("%.1f,%.1f,%.1f,%.1f,", maxsum_best_action[0],maxsum_best_action[1],maxsum_best_action[2],maxsum_best_action[3]);
-            // printf("%f\n", maxsum_best_value);
 
-
+            double check_maxsum_best_value = 0;
             for (int l = 0; l < len; l++){
                 double node_value = 0;
 
                 int cnt = 0;
                 for (int u = 0; u < n; u++){
                     //node_value += value_f(u+1, maxsum_best_action[u+1]) * w_1[(n * n + n) / 2 * l + u];
-                    node_value += value_f(u+1, maxsum_best_action[u+1]) * w_1[u * len + l];
+                    node_value += value_f(u+1, maxsum_best_action[u]+1) * w_1[u * len + l];  
                     for (int v = u + 1; v < n; v++){
                         //node_value += value(u+1, v+1, maxsum_best_action[u+1], maxsum_best_action[v+1]) * w_1[(n * n + n) / 2 * l + n + cnt];
-                        node_value += value(u+1, v+1, maxsum_best_action[u+1], maxsum_best_action[v+1]) * w_1[(n + cnt) * len + l];
+                        node_value += value(u+1, v+1, maxsum_best_action[u]+1, maxsum_best_action[v]+1) * w_1[(n + cnt) * len + l]; 
                         cnt += 1;
                     }
-                
-                if (node_value > 0)   
+                }    
+
+                node_value += bias[l];
+                if (node_value > 0)
+                {
                     real_use_relu[l] = 1;
+                    check_maxsum_best_value += w_final[l] * node_value;
+                }
                 else
+                {
                     real_use_relu[l] = 0;
-                }            
+                    check_maxsum_best_value += w_final[l] * node_value * alpha;
+                }
             }
 
+            
+            //check_maxsum_best_value += res;
+            if (bav==1)
+            {
+                if (check_maxsum_best_value > best_value)
+                {
+                    for (int u=0; u<n;u++)
+                    {
+                        best_actions[u] = maxsum_best_action[u];
+                    }//
+                    best_value = check_maxsum_best_value;
+                }//
+            }//
+            
+            // /////////////////////////////////////////////////////
+            // for (int l=0; l<len;l++){
+            //     printf("%d",use_relu[l]);
+            // }//
+            // printf("    %f\n",maxsum_best_value);
+            // printf("maxsum_actions:");
+            // for (int u = 0; u < n; u++){
+            //     printf("%.0f,", maxsum_best_action[u]);
+            // }//
+            // printf("\n");
+            // for (int l=0; l<len;l++){
+            //     printf("%d",real_use_relu[l]);
+            // }//
+            // printf("    %f\n", check_maxsum_best_value);
+            // printf("---\n");
+            // /////////////////////////////////////////////////////
 
-            if ((on_off_tag(use_relu)!=on_off_tag(real_use_relu)) and (not explored[on_off_tag(real_use_relu)]))
+            if (on_off_tag(use_relu) == on_off_tag(real_use_relu))
+            {
+                if (onoff_configamount <= 0)
+                    break;
+            }
+            //float epsilon = 0.4;
+            float epsilon = epsilon_init * exp(- epsilon_decay * iter);
+            float rand01 = rand() % 1000 / (float)(1000);
+            bool real_as_new = (on_off_tag(use_relu)!=on_off_tag(real_use_relu)) && (! explored[on_off_tag(real_use_relu)]) && (rand01 < 1 - epsilon);
+            //printf("%f\n", epsilon);
+            if (real_as_new)
             {
                 for (int l=0; l < len; l++)
                 {
@@ -427,15 +493,18 @@ class GreedyActionSelector
                 }
             }
             else
-            {
-                while (explored[moving_tag] and moving_tag > 0)
+            {   
+                while (explored[moving_tag] && moving_tag > 0)
                 {
                     moving_tag -= 1;
                 }
                 tag_on_off(moving_tag, use_relu);
 
             }
-                
+
+            ce = clock();
+            double wholeitert=(double)(ce-cs)/CLOCKS_PER_SEC;
+            wholeitert_timetotal[0] += wholeitert;
         }
 
     }
@@ -603,18 +672,20 @@ greedy(double *py_f, double *py_g, double *best_actions, double *w_1, double *w_
 }
 
 extern "C" void
-maxsum_graph(double *py_f, double *py_g, double *best_actions, int bs, int n, int m)
+maxsum_graph(double *py_f, double *py_g, double *best_actions, int bs, int n, int m, int msg_iterations)
 {
     int t = (n + n * n) / 2;
 #pragma omp parallel for schedule(dynamic, 1) num_threads(MAX_BATCH_SIZE)
     for (int i = 0; i < bs; i++)
-        solver[i].solve_maxsum_graph(py_f + i * n * m, py_g + i * n * n * m * m, best_actions + i * n, n, m);
+        solver[i].solve_maxsum_graph(py_f + i * n * m, py_g + i * n * n * m * m, best_actions + i * n, n, m, msg_iterations);
 }
 extern "C" void
-greedy_graph(double *py_f, double *py_g, double *best_actions, double *w_1, double *w_final, double *bias, int bs, int n, int m, int l, double alpha)
+//greedy_graph(double *py_f, double *py_g, double *best_actions, double *w_1, double *w_final, double *bias, int bs, int n, int m, int l, double alpha, int msg_iterations, int onoff_configamount)
+greedy_graph(double *py_f, double *py_g, double *best_actions, double *wholeitert_timetotal, double *maxsum_timetotal, double *maxsum_iterounds, double *w_1, double *w_final, double *bias, int bs, int n, int m, int l, double alpha, int msg_iterations, int onoff_configamount, float epsilon_init, float epsilon_decay, int bav)
 {
     int t = (n + n * n) / 2;
 #pragma omp parallel for schedule(dynamic, 1) num_threads(MAX_BATCH_SIZE)
     for (int i = 0; i < bs; i++)
-        solver[i].solve_graph(py_f + i * n * m, py_g + i * n * n * m * m, best_actions + i * n, w_1 + i * t * l, w_final + i * l, bias + i * l, n, m, l, alpha);
+        //solver[i].solve_graph(py_f + i * n * m, py_g + i * n * n * m * m, best_actions + i * n, w_1 + i * t * l, w_final + i * l, bias + i * l, n, m, l, alpha, msg_iterations, onoff_configamount);
+        solver[i].solve_graph(py_f + i * n * m, py_g + i * n * n * m * m, best_actions + i * n, wholeitert_timetotal + i, maxsum_timetotal + i, maxsum_iterounds + i, w_1 + i * t * l, w_final + i * l, bias + i * l, n, m, l, alpha, msg_iterations, onoff_configamount, epsilon_init, epsilon_decay, bav);
 }

@@ -3,6 +3,7 @@ import numpy as np
 from utils.c_utils import load_c_lib, c_ptr, c_int, c_longlong, c_float, c_double
 import copy
 import ctypes
+import time
 
 def preprocess_values(f, _g, avail_actions):
     n_agents, n_actions = f.shape[1], f.shape[2]
@@ -23,6 +24,11 @@ class GreedyActionSelector:
     def __init__(self, args):
         self.greedy_lib = load_c_lib('./src/utils/greedy.cpp')
         self.alpha = args.leaky_alpha
+        self.msg_iterations = args.msg_iterations
+        self.onoff_configamount = args.onoff_configamount
+        self.epsilon_init = args.epsilon_init
+        self.epsilon_decay = args.epsilon_decay
+        self.bav = args.best_action_version
     
     def solve(self, f, g, w_1, w_final, bias, avail_actions, device):
         f, g = f.detach(), g.detach()
@@ -63,7 +69,7 @@ class GreedyActionSelector:
         # print('new batch')
         # print(_f, _g, _w_1, w_final, _bias)
 
-        self.greedy_lib.maxsum_graph(c_ptr(_f), c_ptr(_g), c_ptr(_best_actions), bs, n, m)
+        self.greedy_lib.maxsum_graph(c_ptr(_f), c_ptr(_g), c_ptr(_best_actions), bs, n, m, self.msg_iterations)
 
         best_actions = th.tensor(copy.deepcopy(_best_actions), dtype=th.int64, device=device)
 
@@ -84,14 +90,21 @@ class GreedyActionSelector:
         _bias = np.array(copy.deepcopy(bias).cpu()).astype(ctypes.c_double)
         _best_actions = np.zeros((bs, n, 1)).astype(ctypes.c_double)
 
+        _wholeitert_timetotal = np.zeros((bs)).astype(ctypes.c_double)
+        _maxsum_timetotal = np.zeros((bs)).astype(ctypes.c_double)
+        _maxsum_iterrounds = np.zeros((bs)).astype(ctypes.c_double)
+
         # print('new batch')
         # print(_f, _g, _w_1, w_final, _bias)
 
-        self.greedy_lib.greedy_graph(c_ptr(_f), c_ptr(_g), c_ptr(_best_actions), c_ptr(_w_1), c_ptr(_w_final), c_ptr(_bias), bs, n, m, l, c_double(self.alpha))
+        t0 = time.time()
+        #self.greedy_lib.greedy_graph(c_ptr(_f), c_ptr(_g), c_ptr(_best_actions), c_ptr(_w_1), c_ptr(_w_final), c_ptr(_bias), bs, n, m, l, c_double(self.alpha), self.msg_iterations, self.onoff_configamount)
+        self.greedy_lib.greedy_graph(c_ptr(_f), c_ptr(_g), c_ptr(_best_actions), c_ptr(_wholeitert_timetotal), c_ptr(_maxsum_timetotal), c_ptr(_maxsum_iterrounds), c_ptr(_w_1), c_ptr(_w_final), c_ptr(_bias), bs, n, m, l, c_double(self.alpha), self.msg_iterations, self.onoff_configamount, c_float(self.epsilon_init), c_float(self.epsilon_decay), self.bav)
+        t1 = time.time()
 
         best_actions = th.tensor(copy.deepcopy(_best_actions), dtype=th.int64, device=device)
 
         # best_actions =
         # print('actions = ', best_actions)
 
-        return best_actions
+        return [best_actions, t1-t0, _wholeitert_timetotal[0], _maxsum_timetotal[0], int(_maxsum_iterrounds[0])]

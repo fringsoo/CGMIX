@@ -15,9 +15,27 @@ class CgmixLearner():
 
         self.last_target_update_episode = 0
 
-
         self.optimiser = RMSprop(params=self.params, lr=args.lr, alpha=args.optim_alpha, eps=args.optim_eps)
-
+        '''
+        if hasattr(args, 'lrv'):
+            lrv = args.lrv
+        else:
+            lrv = args.lr
+        if hasattr(args, 'lrb'):
+            lrb = args.lrb
+        else:
+            lrb = args.lr
+        if hasattr(args, 'lrw'):
+            lrw = args.lrw
+        else:
+            lrw = args.lr
+        lenw1 = len(list(self.mac.mixer.hyper_w_1.parameters()))
+        lenwf = len(list(self.mac.mixer.hyper_w_final.parameters()))
+        lenb1 = len(list(self.mac.mixer.hyper_b_1.parameters()))
+        lenv = len(list(self.mac.mixer.V.parameters()))
+        self.optimiser = RMSprop(params=[{'params': self.params[:-lenv-lenb1-lenwf-lenw1], 'lr':args.lr}, {'params': self.params[-lenv-lenb1-lenwf-lenw1:-lenv-lenb1], 'lr':lrw}, {'params': self.params[-lenv-lenb1:-lenv], 'lr':lrb}, {'params': self.params[-lenv:], 'lr':lrv}], alpha=args.optim_alpha, eps=args.optim_eps)
+        self.scheduler = th.optim.lr_scheduler.StepLR(self.optimiser, step_size=5000, gamma=1)
+        '''
         # a little wasteful to deepcopy (e.g. duplicates action selector), but should work for any MAC
         self.target_mac = copy.deepcopy(mac)
 
@@ -32,13 +50,14 @@ class CgmixLearner():
         terminated = batch["terminated"][:, :-1].float()
         mask = batch["filled"][:, :-1].float()
         mask[:, 1:] = mask[:, 1:] * (1 - terminated[:, :-1])
-
+        
+        ###MOVE TO line 66???
         # Calculate estimated Q-Values
         mac_f_i = []
         mac_f_ij = []
         self.mac.init_hidden(batch.batch_size)
         for t in range(batch.max_seq_length - 1):
-            f_i, f_ij = self.mac.forward(batch, t=t, actions=actions[:, t])
+            f_i, f_ij = self.mac.forward(batch, t=t, actions=actions[:, t], policy_mode=False, compute_grads=True)
             mac_f_i.append(f_i)
             mac_f_ij.append(f_ij)
         mac_f_i = th.stack(mac_f_i, dim=1)
@@ -47,11 +66,12 @@ class CgmixLearner():
         target_f_i = []
         target_f_ij = []
         self.target_mac.init_hidden(batch.batch_size)
+        self.mac.init_hidden(batch.batch_size)
         #w_1, w_final = self.target_mixer.get_w(batch["state"][:, 1:]) # use target or not?
         for t in range(batch.max_seq_length):
-            greedy = self.mac.forward(batch, t=t, actions=None)
+            greedy = self.mac.forward(batch, t=t, actions=None, policy_mode=False)
             #greedy = self.mac.forward(batch, t=t, actions=None, w_1=w_1, w_final=w_final)
-            f_i, f_ij = self.target_mac.forward(batch, t=t, actions=greedy)
+            f_i, f_ij = self.target_mac.forward(batch, t=t, actions=greedy, policy_mode=False)
             target_f_i.append(f_i)
             target_f_ij.append(f_ij)
         target_f_i = th.stack(target_f_i[1:], dim=1)
@@ -60,7 +80,7 @@ class CgmixLearner():
         mac_out = th.cat((mac_f_i, mac_f_ij), dim=2)
         target_out = th.cat((target_f_i, target_f_ij), dim=2)
 
-        
+
 
         # Mix
         if self.mac.mixer is not None:
@@ -95,7 +115,9 @@ class CgmixLearner():
             self.logger.log_stat("q_taken_mean", (mac_out * mask).sum().item()/(mask_elems * self.args.n_agents), t_env)
             self.logger.log_stat("target_mean", (targets * mask).sum().item()/(mask_elems * self.args.n_agents), t_env)
             self.log_stats_t = t_env
-    
+            #self.logger.log_stat("lr", self.optimiser.state_dict()['param_groups'][0]['lr'], t_env)
+        #self.scheduler.step()
+
     def _update_targets(self):
         self.target_mac.load_state(self.mac)
         self.logger.console_logger.info("Updated target network")
