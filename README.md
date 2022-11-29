@@ -1,4 +1,10 @@
-# Non-Linear Coordination Graphs
+# Non-Linear Coordination Graphs (NeurIPS 2022 Spotlight paper)
+This is code and information page for NeurIPS 2022 Spotlight paper "[Non-Linear Coordination Graphs](https://openreview.net/pdf?id=OcNoF7qA4t)".
+
+Checkout the poster here: [NLCG-poster](NLCG_poster.png)
+
+And also the presentations: TBD.
+
 The code is based on the the implementations of the ICML 2020 paper "[Deep Coordination Graphs](https://arxiv.org/abs/1910.00091)" by [Wendelin B&ouml;hmer](https://github.com/wendelinboehmer), [Vitaly Kurin](https://yobibyte.github.io) and [Shimon Whiteson](https://github.com/oxwhirl), which is based on the python/pytorch framework [PyMARL](https://github.com/oxwhirl/pymarl) from the [Starcraft Multi-Agent Challenge](https://arxiv.org/abs/1902.04043).
 
 ## Installation instructions 
